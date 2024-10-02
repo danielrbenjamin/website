@@ -410,4 +410,10 @@ main {
   .scroll-container {
     display: none;
   }
+  
+}
+
+  /* Experience Section */
+.experience__item {
+  margin-bottom: 20px; /* Adjust this value as needed for spacing */
 }
