@@ -263,9 +263,13 @@ main {
   margin-top: 1.2em;
 }
 
+/* Centering the "About" description */
 .about__desc {
   font-size: 1rem;
   max-width: 600px;
+  margin: 0 auto; /* Centers the paragraph */
+  text-align: center; /* Centers the text */
+  margin-top: 2.4em;
 }
 
 .about__desc,
@@ -281,24 +285,24 @@ main {
   margin-right: 1em;
 }
 
+/* Projects Grid */
 .projects__grid {
   max-width: 1100px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18em, 1fr));
-  grid-gap: 2em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Center the project tiles */
+  gap: 2em; /* Adds space between project tiles */
 }
 
 .project {
   padding: 2em;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 350px; /* Consistent size */
   text-align: center;
   box-shadow: var(--shadow);
   transition: transform 0.2s linear;
-}
-
-.project:hover {
-  transform: translateY(-7px);
+  margin-bottom: 2em; /* Bottom margin to separate rows */
 }
 
 .project__description {
@@ -323,6 +327,7 @@ main {
   margin-left: 0.5em;
 }
 
+/* Skills Section */
 .skills__list {
   max-width: 450px;
   width: 95%;
@@ -334,6 +339,11 @@ main {
 
 .skills__list-item {
   margin: 0.5em;
+}
+
+/* Experience Section */
+.experience__item {
+  margin-bottom: 2em; /* Adds space between job entries */
 }
 
 .contact {
@@ -410,10 +420,4 @@ main {
   .scroll-container {
     display: none;
   }
-  
-}
-
-  /* Experience Section */
-.experience__item {
-  margin-bottom: 20px; /* Adjust this value as needed for spacing */
 }
