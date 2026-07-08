@@ -203,12 +203,28 @@ footer{
 
 /* ── experience page ── */
 .xp-timeline{margin-top:20px;position:relative}
-.xp{
-  display:grid;grid-template-columns:180px 1fr;gap:32px;
-  padding:28px 0;border-top:1px solid var(--line);position:relative;
+.xp-timeline::before{
+  content:"";position:absolute;top:4px;bottom:4px;left:25px;width:2px;
+  background:var(--line);
 }
-.xp:first-child{border-top:none}
-@media(max-width:720px){.xp{grid-template-columns:1fr;gap:12px}}
+.xp{
+  display:grid;grid-template-columns:52px 150px 1fr;gap:28px;
+  padding:28px 0;position:relative;
+}
+.xp:first-child{padding-top:0}
+.xp:last-child{padding-bottom:0}
+@media(max-width:720px){
+  .xp{grid-template-columns:52px 1fr;column-gap:16px;row-gap:10px}
+  .xp .xp-body{grid-column:1/-1}
+  .xp-timeline::before{left:25px}
+}
+.xp .xp-icon{
+  width:52px;height:52px;border-radius:10px;background:var(--panel);
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;
+}
+.xp .xp-icon img{width:100%;height:100%;object-fit:contain;padding:8px}
+.xp .xp-icon.fallback{font-family:var(--mono);font-size:17px;color:var(--ink-faint)}
 .xp .xp-when{font-family:var(--mono);font-size:12px;color:var(--ink-faint);padding-top:4px}
 .xp .xp-when .role-type{display:inline-block;margin-top:8px;color:var(--green);border:1px solid var(--line);padding:2px 8px;border-radius:2px;font-size:11px}
 .xp .xp-body h3{font-size:1.28rem;font-weight:600;letter-spacing:-.01em;margin-bottom:3px}
