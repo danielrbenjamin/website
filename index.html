@@ -105,37 +105,17 @@ section{padding:88px 0;border-top:1px solid var(--line)}
 .btn{font-family:var(--mono);font-size:13px;font-weight:500;padding:11px 20px;border:1px solid var(--line-bright);border-radius:2px;color:var(--ink);transition:all .15s;display:inline-flex;align-items:center;gap:9px}
 .btn:hover{border-color:var(--amber);color:var(--amber);background:rgba(255,180,84,.05)}
 footer{border-top:1px solid var(--line);padding:26px 28px;font-family:var(--mono);font-size:12px;color:var(--ink-faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;max-width:1080px;margin:0 auto}
-.term{font-family:var(--mono);font-size:13px;line-height:1.7;border:1px solid var(--line);border-radius:6px;background:#0a0c0d;max-width:none;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.35)}
-.term-head{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--line);background:var(--panel)}
-.term-dot{width:11px;height:11px;border-radius:50%;background:var(--line-bright)}
-.term-dot:nth-child(1){background:#e06c5a}
-.term-dot:nth-child(2){background:#e0b34a}
-.term-dot:nth-child(3){background:#5ee6a0}
-.term-title{margin-left:8px;font-size:11px;color:var(--ink-faint);letter-spacing:.03em}
-.term-body{padding:16px 16px 18px;min-height:180px;white-space:pre-wrap;word-break:break-word}
-.term-line{display:block}
-.term-prompt{color:var(--green)}
-.term-path{color:var(--blueprint)}
-.term-cmd{color:var(--ink)}
-.term-out{color:var(--ink-dim)}
-.term-out .ok{color:var(--green)}
-.term-out .val{color:var(--amber)}
-.term-cursor{display:inline-block;width:8px;height:15px;background:var(--green);vertical-align:-2px;margin-left:1px;animation:tblink 1s step-end infinite}
-@keyframes tblink{50%{opacity:0}}
-.term-cursor.done{animation:tblink 1.1s step-end infinite}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
 html.intro-active{overflow:hidden}
 @media(max-width:680px){
   .hero{min-height:100vh;min-height:100dvh}
   .about-grid,.stack-cols{grid-template-columns:1fr;gap:36px}
-  .term{font-size:12px}
-  .term-body{min-height:200px}
 }
 @media(max-width:420px){
 }
 @media(pointer:coarse){#cv{pointer-events:none}}
-@media(prefers-reduced-motion:reduce){.hint,.term-cursor{animation:none}.reveal{opacity:1;transform:none;transition:none}#intro{display:none}html{scroll-behavior:auto}}
+@media(prefers-reduced-motion:reduce){.hint{animation:none}.reveal{opacity:1;transform:none;transition:none}#intro{display:none}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
@@ -195,7 +175,7 @@ html.intro-active{overflow:hidden}
       <div class="about reveal">
         <p>Hi, I'm <b>Daniel Benjamin</b>, a Mechanical Engineering student at UBC and Chassis Lead for UBC Formula Electric.</p>
         <p>I enjoy working where mechanical design meets software and control. On the hardware side that means force modelling, FEA-validated structures, and fabrication. On the software side it means analysis pipelines, web apps, and team tooling that turn one-off calculations into systems the whole team can use.</p>
-        <p>more <a href="about.html" style="color:var(--amber)">about me →</a></p>
+        <p>learn more <a href="about.html" style="color:var(--amber)">about me →</a></p>
       </div>
       <div class="spec reveal">
         <div class="row"><span class="k">role</span><span class="v">Chassis Lead, UBC FE</span></div>
@@ -205,14 +185,6 @@ html.intro-active{overflow:hidden}
         <div class="row"><span class="k">focus</span><span class="v">FSAE · EV · tooling</span></div>
         <div class="row"><span class="k">status</span><span class="v hl">open to co-op →</span></div>
       </div>
-    </div>
-
-    <div class="term reveal" id="term" style="margin-top:44px;max-width:none">
-      <div class="term-head">
-        <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
-        <span class="term-title">daniel@portfolio — ~/whoami</span>
-      </div>
-      <div class="term-body" id="term-body"></div>
     </div>
   </section>
 
@@ -863,91 +835,6 @@ loop();
 </script>
 
 <script>
-(function(){
-  const body = document.getElementById('term-body');
-  if(!body) return;
-  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
-  const session = [
-    { cmd:'whoami', out:['daniel benjamin — mechanical / mechatronics engineer'] },
-    { cmd:'cat profile.txt', out:['<span class="k">role</span>     <span class="val">Chassis Lead</span>, UBC Formula Electric','<span class="k">program</span>  B.A.Sc. Mechanical (BMMD option)','<span class="k">school</span>   UBC · Co-op','<span class="k">domain</span>   <span class="val">mech × mechatronics × software</span>','<span class="k">focus</span>    FSAE · EV · tooling'] },
-    { cmd:'ls ~/skills', out:['mechanical/   mechatronics/   software/','fea  kinematics  fabrication  ·  esp32  pcb  motion  ·  python  react  three.js'] },
-    { cmd:'./status --now', out:['<span class="ok">●</span> open to co-op &amp; collaboration ....... <span class="ok">available</span>'] },
-  ];
-
-  const prompt = '<span class="term-prompt">daniel@portfolio</span>:<span class="term-path">~</span>$ ';
-  if(reduce){
-    body.innerHTML = session.map((step) =>
-      `<span class="term-line">${prompt}<span class="term-cmd">${step.cmd}</span></span>` +
-      step.out.map((line) => `<span class="term-line term-out">${line}</span>`).join('')
-    ).join('') + '<span class="term-cursor done"></span>';
-    return;
-  }
-
-  const TYPE_MS = 42;
-  const OUT_MS = 90;
-  const GAP_MS = 480;
-  let html = '';
-  const cursor = '<span class="term-cursor"></span>';
-
-  function render(active){
-    body.innerHTML = html + active + cursor;
-  }
-
-  function typeCmd(cmd, done){
-    let index = 0;
-    (function step(){
-      const partial = `<span class="term-line">${prompt}<span class="term-cmd">${cmd.slice(0, index)}</span></span>`;
-      render(partial);
-      if(index < cmd.length){
-        index++;
-        setTimeout(step, TYPE_MS + Math.random() * 30);
-        return;
-      }
-      html += `<span class="term-line">${prompt}<span class="term-cmd">${cmd}</span></span>`;
-      setTimeout(done, 260);
-    })();
-  }
-
-  function printOut(lines, done){
-    let index = 0;
-    (function step(){
-      if(index >= lines.length){
-        setTimeout(done, GAP_MS);
-        return;
-      }
-      html += `<span class="term-line term-out">${lines[index]}</span>`;
-      render('');
-      index++;
-      setTimeout(step, OUT_MS);
-    })();
-  }
-
-  let stepIndex = 0;
-  function runStep(){
-    if(stepIndex >= session.length){
-      body.innerHTML = html + '<span class="term-cursor done"></span>';
-      return;
-    }
-    typeCmd(session[stepIndex].cmd, () => printOut(session[stepIndex].out, () => {
-      stepIndex++;
-      runStep();
-    }));
-  }
-
-  let started = false;
-  const termEl = document.getElementById('term');
-  const termIO = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if(entry.isIntersecting && !started){
-        started = true;
-        setTimeout(runStep, 300);
-        termIO.disconnect();
-      }
-    });
-  }, { threshold:.35 });
-  termIO.observe(termEl);
-})();
-
 const io = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if(entry.isIntersecting){

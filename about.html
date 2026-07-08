@@ -11,38 +11,17 @@
 <link rel="stylesheet" href="site-header.css">
 <script src="site-header.js" defer></script>
 <style>
-.page-hero{
-  padding-top:140px;padding-bottom:80px;border-top:none;
-}
-.page-hero .eyebrow{margin-bottom:18px}
-.page-hero .name{
-  font-size:clamp(2.8rem,8vw,5rem);font-weight:700;
-  letter-spacing:-.03em;line-height:.96;margin-bottom:22px;
-}
-.page-hero .name span{color:var(--amber)}
-.page-hero .tagline{
-  font-size:clamp(1rem,2.4vw,1.22rem);color:var(--ink-dim);
-  max-width:560px;line-height:1.65;margin-bottom:38px;
-}
-.page-hero .tagline b{color:var(--ink);font-weight:500}
-.divider{width:48px;height:2px;background:var(--amber);margin-bottom:38px}
-
-/* hero two-column */
-.page-hero-grid{
-  display:grid;grid-template-columns:1fr auto;gap:56px;align-items:start;
-}
-@media(max-width:760px){.page-hero-grid{grid-template-columns:1fr;gap:36px}}
-.profile-photo-wrap{
-  position:relative;padding-top:18px;
-}
-@media(max-width:760px){.profile-photo-wrap{padding-top:0;display:flex;justify-content:center;}}
+/* terminal + photo row */
+.term-row{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start;margin-bottom:44px}
+@media(max-width:760px){.term-row{grid-template-columns:1fr;gap:28px}}
+.profile-photo-wrap{display:flex;justify-content:center}
 .profile-photo{
-  display:block;width:260px;height:260px;object-fit:cover;object-position:center top;
+  display:block;width:220px;height:220px;object-fit:cover;object-position:center top;
   border-radius:50%;
   box-shadow:0 0 0 4px rgba(255,181,84,.7);
   filter:grayscale(18%) contrast(1.04);
 }
-@media(max-width:760px){.profile-photo{width:200px;height:200px;}}
+@media(max-width:760px){.profile-photo{width:180px;height:180px}}
 
 /* two-column bio layout */
 .bio-grid{
@@ -132,31 +111,28 @@ footer{
 
 <main class="wrap">
 
-  <!-- PAGE HERO -->
-  <section class="page-hero">
-    <div class="page-hero-grid">
-      <div>
-        <div class="eyebrow reveal">About</div>
-        <h1 class="name reveal">Daniel<br><span>Benjamin</span></h1>
-        <p class="tagline reveal">
-          <b>Mechanical Engineering</b> student at UBC (BMMD option) and
-          <b>Chassis Lead</b> for UBC Formula Electric — building the structure of a
-          competition electric race car from first principles.
-        </p>
-        <div class="divider reveal"></div>
-        <div class="cta-row reveal">
-          <a href="experience.html" class="btn">View experience →</a>
-          <a href="resume.html" class="btn">Résumé</a>
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal">About Me</div>
+    <h2 class="sec-h reveal">Why I build.</h2>
+    <p class="sec-sub reveal">Driven by curiosity, shaped by experimentation. An exploration of what led to engineering, the mindset behind building, and the pursuit of learning beyond the classroom.
+</p>
+  </section>
+
+  <!-- BIO -->
+  <section id="bio" style="border-top:none;padding-top:0">
+    <div class="term-row">
+      <div class="term reveal" id="term">
+        <div class="term-head">
+          <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+          <span class="term-title">daniel@portfolio — ~/whoami</span>
         </div>
+        <div class="term-body" id="term-body"></div>
       </div>
       <div class="profile-photo-wrap reveal">
         <img class="profile-photo" src="profile_picture.jpg" alt="Daniel Benjamin">
       </div>
     </div>
-  </section>
 
-  <!-- BIO -->
-  <section id="bio">
     <div class="eyebrow reveal">01 — Background</div>
     <h2 class="sec-h reveal">How I got here.</h2>
     <div class="bio-grid">
@@ -274,6 +250,90 @@ footer{
 </footer>
 
 <script>
+(function(){
+  const body = document.getElementById('term-body');
+  if(!body) return;
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const session = [
+    { cmd:'whoami', out:['daniel benjamin — mechanical / mechatronics engineer'] },
+    { cmd:'cat profile.txt', out:['<span class="k">role</span>     <span class="val">Chassis Lead</span>, UBC Formula Electric','<span class="k">program</span>  B.A.Sc. Mechanical (BMMD option)','<span class="k">school</span>   UBC · Co-op','<span class="k">domain</span>   <span class="val">mech × mechatronics × software</span>','<span class="k">focus</span>    FSAE, robotics, manufacturing'] },
+    { cmd:'./status --now', out:['<span class="ok">●</span> open to co-op &amp; collaboration ....... <span class="ok">available</span>'] },
+  ];
+
+  const prompt = '<span class="term-prompt">daniel@portfolio</span>:<span class="term-path">~</span>$ ';
+  if(reduce){
+    body.innerHTML = session.map((step) =>
+      `<span class="term-line">${prompt}<span class="term-cmd">${step.cmd}</span></span>` +
+      step.out.map((line) => `<span class="term-line term-out">${line}</span>`).join('')
+    ).join('') + '<span class="term-cursor done"></span>';
+    return;
+  }
+
+  const TYPE_MS = 42;
+  const OUT_MS = 90;
+  const GAP_MS = 480;
+  let html = '';
+  const cursor = '<span class="term-cursor"></span>';
+
+  function render(active){
+    body.innerHTML = html + active + cursor;
+  }
+
+  function typeCmd(cmd, done){
+    let index = 0;
+    (function step(){
+      const partial = `<span class="term-line">${prompt}<span class="term-cmd">${cmd.slice(0, index)}</span></span>`;
+      render(partial);
+      if(index < cmd.length){
+        index++;
+        setTimeout(step, TYPE_MS + Math.random() * 30);
+        return;
+      }
+      html += `<span class="term-line">${prompt}<span class="term-cmd">${cmd}</span></span>`;
+      setTimeout(done, 260);
+    })();
+  }
+
+  function printOut(lines, done){
+    let index = 0;
+    (function step(){
+      if(index >= lines.length){
+        setTimeout(done, GAP_MS);
+        return;
+      }
+      html += `<span class="term-line term-out">${lines[index]}</span>`;
+      render('');
+      index++;
+      setTimeout(step, OUT_MS);
+    })();
+  }
+
+  let stepIndex = 0;
+  function runStep(){
+    if(stepIndex >= session.length){
+      body.innerHTML = html + '<span class="term-cursor done"></span>';
+      return;
+    }
+    typeCmd(session[stepIndex].cmd, () => printOut(session[stepIndex].out, () => {
+      stepIndex++;
+      runStep();
+    }));
+  }
+
+  let started = false;
+  const termEl = document.getElementById('term');
+  const termIO = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if(entry.isIntersecting && !started){
+        started = true;
+        setTimeout(runStep, 300);
+        termIO.disconnect();
+      }
+    });
+  }, { threshold:.35 });
+  termIO.observe(termEl);
+})();
+
 const io = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if(entry.isIntersecting){
