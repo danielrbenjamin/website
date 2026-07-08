@@ -86,12 +86,19 @@ section{padding:88px 0;border-top:1px solid var(--line)}
 .about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:48px;align-items:start}
 .about p{color:var(--ink-dim);margin-bottom:18px;font-size:1.05rem;line-height:1.7}
 .about p b{color:var(--ink);font-weight:500}
-.spec{font-family:var(--mono);font-size:13px;border:1px solid var(--line);border-radius:3px;background:var(--panel)}
-.spec .row{display:flex;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--line)}
-.spec .row:last-child{border-bottom:none}
-.spec .k{color:var(--ink-faint)}
-.spec .v{color:var(--ink);text-align:right}
-.spec .v.hl{color:var(--green)}
+.profile-photo-wrap{display:flex;justify-content:center}
+.profile-photo{
+  display:block;width:220px;height:220px;object-fit:cover;object-position:center top;
+  border-radius:50%;
+  box-shadow:0 0 0 4px rgba(255,181,84,.7);
+  filter:grayscale(18%) contrast(1.04);
+}
+.proj-feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.proj-feat{border:1px solid var(--line);border-radius:5px;background:var(--panel);padding:26px;display:flex;flex-direction:column;align-items:flex-start}
+.proj-feat .ptag{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:12px}
+.proj-feat h3{font-size:1.22rem;font-weight:600;letter-spacing:-.01em;margin-bottom:10px}
+.proj-feat p{color:var(--ink-dim);font-size:.97rem;line-height:1.6;margin-bottom:16px}
+.proj-feat .chips{margin-bottom:20px}
 .stack-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 .stack-col h4{font-family:var(--mono);font-size:12.5px;color:var(--amber);letter-spacing:.06em;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--line)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -104,13 +111,15 @@ section{padding:88px 0;border-top:1px solid var(--line)}
 .links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
 .btn{font-family:var(--mono);font-size:13px;font-weight:500;padding:11px 20px;border:1px solid var(--line-bright);border-radius:2px;color:var(--ink);transition:all .15s;display:inline-flex;align-items:center;gap:9px}
 .btn:hover{border-color:var(--amber);color:var(--amber);background:rgba(255,180,84,.05)}
+.btn.solid{background:var(--amber);color:#0c0e0f;border-color:var(--amber);font-weight:700}
+.btn.solid:hover{background:var(--green);border-color:var(--green);color:#0c0e0f}
 footer{border-top:1px solid var(--line);padding:26px 28px;font-family:var(--mono);font-size:12px;color:var(--ink-faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;max-width:1080px;margin:0 auto}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
 html.intro-active{overflow:hidden}
 @media(max-width:680px){
   .hero{min-height:100vh;min-height:100dvh}
-  .about-grid,.stack-cols{grid-template-columns:1fr;gap:36px}
+  .about-grid,.stack-cols,.proj-feat-grid{grid-template-columns:1fr;gap:36px}
 }
 @media(max-width:420px){
 }
@@ -177,19 +186,40 @@ html.intro-active{overflow:hidden}
         <p>I enjoy working where mechanical design meets software and control. On the hardware side that means force modelling, FEA-validated structures, and fabrication. On the software side it means analysis pipelines, web apps, and team tooling that turn one-off calculations into systems the whole team can use.</p>
         <p>learn more <a href="about.html" style="color:var(--amber)">about me →</a></p>
       </div>
-      <div class="spec reveal">
-        <div class="row"><span class="k">role</span><span class="v">Chassis Lead, UBC FE</span></div>
-        <div class="row"><span class="k">program</span><span class="v">B.A.Sc. Mech (BMMD)</span></div>
-        <div class="row"><span class="k">school</span><span class="v">UBC · Co-op</span></div>
-        <div class="row"><span class="k">domain</span><span class="v hl">mech × mechatronics × sw</span></div>
-        <div class="row"><span class="k">focus</span><span class="v">FSAE · EV · tooling</span></div>
-        <div class="row"><span class="k">status</span><span class="v hl">open to co-op →</span></div>
+      <div class="profile-photo-wrap reveal">
+        <img class="profile-photo" src="profile_picture.jpg" alt="Daniel Benjamin">
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="eyebrow reveal">02 — Featured Projects</div>
+    <h2 class="sec-h reveal">Project highlights.</h2>
+    <p class="sec-sub reveal">see all projects on the <a href="projects.html" style="color:var(--amber)">projects page →</a></p>
+    <div class="proj-feat-grid">
+      <div class="proj-feat reveal">
+        <span class="ptag">// interactive</span>
+        <h3>Car #85 — Full Vehicle Assembly</h3>
+        <p>The 2026 UBC Formula Electric car, from the ground up: a 4130 chromoly tube frame with custom-machined uprights, planetary gearboxes, and a full aero package.</p>
+        <div class="chips">
+          <span class="chip">SolidWorks</span><span class="chip">AutoCAD</span><span class="chip">ANSYS</span><span class="chip">Three.js</span>
+        </div>
+        <a href="chassis-viewer.html" class="btn solid">◈ Explode the 3D model →</a>
+      </div>
+      <div class="proj-feat reveal">
+        <span class="ptag">// interactive</span>
+        <h3>MEMS Soft-Actuated Hand</h3>
+        <p>A soft-robotic hand driven by pneumatic actuators, modeled in SolidWorks with fully articulated fingers. Live and interactive — drag to orbit.</p>
+        <div class="chips">
+          <span class="chip">SolidWorks</span><span class="chip">Soft Robotics</span><span class="chip">Three.js</span>
+        </div>
+        <a href="hand-viewer.html" class="btn solid">✋ Watch it grip →</a>
       </div>
     </div>
   </section>
 
   <section id="stack">
-    <div class="eyebrow reveal">02 — Capabilities</div>
+    <div class="eyebrow reveal">03 — Capabilities</div>
     <h2 class="sec-h reveal">Toolchain</h2>
     <p class="sec-sub reveal">A working spread across the mechanical–software boundary.</p>
     <div class="stack-cols">
@@ -225,11 +255,11 @@ html.intro-active{overflow:hidden}
   </section>
 
   <section id="contact" class="contact">
-    <div class="eyebrow reveal" style="justify-content:center">03 — Contact</div>
-    <div class="big reveal">Let's build something.<br><a href="mailto:hello@example.com">hello@example.com</a></div>
+    <div class="eyebrow reveal" style="justify-content:center">04 — Contact</div>
+    <div class="big reveal">Let's build something.<br><a href="mailto:contact@danielrbenjamin.com">contact@danielrbenjamin.com</a></div>
     <p class="sec-sub reveal" style="margin:18px auto 0;text-align:center">Open to co-op and project collaboration at the mechanical–software boundary.</p>
     <div class="links reveal">
-      <a href="mailto:hello@example.com" class="btn">✉ Email</a>
+      <a href="mailto:contact@danielrbenjamin.com" class="btn">✉ Email</a>
       <a href="https://github.com" target="_blank" rel="noopener" class="btn">⌥ GitHub</a>
       <a href="https://linkedin.com" target="_blank" rel="noopener" class="btn">in LinkedIn</a>
     </div>

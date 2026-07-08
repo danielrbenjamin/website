@@ -34,20 +34,13 @@
 .bio p a{color:var(--amber);border-bottom:1px solid transparent;transition:border .15s}
 .bio p a:hover{border-color:var(--amber)}
 
-/* stat card */
-.stat-card{
-  border:1px solid var(--line);border-radius:3px;
-  background:var(--panel);font-family:var(--mono);font-size:13px;
+/* photo column */
+.photo-col{display:flex;flex-direction:column;gap:16px}
+.photo-placeholder{
+  aspect-ratio:4/3;border:1px dashed var(--line-bright);border-radius:3px;
+  background:var(--panel);display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:12px;color:var(--ink-faint);text-align:center;
 }
-.stat-card .row{
-  display:flex;justify-content:space-between;align-items:baseline;
-  padding:13px 16px;border-bottom:1px solid var(--line);
-}
-.stat-card .row:last-child{border-bottom:none}
-.stat-card .k{color:var(--ink-faint)}
-.stat-card .v{color:var(--ink);text-align:right}
-.stat-card .v.hl{color:var(--green)}
-.stat-card .v.amber{color:var(--amber)}
 
 /* FSAE section */
 .fsae-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
@@ -150,15 +143,10 @@ footer{
           My philosophy: <b>precision, traceability, and tools that outlive the person who wrote them.</b> I write documentation because future-me will need it. I build pipelines instead of one-off scripts because the team will grow. I do the math because the part might fail.
         </p>
       </div>
-      <div class="stat-card reveal">
-        <div class="row"><span class="k">name</span><span class="v">Daniel Benjamin</span></div>
-        <div class="row"><span class="k">program</span><span class="v">B.A.Sc. Mechanical Eng.</span></div>
-        <div class="row"><span class="k">option</span><span class="v">BMMD (mechatronics/design)</span></div>
-        <div class="row"><span class="k">school</span><span class="v">UBC · Co-op</span></div>
-        <div class="row"><span class="k">team role</span><span class="v amber">Chassis Lead, UBC FE</span></div>
-        <div class="row"><span class="k">domain</span><span class="v hl">mech × mechatronics × sw</span></div>
-        <div class="row"><span class="k">location</span><span class="v">Vancouver, BC</span></div>
-        <div class="row"><span class="k">status</span><span class="v hl">open to co-op →</span></div>
+      <div class="photo-col reveal">
+        <div class="photo-placeholder">photo</div>
+        <div class="photo-placeholder">photo</div>
+        <div class="photo-placeholder">photo</div>
       </div>
     </div>
   </section>
@@ -233,10 +221,10 @@ footer{
   <!-- CONTACT -->
   <section id="contact" class="contact-strip">
     <div class="eyebrow reveal" style="justify-content:center">04 — Get in Touch</div>
-    <div class="big reveal">Let's build something.<br><a href="mailto:hello@example.com">hello@example.com</a></div>
+    <div class="big reveal">Let's build something.<br><a href="mailto:contact@danielrbenjamin.com">contact@danielrbenjamin.com</a></div>
     <p class="sec-sub reveal" style="margin:18px auto 0;text-align:center">Open to co-op and project collaboration at the mechanical–software boundary.</p>
     <div class="links reveal">
-      <a href="mailto:hello@example.com" class="btn">✉ Email</a>
+      <a href="mailto:contact@danielrbenjamin.com" class="btn">✉ Email</a>
       <a href="https://github.com" target="_blank" rel="noopener" class="btn">⌥ GitHub</a>
       <a href="https://linkedin.com" target="_blank" rel="noopener" class="btn">in LinkedIn</a>
     </div>
@@ -265,7 +253,7 @@ footer{
     body.innerHTML = session.map((step) =>
       `<span class="term-line">${prompt}<span class="term-cmd">${step.cmd}</span></span>` +
       step.out.map((line) => `<span class="term-line term-out">${line}</span>`).join('')
-    ).join('') + '<span class="term-cursor done"></span>';
+    ).join('');
     return;
   }
 
@@ -273,10 +261,9 @@ footer{
   const OUT_MS = 90;
   const GAP_MS = 480;
   let html = '';
-  const cursor = '<span class="term-cursor"></span>';
 
   function render(active){
-    body.innerHTML = html + active + cursor;
+    body.innerHTML = html + active;
   }
 
   function typeCmd(cmd, done){
@@ -311,7 +298,7 @@ footer{
   let stepIndex = 0;
   function runStep(){
     if(stepIndex >= session.length){
-      body.innerHTML = html + '<span class="term-cursor done"></span>';
+      body.innerHTML = html;
       return;
     }
     typeCmd(session[stepIndex].cmd, () => printOut(session[stepIndex].out, () => {
