@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daniel Benjamin — Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm" crossorigin>
+<script>
+if('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+window.addEventListener('load', ()=>window.scrollTo(0, 0), { once:true });
+window.addEventListener('pageshow', ()=>window.scrollTo(0, 0));
+</script>
+<script>
+window.__animeImportUrl = 'https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm';
+window.__animeModulePromise = import(window.__animeImportUrl);
+</script>
+<style>
+:root{
+  --bg:#0c0e0f;--panel:#141819;--line:#23292b;--line-bright:#2f383a;
+  --ink:#dce3e0;--ink-dim:#8a9794;--ink-faint:#5c6764;
+  --amber:#ffb454;--green:#5ee6a0;--grid:rgba(255,255,255,.022);
+  --mono:"JetBrains Mono",ui-monospace,monospace;--disp:"Space Grotesk",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--disp);overflow-x:hidden}
+.scroll-stage{position:relative;height:220vh}
+.hero{position:sticky;top:0;height:100vh;height:100dvh;min-height:640px;overflow:hidden;
+  background:radial-gradient(130% 100% at 70% 40%, #15181a 0%, #0a0c0d 65%);}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;touch-action:pan-y}
+.grid-bg{position:absolute;inset:0;z-index:0;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:34px 34px;}
+.bar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:20px 40px;z-index:10;font-family:var(--mono);font-size:12.5px}
+.bar .navlogo{width:22px;height:22px;color:var(--amber);vertical-align:middle;transition:color .2s,transform .3s}
+.bar .id{display:flex;align-items:center;gap:10px;font-weight:500}
+.bar .id a{display:inline-flex;align-items:center}
+.bar .id a:hover .navlogo{color:var(--green);transform:rotate(-8deg)}
+.bar nav{display:flex;gap:22px;color:var(--ink-dim)}
+.bar nav a{color:inherit;text-decoration:none;transition:.15s}
+.bar nav a:hover{color:var(--amber)}
+.menu-toggle{display:none;appearance:none;border:none;background:transparent;color:var(--amber);width:38px;height:38px;border-radius:999px;align-items:center;justify-content:center;flex-direction:column;gap:5px;cursor:pointer;transition:color .18s ease,background .18s ease}
+.menu-toggle span{display:block;width:16px;height:1px;border-radius:999px;background:currentColor;transition:transform .2s ease,opacity .2s ease}
+.menu-toggle:hover{color:var(--green);background:rgba(255,255,255,.03)}
+.menu-toggle[aria-expanded="true"]{color:var(--ink);background:rgba(12,14,15,.32)}
+.menu-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(3px) rotate(45deg)}
+.menu-toggle[aria-expanded="true"] span:nth-child(2){transform:translateY(-3px) rotate(-45deg)}
+.mobile-menu{position:absolute;top:70px;right:20px;z-index:11;min-width:190px;display:grid;justify-items:end;gap:8px;padding:0;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .18s ease,transform .18s ease}
+.mobile-menu.is-open{opacity:1;pointer-events:auto;transform:none}
+.mobile-menu a{font-family:var(--mono);font-size:12px;color:var(--ink);text-decoration:none;padding:9px 14px;border-radius:999px;background:rgba(12,14,15,.58);backdrop-filter:blur(8px);box-shadow:0 8px 28px rgba(0,0,0,.24);transition:background .15s,color .15s,transform .15s ease}
+.mobile-menu a:hover{background:rgba(255,180,84,.12);color:var(--amber);transform:translateX(-2px)}
+
+.hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:6;font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.2em;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.9}}
+
+/* index-style intro loader */
+#intro{
+  position:fixed;inset:0;z-index:200;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:22px;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;
+  transition:opacity .6s ease;
+}
+#intro.done{opacity:0;pointer-events:none}
+#intro .intro-logo{width:150px;color:var(--amber);visibility:hidden}
+#intro .intro-logo.ready{visibility:visible}
+#intro .intro-logo line{
+  stroke:var(--amber);stroke-width:4;stroke-linecap:round;
+  vector-effect:non-scaling-stroke;
+  opacity:.32;
+}
+#intro .intro-logo line[data-i="20"],
+#intro .intro-logo line[data-i="21"],
+#intro .intro-logo line[data-i="22"],
+#intro .intro-logo line[data-i="23"],
+#intro .intro-logo line[data-i="24"],
+#intro .intro-logo line[data-i="25"],
+#intro .intro-logo line[data-i="27"],
+#intro .intro-logo line[data-i="28"]{opacity:1}
+html.intro-active{overflow:hidden}
+@media(max-width:680px){
+  .bar{padding:16px 18px;font-size:11.5px}
+  .bar .id{gap:8px}
+  .bar .navlogo{width:20px;height:20px}
+  .bar nav{display:none}
+  .menu-toggle{display:inline-flex}
+  .mobile-menu{top:60px;right:18px}
+  .hero{min-height:100vh;min-height:100dvh}
+}
+@media(max-width:420px){
+  .bar{padding:14px 14px}
+  .bar .id span:last-child{display:none}
+  .mobile-menu{right:14px;left:14px;min-width:0;justify-items:stretch}
+  .mobile-menu a{text-align:center}
+}
+@media(pointer:coarse){#cv{pointer-events:none}}
+@media(prefers-reduced-motion:reduce){.hint{animation:none}#intro{display:none}}
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <script>if(!matchMedia('(prefers-reduced-motion:reduce)').matches && !sessionStorage.getItem('introSeen')){document.documentElement.classList.add('intro-active');}else{var i=document.getElementById('intro');if(i)i.style.display='none';}</script>
+  <svg class="intro-logo" viewBox="0 0 937.44 922.46" xmlns="http://www.w3.org/2000/svg" fill="none">
+    <line data-i="0" x1="468.72" y1="254.47" x2="243.54" y2="254.47"/>
+    <line data-i="1" x1="367.95" y1="558.80" x2="367.95" y2="757.53"/>
+    <line data-i="2" x1="367.95" y1="558.80" x2="367.95" y2="194.97"/>
+    <line data-i="3" x1="367.95" y1="194.97" x2="195.69" y2="50.22"/>
+    <line data-i="4" x1="50.22" y1="395.83" x2="367.95" y2="395.83"/>
+    <line data-i="5" x1="367.95" y1="395.83" x2="367.95" y2="757.53"/>
+    <line data-i="6" x1="367.95" y1="757.53" x2="50.22" y2="395.83"/>
+    <line data-i="7" x1="172.05" y1="534.52" x2="172.05" y2="359.83"/>
+    <line data-i="8" x1="172.05" y1="359.83" x2="243.54" y2="254.47"/>
+    <line data-i="9" x1="172.05" y1="534.52" x2="468.72" y2="872.24"/>
+    <line data-i="10" x1="468.72" y1="254.47" x2="693.90" y2="254.47"/>
+    <line data-i="11" x1="569.49" y1="558.80" x2="569.49" y2="757.53"/>
+    <line data-i="12" x1="569.49" y1="558.80" x2="569.49" y2="194.97"/>
+    <line data-i="13" x1="569.49" y1="194.97" x2="741.74" y2="50.22"/>
+    <line data-i="14" x1="887.22" y1="395.83" x2="569.49" y2="395.83"/>
+    <line data-i="15" x1="569.49" y1="395.83" x2="569.49" y2="757.53"/>
+    <line data-i="16" x1="569.49" y1="757.53" x2="887.22" y2="395.83"/>
+    <line data-i="17" x1="765.38" y1="534.52" x2="765.38" y2="359.83"/>
+    <line data-i="18" x1="765.38" y1="359.83" x2="693.90" y2="254.47"/>
+    <line data-i="19" x1="765.38" y1="534.52" x2="468.72" y2="872.24"/>
+    <line data-i="26" x1="195.69" y1="50.22" x2="367.95" y2="194.97"/>
+    <line data-i="29" x1="569.49" y1="194.97" x2="741.74" y2="50.22"/>
+    <line data-i="20" x1="50.22" y1="395.83" x2="367.95" y2="757.53"/>
+    <line data-i="21" x1="367.95" y1="757.53" x2="367.95" y2="395.83"/>
+    <line data-i="22" x1="367.95" y1="395.83" x2="50.22" y2="395.83"/>
+    <line data-i="23" x1="569.49" y1="395.83" x2="569.49" y2="757.53"/>
+    <line data-i="24" x1="569.49" y1="757.53" x2="887.22" y2="395.83"/>
+    <line data-i="25" x1="887.22" y1="395.83" x2="569.49" y2="395.83"/>
+    <line data-i="27" x1="367.95" y1="194.97" x2="367.95" y2="395.83"/>
+    <line data-i="28" x1="569.49" y1="395.83" x2="569.49" y2="194.97"/>
+  </svg>
+</div>
+
+<div class="scroll-stage">
+<section class="hero">
+  <div class="grid-bg"></div>
+  <canvas id="cv"></canvas>
+
+  <div class="bar">
+    <div class="id">
+      <a href="index.html" aria-label="Home">
+        <svg class="navlogo" viewBox="0 0 937.44 922.46" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <line x1="468.72" y1="254.47" x2="243.54" y2="254.47" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="367.95" y1="558.80" x2="367.95" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="367.95" y1="558.80" x2="367.95" y2="194.97" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="367.95" y1="194.97" x2="195.69" y2="50.22" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="50.22" y1="395.83" x2="367.95" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="367.95" y1="395.83" x2="367.95" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="367.95" y1="757.53" x2="50.22" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="172.05" y1="534.52" x2="172.05" y2="359.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="172.05" y1="359.83" x2="243.54" y2="254.47" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="172.05" y1="534.52" x2="468.72" y2="872.24" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="468.72" y1="254.47" x2="693.90" y2="254.47" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="569.49" y1="558.80" x2="569.49" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="569.49" y1="558.80" x2="569.49" y2="194.97" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="569.49" y1="194.97" x2="741.74" y2="50.22" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="887.22" y1="395.83" x2="569.49" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="569.49" y1="395.83" x2="569.49" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="569.49" y1="757.53" x2="887.22" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="765.38" y1="534.52" x2="765.38" y2="359.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="765.38" y1="359.83" x2="693.90" y2="254.47" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="765.38" y1="534.52" x2="468.72" y2="872.24" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="50.22" y1="395.83" x2="367.95" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="367.95" y1="757.53" x2="367.95" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="367.95" y1="395.83" x2="50.22" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="569.49" y1="395.83" x2="569.49" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="569.49" y1="757.53" x2="887.22" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="887.22" y1="395.83" x2="569.49" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="195.69" y1="50.22" x2="367.95" y2="194.97" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="367.95" y1="194.97" x2="367.95" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="569.49" y1="395.83" x2="569.49" y2="194.97" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+          <line x1="569.49" y1="194.97" x2="741.74" y2="50.22" stroke="currentColor" stroke-width="16" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <span>danielrbenjamin</span>
+    </div>
+    <nav><a href="projects.html">work</a><a href="experience.html">experience</a><a href="resume.html">résumé</a><a href="https://blog.danielrbenjamin.com/" target="_blank" rel="noopener">blog ↗</a></nav>
+    <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="projects.html">work</a>
+    <a href="experience.html">experience</a>
+    <a href="resume.html">résumé</a>
+    <a href="https://blog.danielrbenjamin.com/" target="_blank" rel="noopener">blog ↗</a>
+  </div>
+
+  <div class="hint">SCROLL ↓</div>
+</section>
+</div><!-- /scroll-stage -->
+
+<script>
+(function(){
+  const toggle = document.querySelector('.menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  if(!toggle || !menu) return;
+
+  function closeMenu(){
+    toggle.setAttribute('aria-expanded', 'false');
+    menu.classList.remove('is-open');
+  }
+
+  toggle.addEventListener('click', ()=>{
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    menu.classList.toggle('is-open', !isOpen);
+  });
+
+  menu.querySelectorAll('a').forEach(link=>link.addEventListener('click', closeMenu));
+  document.addEventListener('click', (event)=>{
+    if(!menu.classList.contains('is-open')) return;
+    if(menu.contains(event.target) || toggle.contains(event.target)) return;
+    closeMenu();
+  });
+  window.addEventListener('resize', ()=>{
+    if(window.innerWidth > 680) closeMenu();
+  });
+})();
+</script>
+
+<script type="module">
+/* index intro animation (once per session) */
+(async function(){
+  const intro = document.getElementById('intro');
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(!intro || reduce || sessionStorage.getItem('introSeen')){
+    window.__introDone = true;
+    window.dispatchEvent(new Event('intro:done'));
+    if(intro) intro.remove();
+    document.documentElement.classList.remove('intro-active');
+    return;
+  }
+  sessionStorage.setItem('introSeen','1');
+
+  let cleared = false;
+  function finish(){
+    if(cleared) return;
+    cleared = true;
+    window.__introDone = true;
+    window.dispatchEvent(new Event('intro:done'));
+    intro.classList.add('done');
+    document.documentElement.classList.remove('intro-active');
+    setTimeout(()=> intro.remove(), 650);
+  }
+  const failSafe = setTimeout(finish, 5500);
+
+  try{
+    const animeMod = await (window.__animeModulePromise || import(window.__animeImportUrl));
+    const { animate, svg } = animeMod;
+    const allLineEls = [...intro.querySelectorAll('.intro-logo line')];
+    const HIGHLIGHT = [20,21,22,23,24,25,27,28];
+    const dataI = el => parseInt(el.getAttribute('data-i'), 10);
+    const isHi = el => HIGHLIGHT.includes(dataI(el));
+
+    const baseEls = allLineEls.filter(l=>!isHi(l));
+    const hiEls = allLineEls.filter(l=>isHi(l));
+    const base = svg.createDrawable(baseEls);
+    const hi = svg.createDrawable(hiEls);
+    base.forEach(l => l.setAttribute('draw','0 0'));
+    hi.forEach(l => l.setAttribute('draw','0 0'));
+
+    intro.querySelector('.intro-logo').classList.add('ready');
+    animate(base, {
+      draw: '0 1',
+      ease: 'inOutQuad',
+      duration: 800,
+      delay: (el,i)=> i*26,
+      onComplete: ()=>{
+        animate(hi, {
+          draw: '0 1',
+          ease: 'outQuad',
+          duration: 520,
+          delay: (el,i)=> i*70,
+          onComplete: ()=>{
+            // Logo is fully drawn and static now: start background scene init.
+            window.dispatchEvent(new Event('intro:settled'));
+            setTimeout(()=>{ clearTimeout(failSafe); finish(); }, 650);
+          }
+        });
+      }
+    });
+  }catch(e){
+    clearTimeout(failSafe);
+    finish();
+  }
+})();
+</script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+const CONFIG = {
+  MODEL_URL: 'fullcar.glb',
+  POINT_COUNT: 11000,        // sampled glyphs on the car surface
+  GLYPHS: '01</>{}[]=+*#01ANSYSMECHΣΩλµ01',  // characters that appear
+  AMBER: new THREE.Color('#ffb454'),
+  GREEN: new THREE.Color('#5ee6a0'),
+};
+
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const canvas = document.getElementById('cv');
+const DPR = Math.min(devicePixelRatio, window.innerWidth < 900 ? 1.25 : 1.5);
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(DPR);
+renderer.outputColorSpace = THREE.SRGBColorSpace;   // match chassis-viewer's color pipeline
+renderer.setClearColor(0x000000,0);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(10,1,0.5,2000);
+const controls = new OrbitControls(camera, canvas);
+const isTouchDevice = matchMedia('(pointer:coarse)').matches;
+controls.enableDamping=true; controls.dampingFactor=0.06;
+controls.enablePan=false; controls.enableZoom=false;
+controls.enableRotate=!isTouchDevice;
+controls.autoRotate=true; controls.autoRotateSpeed=0.55;
+
+// ---- build a glyph atlas texture (grid of characters) ----
+function buildGlyphAtlas(glyphs){
+  const uniq=[...new Set(glyphs.split(''))];
+  const cols=Math.ceil(Math.sqrt(uniq.length));
+  const rows=Math.ceil(uniq.length/cols);
+  const cell=64;
+  const cv=document.createElement('canvas');
+  cv.width=cols*cell; cv.height=rows*cell;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#fff';
+  ctx.font='bold 42px "JetBrains Mono", monospace';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  uniq.forEach((ch,i)=>{
+    const cx=(i%cols)*cell+cell/2, cy=Math.floor(i/cols)*cell+cell/2;
+    ctx.fillText(ch,cx,cy);
+  });
+  const tex=new THREE.CanvasTexture(cv);
+  tex.minFilter=THREE.LinearFilter; tex.magFilter=THREE.LinearFilter;
+  return { tex, uniq, cols, rows };
+}
+const atlas = buildGlyphAtlas(CONFIG.GLYPHS);
+
+
+// ---- custom shader: each point is a glyph billboard that shimmers ----
+// uProgress drives the pre-stage morph from name glyphs -> car glyph cloud.
+const uniforms = { uTime:{value:0}, uProgress:{value:0} };
+const vert=`
+  uniform float uTime,uSize,uPixelRatio,uCols,uRows,uNumGlyph;
+  uniform float uProgress;     // 0..1 name -> car assemble
+  uniform float uNear,uFar;    // view-depth range for depth cueing
+  uniform highp float uDissolve;     // 0→1 scroll morph: glyphs scatter/fade away
+  attribute float aRand;
+  attribute vec3 aStart;
+  varying float vGlyph; varying float vBright; varying float vGreen; varying float vFalling; varying float vDepth;
+  void main(){
+    float assemble = smoothstep(0.0, 1.0, uProgress);
+    vec3 target=position;
+
+    // Pre-stage: a text-shaped point field morphs into the car point cloud.
+    vec3 p = mix(aStart, target, assemble);
+
+    // idle drift grows in as the car resolves so the initial text feels crisp.
+    float s=sin(uTime*1.1+aRand*30.0);
+    p += 0.04*vec3(sin(uTime*0.7+aRand*10.0),cos(uTime*0.9+aRand*13.0),sin(uTime*1.1+aRand*17.0))*s*assemble;
+
+    // tiny dephase jitter while still text-like to avoid a static bitmap look.
+    float j = (1.0-assemble)*(0.8 + 0.2*fract(aRand*11.0));
+    p += vec3(0.08*sin(uTime*1.7+aRand*19.0), 0.06*cos(uTime*1.4+aRand*23.0), 0.05*sin(uTime*1.2+aRand*29.0))*j;
+
+    vFalling = 1.0-assemble;
+
+    // dissolve: as scroll morphs code→solid, glyphs drift outward and up, thinning
+    // out so the solid car underneath is revealed.
+    if(uDissolve>0.0){
+      vec3 dir=normalize(p+vec3(0.001));
+      p += dir*uDissolve*40.0*fract(aRand*7.0) + vec3(0.0, uDissolve*30.0, 0.0);
+    }
+
+    vec4 mv=modelViewMatrix*vec4(p,1.0);
+    gl_Position=projectionMatrix*mv;
+    gl_PointSize=uSize*uPixelRatio*(300.0/-mv.z)*(0.6+0.4*aRand);
+
+    // depth cue: 0 = nearest, 1 = farthest (view-space Z is negative)
+    vDepth = clamp((-mv.z - uNear)/(uFar - uNear), 0.0, 1.0);
+
+    // glyph swap starts faster while in the text stage, then settles on the car.
+    float rate = mix(7.5, 0.9, assemble);
+    float swap=floor(uTime*rate+aRand*50.0);
+    vGlyph=mod(floor(aRand*uNumGlyph)+swap, uNumGlyph);
+
+    // brightness: crisper text stage, softer settled shimmer.
+    float land = 0.35+0.65*pow(0.5+0.5*sin(uTime*2.0+aRand*40.0),2.0);
+    vBright = mix(0.95, land, assemble);
+    // slightly greener while text-like, amber-biased once assembled.
+    vGreen = mix(0.7, step(0.93,fract(aRand*7.0+floor(uTime*0.5))), assemble);
+  }`;
+const frag=`
+  precision mediump float;
+  uniform sampler2D uTex; uniform float uCols,uRows,uNumGlyph; uniform float uBright;
+  uniform vec3 uAmber,uGreen,uFog;
+  uniform highp float uDissolve;
+  varying float vGlyph; varying float vBright; varying float vGreen; varying float vFalling; varying float vDepth;
+  void main(){
+    float gi=vGlyph;
+    float col=mod(gi,uCols); float row=floor(gi/uCols);
+    vec2 cell=vec2(1.0/uCols,1.0/uRows);
+    vec2 uv=vec2(col,row)*cell + gl_PointCoord*cell;
+    float a=texture2D(uTex,uv).r;
+    if(a<0.3) discard;
+
+    vec3 c=mix(uAmber,uGreen,vGreen)*(0.7+0.3*vBright)*uBright;
+
+    // ---- depth cue (subtle): enough to separate front from back, but the far
+    // side must stay clearly visible so the car silhouette still reads. ----
+    float depthDim = mix(1.12, 0.72, vDepth);      // near lifted, far only gently dimmed
+    c *= depthDim;
+    // light atmospheric fade toward background with distance
+    c = mix(c, uFog, vDepth*0.28);
+    // far glyphs lose only a touch of opacity
+    float alpha = a * mix(1.0, 0.82, vDepth);
+
+    // dissolve fade — staggered so glyphs wink out at different times
+    if(uDissolve>0.0){
+      float thresh = fract(vGlyph*0.13 + 0.5);   // per-glyph dissolve point
+      alpha *= 1.0 - smoothstep(thresh-0.2, thresh+0.2, uDissolve);
+    }
+
+    gl_FragColor=vec4(c, alpha);
+  }`;
+
+// Two-layer point cloud, Poisson-disk sampled offline (car-points.json):
+//   • SHAPE layer  — dense, small, dim glyphs that hold the car's silhouette
+//   • LEGIBLE layer— sparse, large, bright glyphs you can actually read
+// Even (blue-noise) spacing means no clumps, so both layers read cleanly.
+let points=null, points2=null;
+const SHAPE_BRIGHT_BASE = 0.72;
+const LEGIBLE_BRIGHT_BASE = 1.0;
+let nameAssemble = 0;
+const NAME_STAGE_PORTION = 0.42; // first 42% of scroll morph: name cloud -> car glyph cloud
+
+function buildTextPointCloud(count, opts={}){
+  const text = opts.text || 'DANIEL BENJAMIN';
+  const font = opts.font || '900 130px "Space Grotesk", "Archivo", sans-serif';
+  const w = opts.width || 1400;
+  const h = opts.height || 300;
+  const outW = opts.outWidth || 300;
+  const outH = opts.outHeight || 58;
+  const depth = opts.depth || 8;
+  const step = opts.step || 3;
+
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const ctx = cv.getContext('2d', { willReadFrequently:true });
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = '#fff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = font;
+  ctx.fillText(text, w*0.5, h*0.52);
+
+  const img = ctx.getImageData(0,0,w,h).data;
+  const samples = [];
+  for(let y=0; y<h; y+=step){
+    for(let x=0; x<w; x+=step){
+      const a = img[(y*w + x)*4 + 3];
+      if(a>20) samples.push([x,y]);
+    }
+  }
+
+  if(samples.length===0){
+    const fallback = new Float32Array(count*3);
+    for(let i=0;i<count;i++){
+      fallback[i*3] = (Math.random()-0.5)*outW;
+      fallback[i*3+1] = (Math.random()-0.5)*outH;
+      fallback[i*3+2] = (Math.random()-0.5)*depth;
+    }
+    return fallback;
+  }
+
+  const pts = new Float32Array(count*3);
+  const sx = outW / w;
+  const sy = outH / h;
+  for(let i=0;i<count;i++){
+    const s = samples[(Math.random()*samples.length)|0];
+    const nx = (s[0] - w*0.5) * sx;
+    const ny = (h*0.5 - s[1]) * sy;
+    pts[i*3] = nx;
+    pts[i*3+1] = ny;
+    pts[i*3+2] = (Math.random()-0.5)*depth;
+  }
+  return pts;
+}
+
+function sampleFromPointCloud(srcPts, targetCount){
+  const out = new Float32Array(targetCount*3);
+  const srcCount = (srcPts.length/3)|0;
+  if(srcCount===0){
+    return out;
+  }
+  // Deterministic index walk keeps visual alignment stable frame-to-frame/reloads.
+  const stride = 37;
+  for(let i=0;i<targetCount;i++){
+    const si = ((i*stride)%srcCount)*3;
+    out[i*3] = srcPts[si];
+    out[i*3+1] = srcPts[si+1];
+    out[i*3+2] = srcPts[si+2];
+  }
+  return out;
+}
+
+function applyCameraAlignedStart(pts, localStarts){
+  if(!pts || !localStarts) return;
+  const attr = pts.geometry.attributes.aStart;
+  if(!attr || attr.count*3 !== localStarts.length) return;
+  // Use shared local coordinates directly so both layers stay perfectly aligned.
+  for(let i=0;i<attr.count;i++){
+    attr.setXYZ(i, localStarts[i*3], localStarts[i*3+1], localStarts[i*3+2]);
+  }
+  attr.needsUpdate = true;
+}
+
+// shared transform so the glyph cloud and the solid GLB occupy the SAME space:
+// both are centered on the model's center and multiplied by the same scale.
+const WORLD = { center:new THREE.Vector3(), scale:90 };
+
+function buildLayer(rawArr, count, sizeScale, brightBoost, startArr){
+  const c=WORLD.center, S=WORLD.scale;
+  const positions=new Float32Array(count*3);
+  for(let i=0;i<count;i++){
+    positions[i*3]  =(rawArr[i*3]  -c.x)*S;
+    positions[i*3+1]=(rawArr[i*3+1]-c.y)*S;
+    positions[i*3+2]=(rawArr[i*3+2]-c.z)*S;
+  }
+  const rand=new Float32Array(count);
+  for(let i=0;i<count;i++) rand[i]=Math.random();
+  const starts=new Float32Array(count*3);
+  if(startArr && startArr.length===count*3){
+    for(let i=0;i<count*3;i++) starts[i]=startArr[i];
+  }else{
+    for(let i=0;i<count*3;i++) starts[i]=positions[i];
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(positions,3));
+  geo.setAttribute('aRand',new THREE.BufferAttribute(rand,1));
+  geo.setAttribute('aStart',new THREE.BufferAttribute(starts,3));
+  const u=Object.assign({},{
+    uTex:{value:atlas.tex}, uCols:{value:atlas.cols}, uRows:{value:atlas.rows}, uNumGlyph:{value:atlas.uniq.length},
+    uTime:uniforms.uTime, uSize:{value:sizeScale}, uPixelRatio:{value:DPR},
+    uAmber:{value:CONFIG.AMBER}, uGreen:{value:CONFIG.GREEN}, uBright:{value:brightBoost},
+    uProgress:uniforms.uProgress,
+    uNear:{value:1.0}, uFar:{value:400.0}, uFog:{value:new THREE.Color('#0c0f11')},
+    uDissolve:{value:0.0},
+  });
+  const mat=new THREE.ShaderMaterial({ uniforms:u, vertexShader:vert, fragmentShader:frag,
+    transparent:true, depthWrite:false, blending:THREE.NormalBlending });
+  return { mesh:new THREE.Points(geo,mat), geo };
+}
+
+let sceneInitStarted = false;
+function initScene(){
+  if(sceneInitStarted) return;
+  sceneInitStarted = true;
+
+  fetch('car-points.json').then(r=>r.json()).then(data=>{
+  WORLD.center.fromArray(data.center);   // share the exact model center
+    const vw = window.innerWidth;
+    const vh = Math.max(window.innerHeight, 1);
+    const aspect = vw / vh;
+    const isMobile = vw < 700;
+    const nameScale = isMobile ? Math.max(0.62, Math.min(0.86, aspect * 1.02)) : 1;
+
+  const master = buildTextPointCloud(CONFIG.POINT_COUNT, {
+    text:'DANIEL BENJAMIN',
+      font: isMobile ? '900 116px "Space Grotesk", "Archivo", sans-serif' : '900 140px "Space Grotesk", "Archivo", sans-serif',
+      outWidth:336 * nameScale,
+      outHeight:68 * nameScale,
+    depth:6,
+      step: isMobile ? 4 : 3,
+  });
+
+  // Build both layers from one master cloud so they remain spatially coherent.
+  const shapeStart = (master.length === data.shape.count * 3)
+    ? master
+    : sampleFromPointCloud(master, data.shape.count);
+  const legibleStart = sampleFromPointCloud(master, data.legible.count);
+
+  const shape = buildLayer(data.shape.pts, data.shape.count, 20.0, SHAPE_BRIGHT_BASE, shapeStart);   // small, holds the form
+  const legible = buildLayer(data.legible.pts, data.legible.count, 58.0, LEGIBLE_BRIGHT_BASE, legibleStart); // big, bright
+  points=shape.mesh; points2=legible.mesh;
+  scene.add(points); scene.add(points2);
+
+  loadSolidCar();   // load the real GLB into the same space (starts invisible)
+
+  shape.geo.computeBoundingSphere();
+  const radius=shape.geo.boundingSphere.radius;
+  const mobileFrameScale = isTouchDevice || window.innerWidth < 700 ? 2 : 1.35;
+  const dist=radius/Math.tan((camera.fov*Math.PI/180)/2)*mobileFrameScale;
+  camera.position.set(dist*0.62, dist*0.30, dist*0.62);
+
+  // Tight clip planes around the subject to maximize depth-buffer precision.
+  // A very wide near/far range causes z-fighting flicker on detailed meshes.
+  camera.near = Math.max(0.5, dist - radius * 2.4);
+  camera.far = dist + radius * 3.2;
+  camera.updateProjectionMatrix();
+
+  controls.target.set(0,0,0); controls.update();
+
+  // Apply the same local start-space for both layers.
+  applyCameraAlignedStart(points, shapeStart);
+  applyCameraAlignedStart(points2, legibleStart);
+
+  // depth-cue range: map near/far to the model's front and back faces at this
+  // camera distance, so the depth fade spans exactly the car's own thickness.
+  const camDist = camera.position.length();
+  const near = camDist - radius;
+  const far  = camDist + radius;
+  for(const m of [points, points2]){
+    m.material.uniforms.uNear.value = near;
+    m.material.uniforms.uFar.value  = far;
+  }
+
+  }).catch(err=>{ console.error(err); });
+}
+
+let renderActive = reduce || !!window.__introDone;
+if(!renderActive){
+  // Begin heavy setup while intro logo is static before fade-out.
+  window.addEventListener('intro:settled', ()=>{
+    initScene();
+  }, { once:true });
+
+  // Fallback: if settled hook is missed, still init on intro completion.
+  window.addEventListener('intro:done', ()=>{
+    renderActive = true;
+    initScene();
+  }, { once:true });
+}else{
+  initScene();
+}
+
+// ---- the SOLID car: loaded into the same space, revealed as you scroll ----
+let solidCar = null;
+const solidMats = [];        // for fading opacity in
+let morphPrewarmed = false;
+
+function prewarmMorphPass(){
+  if(morphPrewarmed || !points || !points2 || !solidCar || solidMats.length===0) return;
+
+  const d1 = points.material.uniforms.uDissolve.value;
+  const d2 = points2.material.uniforms.uDissolve.value;
+  const wasSolidVisible = solidCar.visible;
+  const ops = solidMats.map(m=>m.opacity);
+  const dws = solidMats.map(m=>m.depthWrite);
+
+  // Warm shaders/buffers with a representative mid-morph frame, but keep it hidden.
+  points.material.uniforms.uDissolve.value = 0.35;
+  points2.material.uniforms.uDissolve.value = 0.35;
+  solidCar.visible = true;
+  for(const mat of solidMats){
+    mat.opacity = 0.02;
+    mat.depthWrite = false;
+  }
+
+  renderer.compile(scene, camera);
+  renderer.render(scene, camera);
+
+  points.material.uniforms.uDissolve.value = d1;
+  points2.material.uniforms.uDissolve.value = d2;
+  solidCar.visible = wasSolidVisible;
+  for(let i=0;i<solidMats.length;i++){
+    solidMats[i].opacity = ops[i];
+    solidMats[i].depthWrite = dws[i];
+  }
+
+  morphPrewarmed = true;
+}
+
+function loadSolidCar(){
+  const draco=new DRACOLoader();
+  draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/');
+  const gl=new GLTFLoader(); gl.setDRACOLoader(draco);
+  gl.load(CONFIG.MODEL_URL,(gltf)=>{
+    const m=gltf.scene;
+
+    // Center + scale EXACTLY like the working chassis viewer: measure the model's
+    // own bounding box, recenter on origin, then scale. A wrapper group lets us
+    // scale uniformly without disturbing the recentering.
+    const box=new THREE.Box3().setFromObject(m);
+    const center=box.getCenter(new THREE.Vector3());
+    m.position.sub(center);                 // recenter on origin (scale 1)
+
+    const wrap=new THREE.Group();
+    wrap.add(m);
+    wrap.scale.setScalar(WORLD.scale);      // scale the whole thing to the glyph world
+    wrap.visible=false;
+    solidCar=wrap; scene.add(wrap);
+
+    // transparent for the fade-in, but KEEP depthWrite so faces sort correctly
+    // (depthWrite:false was causing the see-through / deforming look).
+    m.traverse(o=>{ if(o.isMesh && o.material){
+      const mats=Array.isArray(o.material)?o.material:[o.material];
+      mats.forEach(mat=>{ mat.transparent=true; mat.opacity=0; solidMats.push(mat); });
+    }});
+
+    // re-align the GLYPH layers to this authoritative (three.js-measured) center,
+    // so code and solid car share the exact same space regardless of the bake.
+    realignGlyphs(center);
+
+    // lighting identical to chassis-viewer so the solid car reads the same
+    scene.add(new THREE.HemisphereLight(0xcfe8ff, 0x202428, 0.9));
+    const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(3,5,2); scene.add(key);
+    const rim = new THREE.DirectionalLight(0xffb454, 0.8); rim.position.set(-4,2,-3); scene.add(rim);
+    const fill= new THREE.DirectionalLight(0x5ee6a0, 0.25); fill.position.set(0,-3,4); scene.add(fill);
+  },undefined,(e)=>console.warn('solid car load failed (points-only hero is fine):',e));
+}
+
+// shift the glyph clouds so their center matches the solid car's measured center
+function realignGlyphs(trueCenter){
+  const delta=trueCenter.clone().sub(WORLD.center);   // difference from the baked center
+  if(delta.lengthSq()<1e-12) return;
+  for(const pts of [points, points2]){
+    if(!pts) continue;
+    const pos=pts.geometry.attributes.position;
+    for(let i=0;i<pos.count;i++){
+      pos.setXYZ(i,
+        pos.getX(i)-delta.x*WORLD.scale,
+        pos.getY(i)-delta.y*WORLD.scale,
+        pos.getZ(i)-delta.z*WORLD.scale);
+    }
+    pos.needsUpdate=true;
+    pts.geometry.computeBoundingSphere();
+  }
+}
+
+// ---- scroll → morph progress (0 = all code, 1 = solid car) ----
+let morphTarget = 0;
+let morphCurrent = 0;
+function computeMorph(){
+  // morph completes over the first viewport-height of scrolling
+  const h = window.innerHeight;
+  const y = window.scrollY || window.pageYOffset || 0;
+  morphTarget = Math.max(0, Math.min(1, y / (h*0.9)));
+}
+window.addEventListener('scroll', computeMorph, {passive:true});
+computeMorph();
+
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(canvas.width!==w||canvas.height!==h){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}}
+const clock=new THREE.Clock();
+function loop(){
+  if(!renderActive){
+    requestAnimationFrame(loop);
+    return;
+  }
+  resize();
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+  uniforms.uTime.value = reduce ? 0 : t;
+
+  if(!morphPrewarmed){
+    prewarmMorphPass();
+  }
+
+  // Smoothly chase scroll progress so morphing is fluid instead of jumpy.
+  morphCurrent = THREE.MathUtils.damp(morphCurrent, morphTarget, 7.0, dt);
+
+  // One scroll pipeline:
+  // 1) early segment assembles name cloud -> car glyph cloud
+  // 2) remaining segment dissolves glyph cloud -> solid car
+  const namePhase = THREE.MathUtils.clamp(morphCurrent / NAME_STAGE_PORTION, 0, 1);
+  nameAssemble = reduce ? 1 : THREE.MathUtils.smootherstep(namePhase, 0, 1);
+  uniforms.uProgress.value = nameAssemble;
+
+  // ---- code → solid car morph, driven by scroll ----
+  // glyphs dissolve as the solid car fades in; both share the same space so it
+  // reads as ONE object resolving from code into hardware.
+  const dissolvePhase = THREE.MathUtils.clamp((morphCurrent - NAME_STAGE_PORTION) / (1 - NAME_STAGE_PORTION), 0, 1);
+  const mRaw = reduce ? morphCurrent : dissolvePhase;
+  const m = THREE.MathUtils.smootherstep(mRaw, 0, 1);
+  if(points && points2){
+    // Keep both glyph layers visible so the name cloud has small + large glyphs.
+    points.visible = true;
+    points.material.uniforms.uBright.value = SHAPE_BRIGHT_BASE;
+    points2.material.uniforms.uBright.value = LEGIBLE_BRIGHT_BASE;
+
+    points.material.uniforms.uDissolve.value = m;
+    points2.material.uniforms.uDissolve.value = m;
+  }
+  if(solidCar){
+    solidCar.visible = m > 0.001;
+    const op = THREE.MathUtils.smoothstep(m, 0.1, 0.9);  // softer fade over most of the morph
+    for(const mat of solidMats){
+      mat.opacity = op;
+      // Avoid depth-occluding glyphs while the solid car is still mostly transparent.
+      mat.depthWrite = op > 0.2;
+    }
+  }
+
+  // turntable once assembled; keep rotating through the morph so it stays alive
+  controls.autoRotate = !reduce;
+  controls.update();
+  renderer.render(scene,camera);
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>

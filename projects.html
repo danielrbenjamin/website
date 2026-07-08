@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — Daniel Benjamin</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="favicon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="site-header.css">
+<script src="site-header.js" defer></script>
+</head>
+<body>
+
+<div data-site-header></div>
+
+<main class="wrap">
+
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal">03 — Selected Work</div>
+    <h2 class="sec-h reveal">Projects</h2>
+    <p class="sec-sub reveal">Where the hardware and the software meet. Most of these started as a problem on the race team and turned into a tool. Filter by domain, or dig into the interactive pieces.</p>
+
+    <div class="filter-row reveal">
+      <button class="fchip active" data-filter="all">all</button>
+      <button class="fchip" data-filter="mechanical">mechanical</button>
+      <button class="fchip" data-filter="mechatronics">mechatronics</button>
+      <button class="fchip" data-filter="software">software</button>
+    </div>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+
+    <!-- FEATURED: Car #85 with interactive viewers -->
+    <div class="proj-featured reveal" data-domain="mechanical">
+      <div class="ptop"><span class="pnum">000 — featured</span><span class="ptag">// interactive</span></div>
+      <h3>Car #85 — Full Vehicle Assembly</h3>
+      <p>The 2026 UBC Formula Electric car, from the ground up: a 4130 chromoly tube frame with custom-machined uprights, planetary gearboxes, adjustable pedal box, and full aero package. I own the chassis structure end to end. Two pieces here are live and interactive — a scroll-driven exploded 3D model, and the AutoCAD assembly drawings that self-draw as you scroll.</p>
+      <div class="meta"><span>SolidWorks</span><span>AutoCAD</span><span>ANSYS</span><span>Three.js</span><span>4130 Chromoly</span></div>
+      <div class="cta-row">
+        <a href="chassis-viewer.html" class="btn solid">◈ Explode the 3D model →</a>
+        <a href="drawings-viewer.html" class="btn">▤ View the drawings →</a>
+      </div>
+    </div>
+
+    <div class="proj-featured reveal" data-domain="mechatronics">
+      <div class="ptop"><span class="pnum">000 — featured</span><span class="ptag">// interactive</span></div>
+      <h3>MEMS Soft-Actuated Hand</h3>
+      <p>A soft-robotic hand driven by pneumatic actuators, modeled in SolidWorks with fully articulated fingers — proximal, middle, and distal phalanges on each digit. Live and interactive: the model grips and releases in a continuous loop, with each finger curling at its knuckle joints. Drag to orbit.</p>
+      <div class="meta"><span>SolidWorks</span><span>Soft Robotics</span><span>Pneumatic Actuation</span><span>Three.js</span></div>
+      <div class="cta-row">
+        <a href="hand-viewer.html" class="btn solid">✋ Watch it grip →</a>
+      </div>
+    </div>
+
+    <div class="proj-list">
+
+      <a class="proj reveal" href="projects/suspension-pipeline.html" data-domain="software">
+        <div class="num">001</div>
+        <div class="body">
+          <h3>Suspension Load Analysis Pipeline <span class="dot">// python</span></h3>
+          <p>Full Python pipeline replacing legacy MATLAB scripts: Pacejka MF5.2 tire model, eight design load cases, and automated ANSYS FEA CSV export. Turns raw vehicle parameters into the loads that drive every chassis and upright structural decision.</p>
+          <div class="meta"><span>Python</span><span>NumPy</span><span>Pacejka MF5.2</span><span>ANSYS</span></div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+
+      <a class="proj reveal" href="projects/chassis-design.html" data-domain="mechanical">
+        <div class="num">002</div>
+        <div class="body">
+          <h3>Chassis Structural Design + Docs <span class="dot">// hardware</span></h3>
+          <p>Structural design of the 2026 chassis — suspension mounting tube-bending calcs, torsional stiffness analysis based on Deakin et al., and ANSYS FEA interpretation. Backed by formal LaTeX design documents (CHS-F04, SUS-F01) and a maintained design-decision log.</p>
+          <div class="meta"><span>ANSYS</span><span>Torsional Stiffness</span><span>LaTeX</span><span>FSAE</span></div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+
+      <a class="proj reveal" href="projects/degree-planner.html" data-domain="software">
+        <div class="num">003</div>
+        <div class="body">
+          <h3>UBC MECH Degree Planner <span class="dot">// web app</span></h3>
+          <p>Full-stack planning tool for navigating UBC's Mechanical Engineering degree. Next.js + Supabase/PostgreSQL on Railway, with course data scraped from the UBC calendar and a ubcgrades.com API proxy for historical grade distributions.</p>
+          <div class="meta"><span>Next.js</span><span>Supabase</span><span>PostgreSQL</span><span>Railway</span></div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+
+      <a class="proj reveal" href="projects/shop-inventory.html" data-domain="software">
+        <div class="num">004</div>
+        <div class="body">
+          <h3>Shop Inventory System <span class="dot">// web app</span></h3>
+          <p>React + Three.js inventory app for the team shop: interactive 3D bay map, barcode scanning, respirator tracking, and crate manifests. Built to kill the spreadsheet that nobody kept up to date.</p>
+          <div class="meta"><span>React</span><span>Three.js</span><span>Barcode</span></div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+
+      <a class="proj reveal" href="projects/tube-notcher.html" data-domain="mechatronics">
+        <div class="num">005</div>
+        <div class="body">
+          <h3>CNC Plasma Tube Notcher <span class="dot">// mechatronics</span></h3>
+          <p>DIY CNC tube notcher for fabricating chassis joints — ESP32 + FluidNC motion control paired with DANCAM, a custom Python CAM toolchain that generates notch toolpaths from tube intersection geometry.</p>
+          <div class="meta"><span>ESP32</span><span>FluidNC</span><span>Python CAM</span><span>CNC</span></div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+
+      <a class="proj reveal" href="projects/cad-infra.html" data-domain="software">
+        <div class="num">006</div>
+        <div class="body">
+          <h3>CAD Version Control + Team Infra <span class="dot">// systems</span></h3>
+          <p>SVN-based CAD version control on Oracle Cloud, Jira milestone tracking across subteams, plus SOPs and onboarding docs. The unglamorous infrastructure that keeps a 100-person student team from losing work.</p>
+          <div class="meta"><span>SVN</span><span>Oracle Cloud</span><span>Jira</span></div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="contact" style="border-top:1px solid var(--line)">
+    <div class="eyebrow reveal" style="justify-content:center">Contact</div>
+    <div class="big reveal">Let's build something.<br><a href="mailto:hello@example.com">hello@example.com</a></div>
+    <div class="links reveal">
+      <a href="mailto:hello@example.com" class="btn">✉ Email</a>
+      <a href="https://github.com" target="_blank" rel="noopener" class="btn">⌥ GitHub</a>
+      <a href="https://linkedin.com" target="_blank" rel="noopener" class="btn">in LinkedIn</a>
+      <a href="index.html" class="btn">← Back home</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>© 2026 Daniel Benjamin</span>
+  <span>built from the shop floor</span>
+</footer>
+
+<script>
+// scroll reveal (shared behaviour)
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// domain filter
+const chips=[...document.querySelectorAll('.fchip')];
+const items=[...document.querySelectorAll('.proj, .proj-featured')];
+chips.forEach(chip=>{
+  chip.onclick=()=>{
+    chips.forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    const f=chip.dataset.filter;
+    items.forEach(item=>{
+      const show = f==='all' || item.dataset.domain===f;
+      item.classList.toggle('hide', !show);
+    });
+  };
+});
+</script>
+</body>
+</html>

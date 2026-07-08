@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chassis — Exploded View</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0e0f;--panel:#141819;--line:#23292b;--line-bright:#2f383a;
+  --ink:#dce3e0;--ink-dim:#8a9794;--ink-faint:#5c6764;
+  --amber:#ffb454;--green:#5ee6a0;--grid:rgba(255,255,255,.022);
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --disp:"Space Grotesk",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--disp);
+  -webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+::selection{background:var(--amber);color:#0c0e0f}
+
+/* The scroll track defines how long the explode takes. Taller = slower scrub. */
+.explode-track{position:relative;height:320vh}
+
+/* Sticky stage pins the canvas while you scroll through the track */
+.stage{
+  position:sticky;top:0;height:100vh;width:100%;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+#cv{display:block;width:100%;height:100%}
+
+/* HUD overlay */
+.hud{
+  position:absolute;inset:0;pointer-events:none;
+  font-family:var(--mono);
+}
+.hud .eyebrow{
+  position:absolute;top:32px;left:32px;font-size:12px;color:var(--amber);
+  letter-spacing:.16em;text-transform:uppercase;display:flex;align-items:center;gap:12px;
+}
+.hud .eyebrow::before{content:"";width:26px;height:1px;background:var(--amber)}
+.hud h2{
+  position:absolute;top:54px;left:32px;font-family:var(--disp);
+  font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;letter-spacing:-.02em;
+}
+.hud .readout{
+  position:absolute;bottom:34px;left:32px;font-size:12px;color:var(--ink-dim);
+  display:flex;flex-direction:column;gap:6px;
+}
+.hud .readout .k{color:var(--ink-faint)}
+.hud .readout .v{color:var(--green)}
+.hud .barwrap{
+  position:absolute;bottom:34px;right:32px;width:180px;
+}
+.hud .barwrap .lbl{font-size:10.5px;color:var(--ink-faint);letter-spacing:.14em;margin-bottom:7px;text-align:right}
+.hud .bar{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.hud .bar > i{display:block;height:100%;width:0;background:var(--amber);transition:width .08s linear}
+.hud .hint{
+  position:absolute;bottom:34px;left:50%;transform:translateX(-50%);
+  font-size:11px;color:var(--ink-faint);letter-spacing:.2em;
+}
+@media(max-width:680px){
+  .hud .readout,.hud .barwrap{font-size:11px}
+  .hud .barwrap{width:120px}
+}
+
+/* loading + error states */
+.note{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:13px;color:var(--ink-dim);text-align:center;padding:20px;
+}
+.note b{color:var(--amber)}
+.note .blink{display:inline-block;width:8px;height:14px;background:var(--green);margin-left:4px;vertical-align:-2px;animation:blink 1.1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* filler so you can scroll past */
+.after{padding:120px 32px;max-width:700px;margin:0 auto;color:var(--ink-dim);font-family:var(--mono);font-size:13px;line-height:1.9}
+.after b{color:var(--amber)}
+</style>
+</head>
+<body>
+
+<section class="explode-track" id="track">
+  <div class="stage">
+    <canvas id="cv"></canvas>
+    <div class="hud">
+      <div class="eyebrow">Assembly — Exploded</div>
+      <h2>2026 Car</h2>
+      <div class="readout">
+        <span><span class="k">parts</span> <span class="v" id="r-parts">—</span></span>
+        <span><span class="k">state</span> <span class="v" id="r-state">assembled</span></span>
+      </div>
+      <div class="barwrap">
+        <div class="lbl">EXPLODE</div>
+        <div class="bar"><i id="r-bar"></i></div>
+      </div>
+      <div class="hint" id="hint">SCROLL TO EXPLODE ↓</div>
+    </div>
+    <div class="note" id="note">loading model<span class="blink"></span></div>
+  </div>
+</section>
+
+<div class="after">
+  <p>// the chassis pins to the viewport and disassembles as you scroll — each member<br>
+  flies radially outward from the frame centroid, staggered by distance from center.<br><br>
+  <b>scroll back up</b> to reassemble. drag inside the canvas to orbit at any point.</p>
+</div>
+
+<!-- import map: three + addons from CDN -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+/* =========================================================================
+   CONFIG — point MODEL_URL at your GLB.
+   Drop your file next to this HTML and set the name, or use a full URL.
+   ========================================================================= */
+const MODEL_URL = 'fullcar.glb';   // optimized 6.5MB / 794-part car
+const EXPLODE_DISTANCE = 0.85;     // multiplier on how far parts fly (1 = ~model size)
+const STAGGER = 0.4;               // 0 = all move together, higher = more "bloom"
+const AUTO_SPIN = 0.05;            // gentle idle rotation (radians/sec); 0 to disable
+
+/* TAGGING — set TAG_MODE=true to pick the stationary frame parts by clicking.
+   Click parts in the browser (they turn amber), then hit "Copy frozen list"
+   and paste the result between the brackets of FROZEN_PARTS below.
+   When you're done picking, set TAG_MODE back to false.                      */
+const TAG_MODE = true;             // <-- true while picking; false when done
+const FROZEN_PARTS = [
+  // paste mesh names here, e.g. "Mesh.749", "Mesh.750", ...
+];
+
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+const canvas = document.getElementById('cv');
+const noteEl = document.getElementById('note');
+const rParts = document.getElementById('r-parts');
+const rState = document.getElementById('r-state');
+const rBar   = document.getElementById('r-bar');
+const hint   = document.getElementById('hint');
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 5000);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.enablePan = false;
+controls.enableZoom = false;   // wheel belongs to the PAGE (drives the explode), not the camera
+if (TAG_MODE) controls.enableZoom = true;  // but allow zoom while tagging to inspect small parts
+controls.minDistance = 0.4;
+controls.maxDistance = 50;
+// touch: one finger orbits, two fingers dolly — keeps vertical page-scroll usable
+controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE };
+
+// lighting — soft studio so a bare metal frame reads well
+scene.add(new THREE.HemisphereLight(0xcfe8ff, 0x202428, 0.9));
+const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(3,5,2); scene.add(key);
+const rim = new THREE.DirectionalLight(0xffb454, 0.8); rim.position.set(-4,2,-3); scene.add(rim);
+const fill= new THREE.DirectionalLight(0x5ee6a0, 0.25); fill.position.set(0,-3,4); scene.add(fill);
+
+const parts = [];          // { mesh, dir(Vec3), startDist(number) }
+let modelGroup = null;
+let scrubState = null;     // { get(), step() } — drives explode progress from scroll
+let allMeshes = [];        // every leaf mesh, for tagging mode
+let tagging = false;       // true while in click-to-tag mode
+let progress = 0;          // 0 assembled -> 1 exploded
+let modelRadius = 1;
+
+const draco = new DRACOLoader();
+draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/');
+const loader = new GLTFLoader();
+loader.setDRACOLoader(draco);
+
+loader.load(MODEL_URL, (gltf) => {
+  modelGroup = gltf.scene;
+
+  // center + scale to a known size so camera framing is predictable
+  const box = new THREE.Box3().setFromObject(modelGroup);
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  modelRadius = Math.max(size.x, size.y, size.z) * 0.5 || 1;
+
+  modelGroup.position.sub(center);            // recenter on origin
+  scene.add(modelGroup);
+
+  // collect leaf meshes with their world-space centroids
+  modelGroup.updateWorldMatrix(true, true);
+  const meshes = [];
+  modelGroup.traverse((o) => {
+    if (!o.isMesh) return;
+    const b = new THREE.Box3().setFromObject(o);
+    const c = b.getCenter(new THREE.Vector3());
+    o.userData.home = o.position.clone();
+    o.userData.centroid = c;
+    meshes.push(o);
+  });
+  allMeshes = meshes;   // expose for tagging mode
+
+  // frozen set = anchor parts (frame + suspension + driver area) that never move
+  const frozenSet = new Set(FROZEN_PARTS);
+  const movable = meshes.filter(m => !frozenSet.has(m.name));
+  const frozenCount = meshes.length - movable.length;
+
+  /* Per-part explode: every movable part flies outward on its OWN radial vector
+     from the car center. No grouping — so freezing a part affects only that part. */
+  const worldCenter = new THREE.Vector3(0,0,0);
+  const dists = movable.map(m => m.userData.centroid.distanceTo(worldCenter));
+  const maxD = Math.max(...dists, 1e-6);
+
+  movable.forEach((m, i) => {
+    let dir = m.userData.centroid.clone().sub(worldCenter);
+    if (dir.lengthSq() < 1e-6) dir.set(Math.random()-.5, Math.random()-.5, Math.random()-.5);
+    dir.normalize();
+    parts.push({ mesh:m, dir, norm: dists[i]/maxD });
+  });
+
+  rParts.textContent = `${String(movable.length).padStart(3,'0')} mov · ${frozenCount} froz`;
+  noteEl.style.display = 'none';
+
+  if (TAG_MODE) initTagging();
+
+  frameCamera();
+  apply(0);
+}, (xhr)=>{
+  if (xhr.total) noteEl.innerHTML = `loading model — ${Math.round(xhr.loaded/xhr.total*100)}%`;
+}, (err)=>{
+  console.error(err);
+  noteEl.innerHTML = `couldn't load <b>${MODEL_URL}</b><br>place your GLB next to this file<br>or edit MODEL_URL in the script`;
+});
+
+function frameCamera(){
+  const r = modelRadius;
+  const dist = r / Math.tan((camera.fov*Math.PI/180)/2) * 1.5;
+  // cinematic three-quarter: slightly above, off to the front corner
+  camera.position.set(dist*0.85, dist*0.5, dist*0.85);
+  controls.target.set(0,0,0);
+  controls.update();
+}
+
+// move every part along its explode vector based on global progress + stagger
+function apply(p){
+  progress = p;
+  for (const part of parts){
+    // each part's local progress is the global progress shifted by its stagger band
+    const lead = STAGGER * (1 - part.norm);          // inner parts lead
+    let lp = (p - lead) / (1 - STAGGER + 1e-6);
+    lp = Math.max(0, Math.min(1, lp));
+    const eased = lp*lp*(3-2*lp);                     // smoothstep
+    const dist = eased * EXPLODE_DISTANCE * modelRadius * (0.6 + part.norm*1.1);
+    const home = part.mesh.userData.home;
+    part.mesh.position.set(
+      home.x + part.dir.x*dist,
+      home.y + part.dir.y*dist,
+      home.z + part.dir.z*dist
+    );
+  }
+  // HUD
+  rBar.style.width = (p*100).toFixed(0)+'%';
+  rState.textContent = p < 0.04 ? 'assembled' : p > 0.96 ? 'exploded' : 'in transit';
+  if (p > 0.02) hint.style.opacity = Math.max(0, 1 - p*4);
+}
+
+/* ---- scroll scrubbing -------------------------------------------------
+   Progress is computed directly from the track's position in the viewport,
+   so it tracks scroll exactly with no dependency on threshold-string parsing.
+   This is the animejs.com mechanic (scrub progress = scroll position).
+   A small eased follow on the applied value keeps motion buttery.          */
+if (!reduce){
+  const track = document.getElementById('track');
+  let target = 0;     // raw scroll-derived progress
+  let shown = 0;      // smoothed value actually applied
+
+  function computeProgress(){
+    const r = track.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const scrollable = r.height - vh;
+    const scrolled = -r.top;          // px scrolled past the track top
+    let raw = scrollable > 0 ? scrolled / scrollable : 0;
+    raw = Math.min(1, Math.max(0, raw));
+    // map 0..0.85 of the scroll to the full 0..1 explode, then hold exploded.
+    // gives a snappier finish and guarantees a fully blown-apart end state.
+    target = Math.min(1, raw / 0.85);
+  }
+  window.addEventListener('scroll', computeProgress, { passive:true });
+  window.addEventListener('resize', computeProgress);
+  computeProgress();
+
+  // time-based smoothing: converges at the same rate regardless of frame rate.
+  // rate≈12 → reaches target in ~250ms; snaps when within 0.5%.
+  scrubState = { get:()=>shown, step:(dt=0.016)=>{
+    const d = target - shown;
+    if (Math.abs(d) < 0.005){ shown = target; }
+    else { shown += d * (1 - Math.exp(-12 * dt)); }
+    return shown;
+  } };
+} else {
+  // reduced motion: show a static mid explode, no scroll scrub
+  rState.textContent = 'static';
+  hint.style.display = 'none';
+  scrubState = { get:()=>0.45, step:(dt)=>0.45 };
+  apply(0.45);
+}
+
+// resize
+function resize(){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (canvas.width !== w || canvas.height !== h){
+    renderer.setSize(w, h, false);
+    camera.aspect = w/h; camera.updateProjectionMatrix();
+  }
+}
+
+/* ---- TAGGING MODE -----------------------------------------------------
+   Click parts to toggle them into the frozen (stationary) set. Selected
+   parts glow amber. "Copy frozen list" puts the names on your clipboard
+   to paste into FROZEN_PARTS. Pre-seeds with anything already in FROZEN_PARTS. */
+function initTagging(){
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  const picked = new Set(FROZEN_PARTS);     // names currently frozen
+  const HL = new THREE.Color(0x39ff14);     // bright green — pops against the coppery frame
+
+  /* 662 of 806 parts share one material, so editing a material lights up every
+     part using it. Instead, give a highlighted mesh its OWN cloned material and
+     restore the shared original when deselected — glow stays on just that part. */
+  for (const m of allMeshes){
+    m.userData.sharedMat = m.material;      // keep ref to the original (shared) material
+  }
+  function setHL(mesh, on){
+    if (on){
+      const src = mesh.userData.sharedMat;
+      const clone = Array.isArray(src) ? src.map(x=>x.clone()) : src.clone();
+      const arr = Array.isArray(clone) ? clone : [clone];
+      arr.forEach(mm=>{ if(mm.emissive){ mm.emissive = HL.clone(); mm.emissiveIntensity = 1.4; } if(mm.color) mm.color = HL.clone(); mm.needsUpdate = true; });
+      mesh.material = clone;                 // swap to the private clone
+    } else {
+      // dispose the clone and restore the shared original
+      const cur = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      cur.forEach(mm=>mm.dispose && mm.dispose());
+      mesh.material = mesh.userData.sharedMat;
+    }
+  }
+  // apply any pre-seeded selections
+  allMeshes.forEach(m=>{ if(picked.has(m.name)) setHL(m,true); });
+
+  // build the toolbar
+  const ui = document.createElement('div');
+  ui.style.cssText = 'position:absolute;top:50%;right:24px;transform:translateY(-50%);z-index:20;font-family:var(--mono);font-size:12px;color:var(--ink);background:rgba(20,24,25,.92);border:1px solid var(--line-bright);border-radius:4px;padding:14px;width:210px;backdrop-filter:blur(8px);pointer-events:auto';
+  ui.innerHTML = `
+    <div style="color:var(--amber);letter-spacing:.12em;margin-bottom:10px">◉ TAG MODE</div>
+    <div style="color:var(--ink-dim);line-height:1.6;margin-bottom:12px">Click parts to freeze them (frame · suspension · driver area). They glow green.</div>
+    <div style="margin-bottom:10px"><span style="color:var(--ink-faint)">frozen:</span> <span id="tag-count" style="color:var(--green)">${picked.size}</span></div>
+    <button id="tag-copy" style="width:100%;font-family:var(--mono);font-size:12px;padding:9px;border:1px solid var(--amber);background:rgba(255,180,84,.08);color:var(--amber);border-radius:3px;cursor:pointer;margin-bottom:7px">Copy frozen list</button>
+    <button id="tag-clear" style="width:100%;font-family:var(--mono);font-size:11px;padding:7px;border:1px solid var(--line-bright);background:transparent;color:var(--ink-dim);border-radius:3px;cursor:pointer">Clear all</button>
+    <div id="tag-msg" style="color:var(--green);margin-top:8px;min-height:14px"></div>`;
+  document.querySelector('.stage').appendChild(ui);
+  const countEl = ui.querySelector('#tag-count');
+  const msgEl = ui.querySelector('#tag-msg');
+
+  // disable auto-spin while tagging so parts hold still under the cursor
+  tagging = true;
+
+  function onClick(e){
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
+    mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(allMeshes, false);
+    if (!hits.length) return;
+    const m = hits[0].object;
+    if (picked.has(m.name)){ picked.delete(m.name); setHL(m,false); }
+    else { picked.add(m.name); setHL(m,true); }
+    countEl.textContent = picked.size;
+  }
+  // distinguish click from orbit-drag
+  let down=null;
+  canvas.addEventListener('pointerdown', e=>{ down=[e.clientX,e.clientY]; });
+  canvas.addEventListener('pointerup', e=>{
+    if (!down) return;
+    const moved = Math.hypot(e.clientX-down[0], e.clientY-down[1]);
+    if (moved < 5) onClick(e);     // treat as click only if barely moved
+    down=null;
+  });
+
+  ui.querySelector('#tag-copy').onclick = ()=>{
+    const list = [...picked].sort();
+    const text = list.map(n=>`  "${n}",`).join('\n');
+    navigator.clipboard?.writeText(text).then(
+      ()=>{ msgEl.textContent = `copied ${list.length} names ✓`; },
+      ()=>{ msgEl.textContent = 'copy failed — see console'; console.log('FROZEN_PARTS:\n'+text); }
+    );
+    console.log('FROZEN_PARTS list:\n'+text);
+  };
+  ui.querySelector('#tag-clear').onclick = ()=>{
+    picked.forEach(n=>{ const m=allMeshes.find(x=>x.name===n); if(m) setHL(m,false); });
+    picked.clear(); countEl.textContent = 0; msgEl.textContent='cleared';
+  };
+}
+
+let last = performance.now();
+function loop(now){
+  const dt = (now-last)/1000; last = now;
+  resize();
+  // while tagging, hold the car assembled & still so parts are easy to click
+  if (parts.length && scrubState && !tagging){
+    const p = scrubState.step(dt);
+    apply(p);
+  }
+  if (modelGroup && AUTO_SPIN && !reduce && !tagging) modelGroup.rotation.y += AUTO_SPIN*dt;
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

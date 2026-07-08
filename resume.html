@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Résumé — Daniel Benjamin</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="favicon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="site-header.css">
+<script src="site-header.js" defer></script>
+<style>
+.pdf-shell{width:min(100%,760px);margin:0 auto;aspect-ratio:8.5/11;overflow:hidden;background:transparent}
+.pdf-actions{width:min(100%,760px);margin:0 auto 12px;display:flex;justify-content:flex-end}
+#adobe-dc-view{width:100%;height:100%}
+.pdf-fallback{display:none;border:1px dashed var(--line-bright);border-radius:6px;background:var(--panel);padding:40px 28px;text-align:center;font-family:var(--mono);font-size:13px;color:var(--ink-dim);line-height:1.7}
+.pdf-fallback b{color:var(--amber)}
+body.pdf-load-failed .pdf-shell{display:none}
+body.pdf-load-failed .pdf-fallback{display:block}
+</style>
+</head>
+<body>
+
+<div data-site-header></div>
+
+<main class="wrap">
+
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal">Résumé</div>
+    <h2 class="sec-h reveal">The condensed version.</h2>
+    <p class="sec-sub reveal">One page covering the full spread — chassis structures, suspension analysis, embedded systems, and software tooling. For the full picture, <a href="experience.html" style="color:var(--amber)">experience is here →</a>.</p>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+    <div class="pdf-actions reveal">
+      <a href="https://cdn.jsdelivr.net/gh/danielrbenjamin/resume@main/tesla_format/Daniel_Benjamin_Resume.pdf" target="_blank" rel="noopener" class="btn">↗ Open in new tab</a>
+    </div>
+    <div class="pdf-shell reveal">
+      <div id="adobe-dc-view" aria-label="Daniel Benjamin résumé"></div>
+    </div>
+    <div class="pdf-fallback reveal">
+      <p>Inline PDF preview isn't supported on some mobile browsers.<br><br>Use <b>Open in new tab</b> above to view the résumé.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>© 2026 Daniel Benjamin</span>
+  <span>built from the shop floor</span>
+</footer>
+<script src="https://acrobatservices.adobe.com/view-sdk/viewer.js"></script>
+<script>
+(function(){
+  function showFallback(){document.body.classList.add('pdf-load-failed');}
+  var sdkReadyTimeout=setTimeout(function(){if(!window.AdobeDC)showFallback();},5000);
+  document.addEventListener('adobe_dc_view_sdk.ready',function(){
+    clearTimeout(sdkReadyTimeout);
+    try{
+      var adobeDCView=new AdobeDC.View({clientId:'16c68820aef1401c9f3d0ae1a7a43183',divId:'adobe-dc-view'});
+      adobeDCView.previewFile(
+        {content:{location:{url:'https://cdn.jsdelivr.net/gh/danielrbenjamin/resume@main/tesla_format/Daniel_Benjamin_Resume.pdf'}},metaData:{fileName:'Daniel_Benjamin_Resume.pdf'}},
+        {embedMode:'IN_LINE'}
+      ).catch(function(err){console.error('Adobe PDF viewer failed:',err);showFallback();});
+    }catch(err){console.error('Adobe PDF initialization failed:',err);showFallback();}
+  });
+})();
+</script>
+
+<script>
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

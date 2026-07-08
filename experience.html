@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experience — Daniel Benjamin</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="favicon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="site-header.css">
+<script src="site-header.js" defer></script>
+</head>
+<body>
+
+<div data-site-header></div>
+
+<main class="wrap">
+
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal">Experience</div>
+    <h2 class="sec-h reveal">Where I've done the work.</h2>
+    <p class="sec-sub reveal">Roles at the intersection of mechanical design, embedded systems, and software — most of it on a competitive FSAE electric car, plus co-op in medical devices. For the condensed version, the <a href="resume.html" style="color:var(--amber)">résumé is here →</a>.</p>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+    <div class="xp-timeline">
+
+      <div class="xp reveal">
+        <div class="xp-when">
+          2026 Season<br>
+          <span class="role-type">leadership</span>
+        </div>
+        <div class="xp-body">
+          <h3>Chassis Lead</h3>
+          <div class="org">UBC Formula Electric</div>
+          <ul>
+            <li>Own the structural design of the 2026 electric race car's <b>4130 chromoly tube frame</b> end to end — load-path reasoning, tube sizing, and joint design.</li>
+            <li>Ran the full structural analysis package: <b>suspension mounting tube-bending calcs</b>, torsional-stiffness modeling (Deakin et al.), impact-attenuator sizing, and harness attachment-point analysis, validated in <b>ANSYS Static Structural</b>.</li>
+            <li>Authored the formal chassis design documentation (CHS-F04, chassis binder) that backs every structural decision for design-event judging.</li>
+            <li>Led competition preparation and produced the post-competition debrief covering enclosures and technical-inspection findings with prioritized action items.</li>
+          </ul>
+          <div class="meta"><span>ANSYS</span><span>SolidWorks</span><span>AutoCAD</span><span>LaTeX</span><span>Load-Path Analysis</span></div>
+        </div>
+      </div>
+
+      <div class="xp reveal">
+        <div class="xp-when">
+          2025 – 2026<br>
+          <span class="role-type">technical</span>
+        </div>
+        <div class="xp-body">
+          <h3>Suspension &amp; Analysis — Design Engineer</h3>
+          <div class="org">UBC Formula Electric</div>
+          <ul>
+            <li>Built a full <b>suspension load-analysis pipeline in Python</b> using a Pacejka MF5.2 tire model, assembling eight design load cases and exporting them straight to ANSYS chassis FEA.</li>
+            <li>Produced the SUS-F01 technical design document covering control-arm and upright FEA, ARB sizing, and a rear-bellcrank topology optimization achieving <b>56.7% mass reduction</b> in 7075-T6.</li>
+            <li>Developed <b>DANCAM</b>, a custom Python CAM pipeline converting SolidWorks DXF tube profiles to G-code for a DIY CNC plasma tube-notcher running FluidNC on an ESP32.</li>
+          </ul>
+          <div class="meta"><span>Python</span><span>NumPy / SciPy</span><span>Pacejka MF5.2</span><span>Topology Opt</span><span>ESP32 / FluidNC</span></div>
+        </div>
+      </div>
+
+      <div class="xp reveal">
+        <div class="xp-when">
+          Co-op<br>
+          <span class="role-type">medical devices</span>
+        </div>
+        <div class="xp-body">
+          <h3>Engineering Co-op <span style="color:var(--ink-faint);font-weight:400;font-size:.8em">(verify title/dates)</span></h3>
+          <div class="org">Clarius Mobile Health</div>
+          <ul>
+            <li>Engaged with Clarius on a co-op opportunity in handheld medical ultrasound, including a facility tour and direct correspondence with senior engineering staff.</li>
+            <li>Interest area: bridging mechanical design with embedded systems and signal processing in a regulated medical-device environment.</li>
+          </ul>
+          <div class="meta"><span>Medical Devices</span><span>Ultrasound</span><span>Mechatronics</span></div>
+          <p style="color:var(--ink-faint);font-family:var(--mono);font-size:11.5px;margin-top:10px">⚠ Placeholder — update this entry with your actual role, dates, and responsibilities.</p>
+        </div>
+      </div>
+
+      <div class="xp reveal">
+        <div class="xp-when">
+          Ongoing<br>
+          <span class="role-type">infrastructure</span>
+        </div>
+        <div class="xp-body">
+          <h3>Team Infrastructure &amp; Tooling</h3>
+          <div class="org">UBC Formula Electric</div>
+          <ul>
+            <li>Deployed <b>SVN-based CAD version control</b> on Oracle Cloud and set up Jira milestone tracking across subteams for a 100+ member organization.</li>
+            <li>Authored SOPs and onboarding guides, and built internal web tooling — a Zotero-API resource library and a React/Three.js shop-inventory system with barcode scanning and a 3D bay map.</li>
+          </ul>
+          <div class="meta"><span>SVN</span><span>Oracle Cloud</span><span>Jira</span><span>React</span><span>Three.js</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow reveal">Education</div>
+    <div class="edu-card reveal">
+      <div>
+        <h3>B.A.Sc., Mechanical Engineering</h3>
+        <div class="org">University of British Columbia · Co-op</div>
+        <p>Biomechanics &amp; Medical Devices (BMMD) option. Coursework across thermodynamics, fluid mechanics, structural analysis, and machine design, with self-directed depth in FEA, vehicle dynamics, and full-stack development.</p>
+      </div>
+      <div class="edu-when">Vancouver, BC<br>in progress</div>
+    </div>
+  </section>
+
+  <section class="contact">
+    <div class="eyebrow reveal" style="justify-content:center">Contact</div>
+    <div class="big reveal">Let's build something.<br><a href="mailto:hello@example.com">hello@example.com</a></div>
+    <div class="links reveal">
+      <a href="mailto:hello@example.com" class="btn">✉ Email</a>
+      <a href="resume.html" class="btn">▤ Résumé →</a>
+      <a href="https://github.com" target="_blank" rel="noopener" class="btn">⌥ GitHub</a>
+      <a href="https://linkedin.com" target="_blank" rel="noopener" class="btn">in LinkedIn</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>© 2026 Daniel Benjamin</span>
+  <span>built from the shop floor</span>
+</footer>
+
+<script>
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

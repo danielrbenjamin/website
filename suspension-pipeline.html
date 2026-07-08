@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suspension Load Analysis Pipeline — Daniel Benjamin</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<div class="bar">
+  <div class="id"><a href="../index.html"><svg class="navlogo" viewBox="0 0 937.44 922.46" xmlns="http://www.w3.org/2000/svg" fill="none"> <line x1="468.72" y1="254.47" x2="243.54" y2="254.47" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="367.95" y1="558.80" x2="367.95" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="367.95" y1="558.80" x2="367.95" y2="194.97" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="367.95" y1="194.97" x2="195.69" y2="50.22" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="50.22" y1="395.83" x2="367.95" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="367.95" y1="395.83" x2="367.95" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="367.95" y1="757.53" x2="50.22" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="172.05" y1="534.52" x2="172.05" y2="359.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="172.05" y1="359.83" x2="243.54" y2="254.47" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="172.05" y1="534.52" x2="468.72" y2="872.24" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="468.72" y1="254.47" x2="693.90" y2="254.47" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="569.49" y1="558.80" x2="569.49" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="569.49" y1="558.80" x2="569.49" y2="194.97" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="569.49" y1="194.97" x2="741.74" y2="50.22" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="887.22" y1="395.83" x2="569.49" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="569.49" y1="395.83" x2="569.49" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="569.49" y1="757.53" x2="887.22" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="765.38" y1="534.52" x2="765.38" y2="359.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="765.38" y1="359.83" x2="693.90" y2="254.47" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="765.38" y1="534.52" x2="468.72" y2="872.24" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="50.22" y1="395.83" x2="367.95" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="367.95" y1="757.53" x2="367.95" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="367.95" y1="395.83" x2="50.22" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="569.49" y1="395.83" x2="569.49" y2="757.53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="569.49" y1="757.53" x2="887.22" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="887.22" y1="395.83" x2="569.49" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="195.69" y1="50.22" x2="367.95" y2="194.97" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="367.95" y1="194.97" x2="367.95" y2="395.83" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="569.49" y1="395.83" x2="569.49" y2="194.97" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> <line x1="569.49" y1="194.97" x2="741.74" y2="50.22" stroke="currentColor" stroke-width="16" stroke-linecap="round"/> </svg><span>daniel_benjamin</span></a><span class="blink" style="height:12px;margin-left:4px"></span></div>
+  <nav>
+    <a href="../index.html">/home</a>
+    <a href="../projects.html">/projects</a>
+    <a href="../experience.html">/experience</a>
+    <a href="https://cdn.jsdelivr.net/gh/danielrbenjamin/resume@main/tesla_format/Daniel_Benjamin_Resume.pdf" target="_blank" rel="noopener">/resume</a>
+    <a href="https://blog.danielrbenjamin.com/" target="_blank" rel="noopener">/blog ↗</a>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal"><a href="../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; 001</div>
+    <h2 class="sec-h reveal">Suspension Load Analysis Pipeline <span style="color:var(--green);font-family:var(--mono);font-size:.5em;font-weight:400">// python</span></h2>
+    <p class="sec-sub reveal">Turning raw vehicle parameters into the load cases that drive every structural decision.</p>
+    <div class="meta reveal" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px">
+      <span>Python</span><span>NumPy</span><span>Pacejka MF5.2</span><span>ANSYS</span>
+    </div>
+    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint)">UBC Formula Electric · 2026 · analysis</div>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+    <div class="about reveal" style="max-width:760px">
+      <p>This pipeline replaced a tangle of legacy MATLAB scripts with a single, reproducible Python workflow. It takes vehicle parameters — mass distribution, CG height, track, wheelbase, tire data — and produces the full set of design load cases the chassis and suspension teams need for FEA.</p>
+      <p>At its core is a Pacejka MF5.2 tire model that generates realistic lateral and longitudinal force curves. From these, the pipeline assembles eight distinct design load cases (braking, cornering, combined, bump, and their combinations) and exports each as a clean CSV keyed to the ANSYS chassis FEA setup.</p>
+      <p>The result: what used to be a manual, error-prone afternoon is now a parameter change and a re-run. Every downstream structural decision traces back to a documented, versioned load case.</p>
+    </div>
+
+    <div class="reveal" style="margin-top:40px;padding:24px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel)">
+      <div style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.7">
+        ⚠ <b style="color:var(--amber)">Placeholder page.</b> This is a scaffold — drop in images, diagrams, code snippets, results, or an embedded demo to flesh it out. The structure, nav, and styling are ready to go.
+      </div>
+    </div>
+
+    <div class="cta-row reveal" style="margin-top:40px">
+      <a href="../projects.html" class="btn">← All projects</a>
+      <a href="../index.html" class="btn">Home</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>© 2026 Daniel Benjamin</span>
+  <span>built from the shop floor<span class="blink"></span></span>
+</footer>
+
+<script>
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

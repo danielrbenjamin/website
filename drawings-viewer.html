@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drawings — Car #85</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0e0f;--panel:#141819;--line:#23292b;--line-bright:#2f383a;
+  --ink:#dce3e0;--ink-dim:#8a9794;--ink-faint:#5c6764;
+  --amber:#ffb454;--green:#5ee6a0;--blueprint:#7fb0d4;--grid:rgba(255,255,255,.022);
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --disp:"Space Grotesk",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--disp);
+  -webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+::selection{background:var(--amber);color:#0c0e0f}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+section{padding:72px 0}
+.eyebrow{font-family:var(--mono);font-size:12px;color:var(--amber);letter-spacing:.16em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--amber)}
+.sec-h{font-size:clamp(1.8rem,4.5vw,2.7rem);font-weight:600;letter-spacing:-.02em;margin-bottom:14px}
+.sec-sub{color:var(--ink-dim);max-width:620px;margin-bottom:36px;font-size:1.02rem}
+
+/* drawing switcher tabs */
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{
+  font-family:var(--mono);font-size:12.5px;padding:9px 16px;border:1px solid var(--line);
+  border-radius:2px;color:var(--ink-dim);background:var(--panel);cursor:pointer;transition:all .15s;
+}
+.tab:hover{color:var(--ink);border-color:var(--line-bright)}
+.tab.active{color:var(--amber);border-color:var(--amber);background:rgba(255,180,84,.06)}
+
+/* the sheet */
+.sheet-wrap{
+  border:1px solid var(--line);border-radius:4px;background:#0a0c0d;
+  padding:18px;position:relative;overflow:hidden;min-height:340px;
+}
+.sheet-wrap::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(127,176,212,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(127,176,212,.05) 1px,transparent 1px);
+  background-size:24px 24px;pointer-events:none;
+}
+.sheet{position:relative;z-index:1;color:var(--blueprint)}
+.sheet svg{display:block;width:100%;height:auto}
+/* drawable geometry: strokes use currentColor (blueprint), thin weight */
+.sheet svg [data-draw]{stroke-width:1.1;vector-effect:non-scaling-stroke}
+
+.loading{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:13px;color:var(--ink-dim);
+}
+.loading .blink{display:inline-block;width:8px;height:14px;background:var(--green);margin-left:5px;vertical-align:-2px;animation:blink 1.1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+.controls{display:flex;gap:12px;margin-top:22px;align-items:center;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:12.5px;padding:9px 16px;border:1px solid var(--line-bright);border-radius:2px;color:var(--ink);background:transparent;cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--amber);color:var(--amber)}
+.btn.solid{background:var(--amber);color:#0c0e0f;border-color:var(--amber);font-weight:700}
+.readout{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-left:auto;display:flex;gap:18px}
+.readout b{color:var(--green)}
+.caption{font-family:var(--mono);font-size:12px;color:var(--ink-dim);margin-top:14px}
+.caption b{color:var(--ink)}
+@media(prefers-reduced-motion:reduce){.loading .blink{animation:none}}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <section>
+    <div class="eyebrow">Engineering — Drawings</div>
+    <h2 class="sec-h">Car #85, drawn line by line.</h2>
+    <p class="sec-sub">Full vehicle assembly drawings, authored in AutoCAD. Each sheet traces itself on like a plotter laying down ink — scroll in, or replay.</p>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-src="drawings/top.svg"   data-label="Top View">TOP VIEW</button>
+      <button class="tab"        data-src="drawings/side.svg"  data-label="Side View">SIDE VIEW</button>
+      <button class="tab"        data-src="drawings/front.svg" data-label="Front View">FRONT VIEW</button>
+    </div>
+
+    <div class="sheet-wrap">
+      <div class="sheet" id="sheet"></div>
+      <div class="loading" id="loading">loading drawing<span class="blink"></span></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn solid" id="replay">▶ Replay draw</button>
+      <button class="btn" id="toggle">Mode: scroll-scrub</button>
+      <div class="readout">
+        <span>paths <b id="r-paths">—</b></span>
+        <span>mode <b id="r-mode">auto</b></span>
+      </div>
+    </div>
+    <div class="caption" id="caption"><b>CAR #85 FULL CAR ASSEMBLY — TOP VIEW</b> · drawn by Daniel Benjamin · 4130 chromoly tube frame</div>
+  </section>
+</main>
+
+<script type="module">
+import { animate, onScroll } from 'https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm';
+
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const sheet = document.getElementById('sheet');
+const loading = document.getElementById('loading');
+const rPaths = document.getElementById('r-paths');
+const rMode = document.getElementById('r-mode');
+const caption = document.getElementById('caption');
+const tabs = [...document.querySelectorAll('.tab')];
+
+let scrubMode = false;
+let currentSrc = null;
+let svgEl = null;
+let cache = {};            // src -> svg text
+let revealRect = null;     // the single sweeping clip rectangle
+let sweepWidth = 0, sweepX = 0;
+
+const CAPTIONS = {
+  'drawings/top.svg':   'CAR #85 FULL CAR ASSEMBLY — TOP VIEW · drawn by Daniel Benjamin · 1550mm wheelbase',
+  'drawings/side.svg':  'CAR #85 FULL CAR ASSEMBLY — SIDE VIEW · 2846mm overall length · adjustable pedal box',
+  'drawings/front.svg': 'CAR #85 FULL CAR ASSEMBLY — FRONT VIEW · 1280mm width · planetary gearbox detail',
+};
+
+async function loadDrawing(src){
+  currentSrc = src;
+  loading.style.display = 'flex';
+  sheet.innerHTML = '';
+  try{
+    if (!cache[src]){
+      const res = await fetch(src);
+      cache[src] = await res.text();
+    }
+    sheet.innerHTML = cache[src];
+    svgEl = sheet.querySelector('svg');
+    const paths = svgEl.querySelectorAll('path');
+    rPaths.textContent = paths.length;
+    loading.style.display = 'none';
+
+    /* PERFORMANCE: instead of animating 2,000+ individual stroke-dashoffsets
+       (which recomputes every path every frame → jank), we wrap the entire
+       drawing in ONE clipPath whose reveal-rectangle sweeps left→right. The
+       browser animates a single element; the drawing underneath is static.
+       Identical plotter-sweep look, 60fps regardless of path count.          */
+    const vb = svgEl.viewBox.baseVal;
+    const SVGNS = 'http://www.w3.org/2000/svg';
+
+    // move all existing children into a <g> we can clip
+    const g = document.createElementNS(SVGNS, 'g');
+    while (svgEl.firstChild) g.appendChild(svgEl.firstChild);
+    svgEl.appendChild(g);
+
+    // clipPath with a reveal rect (starts at 0 width)
+    const defs = document.createElementNS(SVGNS, 'defs');
+    const clip = document.createElementNS(SVGNS, 'clipPath');
+    const clipId = 'sweep-' + Math.random().toString(36).slice(2,8);
+    clip.setAttribute('id', clipId);
+    revealRect = document.createElementNS(SVGNS, 'rect');
+    revealRect.setAttribute('x', vb.x);
+    revealRect.setAttribute('y', vb.y);
+    revealRect.setAttribute('height', vb.height);
+    revealRect.setAttribute('width', 0);              // hidden initially
+    clip.appendChild(revealRect);
+    defs.appendChild(clip);
+    svgEl.insertBefore(defs, g);
+    g.setAttribute('clip-path', `url(#${clipId})`);
+
+    sweepWidth = vb.width;
+    sweepX = vb.x;
+
+    if (scrubMode) playScrub(); else playTimed();
+    caption.innerHTML = `<b>${CAPTIONS[src].split(' · ')[0]}</b> · ${CAPTIONS[src].split(' · ').slice(1).join(' · ')}`;
+  }catch(e){
+    loading.textContent = 'could not load drawing';
+    console.error(e);
+  }
+}
+
+function playTimed(){
+  if (!revealRect) return;
+  revealRect.setAttribute('width', 0);
+  animate(revealRect, {
+    width: sweepWidth,
+    ease: 'inOutQuad',
+    duration: 1700,
+  });
+  rMode.textContent = 'timed';
+}
+
+function playScrub(){
+  if (!revealRect) return;
+  revealRect.setAttribute('width', 0);
+  animate(revealRect, {
+    width: sweepWidth,
+    ease: 'linear',
+    autoplay: onScroll({
+      target: '.sheet-wrap',
+      enter: 'bottom bottom',
+      leave: 'center center',
+      sync: true,
+    }),
+  });
+  rMode.textContent = 'scroll';
+}
+
+function play(){
+  if (!revealRect) return;
+  if (reduce){
+    revealRect.setAttribute('width', sweepWidth);   // show full drawing, no motion
+    return;
+  }
+  if (scrubMode) playScrub(); else playTimed();
+}
+
+// tab switching
+tabs.forEach(tab=>{
+  tab.onclick = ()=>{
+    tabs.forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    loadDrawing(tab.dataset.src);
+  };
+});
+
+document.getElementById('replay').onclick = ()=>{
+  scrubMode = false;
+  document.getElementById('toggle').textContent = 'Mode: scroll-scrub';
+  play();
+};
+document.getElementById('toggle').onclick = (e)=>{
+  scrubMode = !scrubMode;
+  e.target.textContent = scrubMode ? 'Mode: timed draw' : 'Mode: scroll-scrub';
+  play();
+};
+
+// initial load
+loadDrawing('drawings/top.svg');
+</script>
+</body>
+</html>
