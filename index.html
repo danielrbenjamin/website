@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daniel Benjamin — Engineer</title>
+<title>Daniel Benjamin</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="site-header.css">
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm" crossorigin>
 <script>
@@ -18,113 +19,33 @@ window.__animeImportUrl = 'https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm';
 window.__animeModulePromise = import(window.__animeImportUrl);
 </script>
 <script src="site-header.js" defer></script>
+<script src="site-footer.js" defer></script>
+<script src="site-contact.js" defer></script>
 <style>
-:root{
-  --bg:#0c0e0f;--panel:#141819;--line:#23292b;--line-bright:#2f383a;
-  --ink:#dce3e0;--ink-dim:#8a9794;--ink-faint:#5c6764;
-  --amber:#ffb454;--green:#5ee6a0;--grid:rgba(255,255,255,.022);
-  --blueprint:#7fb7ff;
-  --mono:"JetBrains Mono",ui-monospace,monospace;--disp:"Space Grotesk",system-ui,sans-serif;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--ink);
-  font-family:var(--disp);
-  line-height:1.5;
-  overflow-x:hidden;
-  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:32px 32px;
-}
-a{color:inherit;text-decoration:none}
-::selection{background:var(--amber);color:#0c0e0f}
+/* homepage-only: sticky scroll hero with animated car canvas */
+body{background-attachment:fixed}
 .scroll-stage{position:relative;height:220vh}
 .hero{position:sticky;top:0;height:100vh;height:100dvh;min-height:640px;overflow:hidden;
-  background:radial-gradient(130% 100% at 70% 40%, #15181a 0%, #0a0c0d 65%);}
+  background:transparent;}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;touch-action:pan-y}
-.grid-bg{position:absolute;inset:0;z-index:0;
-  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:32px 32px;
-  background-position:0 0;}
-
 .hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:6;font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.2em;animation:pulse 2.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.9}}
-
-/* index-style intro loader */
-#intro{
-  position:fixed;inset:0;z-index:200;
-  background:var(--bg);
-  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:22px;
-  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:32px 32px;
-  transition:opacity .6s ease;
-}
-#intro.done{opacity:0;pointer-events:none}
-#intro .intro-logo{width:150px;color:var(--amber);visibility:hidden}
-#intro .intro-logo.ready{visibility:visible}
-#intro .intro-logo line{
-  stroke:var(--amber);stroke-width:4;stroke-linecap:round;
-  vector-effect:non-scaling-stroke;
-  opacity:.32;
-}
-#intro .intro-logo line[data-i="20"],
-#intro .intro-logo line[data-i="21"],
-#intro .intro-logo line[data-i="22"],
-#intro .intro-logo line[data-i="23"],
-#intro .intro-logo line[data-i="24"],
-#intro .intro-logo line[data-i="25"],
-#intro .intro-logo line[data-i="27"],
-#intro .intro-logo line[data-i="28"]{opacity:1}
-.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
 main.wrap{padding-top:48px}
-section{padding:88px 0;border-top:1px solid var(--line)}
-.eyebrow{font-family:var(--mono);font-size:12px;color:var(--amber);letter-spacing:.16em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:12px}
-.eyebrow::before{content:"";width:26px;height:1px;background:var(--amber)}
-.sec-h{font-size:clamp(1.8rem,4.5vw,2.7rem);font-weight:600;letter-spacing:-.02em;margin-bottom:14px}
-.sec-sub{color:var(--ink-dim);max-width:600px;margin-bottom:48px;font-size:1.02rem}
-.about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:48px;align-items:start}
-.about p{color:var(--ink-dim);margin-bottom:18px;font-size:1.05rem;line-height:1.7}
-.about p b{color:var(--ink);font-weight:500}
-.profile-photo-wrap{display:flex;justify-content:center}
-.profile-photo{
-  display:block;width:220px;height:220px;object-fit:cover;object-position:center top;
-  border-radius:50%;
-  box-shadow:0 0 0 4px rgba(255,181,84,.7);
-  filter:grayscale(18%) contrast(1.04);
-}
+html.intro-active{overflow:hidden}
+
+/* homepage-only: featured project preview cards */
 .proj-feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .proj-feat{border:1px solid var(--line);border-radius:5px;background:var(--panel);padding:26px;display:flex;flex-direction:column;align-items:flex-start}
 .proj-feat .ptag{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:12px}
 .proj-feat h3{font-size:1.22rem;font-weight:600;letter-spacing:-.01em;margin-bottom:10px}
 .proj-feat p{color:var(--ink-dim);font-size:.97rem;line-height:1.6;margin-bottom:16px}
 .proj-feat .chips{margin-bottom:20px}
-.stack-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.stack-col h4{font-family:var(--mono);font-size:12.5px;color:var(--amber);letter-spacing:.06em;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--line)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{font-family:var(--mono);font-size:12px;color:var(--ink-dim);padding:5px 11px;border:1px solid var(--line);border-radius:2px;background:var(--panel);transition:all .15s}
-.chip:hover{color:var(--ink);border-color:var(--line-bright)}
-.contact{text-align:center;padding-bottom:60px}
-.contact .big{font-size:clamp(1.8rem,5vw,3rem);font-weight:600;letter-spacing:-.02em;margin-bottom:10px}
-.contact .big a{color:var(--amber);border-bottom:2px solid transparent;transition:border .15s}
-.contact .big a:hover{border-color:var(--amber)}
-.links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
-.btn{font-family:var(--mono);font-size:13px;font-weight:500;padding:11px 20px;border:1px solid var(--line-bright);border-radius:2px;color:var(--ink);transition:all .15s;display:inline-flex;align-items:center;gap:9px}
-.btn:hover{border-color:var(--amber);color:var(--amber);background:rgba(255,180,84,.05)}
-.btn.solid{background:var(--amber);color:#0c0e0f;border-color:var(--amber);font-weight:700}
-.btn.solid:hover{background:var(--green);border-color:var(--green);color:#0c0e0f}
-footer{border-top:1px solid var(--line);padding:26px 28px;font-family:var(--mono);font-size:12px;color:var(--ink-faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;max-width:1080px;margin:0 auto}
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
-.reveal.in{opacity:1;transform:none}
-html.intro-active{overflow:hidden}
+
 @media(max-width:680px){
   .hero{min-height:100vh;min-height:100dvh}
-  .about-grid,.stack-cols,.proj-feat-grid{grid-template-columns:1fr;gap:36px}
-}
-@media(max-width:420px){
+  .proj-feat-grid{grid-template-columns:1fr;gap:36px}
 }
 @media(pointer:coarse){#cv{pointer-events:none}}
-@media(prefers-reduced-motion:reduce){.hint{animation:none}.reveal{opacity:1;transform:none;transition:none}#intro{display:none}html{scroll-behavior:auto}}
+@media(prefers-reduced-motion:reduce){.hint{animation:none}#intro{display:none}}
 </style>
 </head>
 <body>
@@ -167,7 +88,6 @@ html.intro-active{overflow:hidden}
 
 <div class="scroll-stage">
 <section class="hero">
-  <div class="grid-bg"></div>
   <canvas id="cv"></canvas>
 
   <div data-site-header></div>
@@ -177,7 +97,7 @@ html.intro-active{overflow:hidden}
 </div><!-- /scroll-stage -->
 
 <main class="wrap">
-  <section id="about">
+  <section id="about" style="border-top:none">
     <div class="eyebrow reveal">01 — Profile</div>
     <h2 class="sec-h reveal">The intersection is the point.</h2>
     <div class="about-grid">
@@ -192,9 +112,9 @@ html.intro-active{overflow:hidden}
     </div>
   </section>
 
-  <section id="experience">
+  <section id="experience" style="border-top:none;padding-top:0">
     <div class="eyebrow reveal">02 — Featured Projects</div>
-    <h2 class="sec-h reveal">Project highlights.</h2>
+    <h2 class="sec-h reveal">Worth a closer look.</h2>
     <p class="sec-sub reveal">see all projects on the <a href="projects.html" style="color:var(--amber)">projects page →</a></p>
     <div class="proj-feat-grid">
       <div class="proj-feat reveal">
@@ -218,58 +138,40 @@ html.intro-active{overflow:hidden}
     </div>
   </section>
 
-  <section id="stack">
-    <div class="eyebrow reveal">03 — Capabilities</div>
-    <h2 class="sec-h reveal">Toolchain</h2>
+  <section id="stack" style="border-top:none;padding-top:0">
+    <div class="eyebrow reveal">03 — Toolchain</div>
+    <h2 class="sec-h reveal">What I bring to the table.</h2>
     <p class="sec-sub reveal">A working spread across the mechanical–software boundary.</p>
     <div class="stack-cols">
       <div class="stack-col reveal">
         <h4>// mechanical</h4>
         <div class="chips">
-          <span class="chip">SolidWorks</span><span class="chip">ANSYS FEA</span>
-          <span class="chip">Suspension Kinematics</span><span class="chip">Pacejka Tire Models</span>
-          <span class="chip">GD&amp;T</span><span class="chip">FSAE Structures</span>
-          <span class="chip">DFM</span><span class="chip">CNC / Fabrication</span>
+          <span class="chip">SOLIDWORKS</span><span class="chip">AutoCAD + AutoLISP</span>
+          <span class="chip">ANSYS</span><span class="chip">3D Printing</span>
+          <span class="chip">Composites Manufacturing and Processing</span><span class="chip">MIG Welding</span>
+          <span class="chip">FMEA</span><span class="chip">Waterjet</span>
+          <span class="chip">Laser Cutting</span><span class="chip">Machining</span>
         </div>
       </div>
       <div class="stack-col reveal">
-        <h4>// mechatronics</h4>
+        <h4>// software + electrical</h4>
         <div class="chips">
-          <span class="chip">PCB Design</span><span class="chip">ESP32</span>
-          <span class="chip">FluidNC</span><span class="chip">Multi-material 3DP</span>
-          <span class="chip">Embedded C</span><span class="chip">Motion Control</span>
-          <span class="chip">Sensors / DAQ</span>
-        </div>
-      </div>
-      <div class="stack-col reveal">
-        <h4>// software</h4>
-        <div class="chips">
-          <span class="chip">Python</span><span class="chip">NumPy / SciPy</span>
-          <span class="chip">MATLAB</span><span class="chip">React</span>
-          <span class="chip">Next.js</span><span class="chip">Three.js</span>
-          <span class="chip">PostgreSQL</span><span class="chip">Supabase</span>
-          <span class="chip">LaTeX</span><span class="chip">Git / SVN</span>
+          <span class="chip">Python</span><span class="chip">C</span>
+          <span class="chip">MATLAB</span><span class="chip">JavaScript</span>
+          <span class="chip">CSS</span><span class="chip">Git + GitHub</span>
+          <span class="chip">Apache SVN</span><span class="chip">Arduino/ESP32 (PlatformIO)</span>
+          <span class="chip">Docker</span><span class="chip">AWS</span>
+          <span class="chip">Atlassian Suite (Jira, Confluence)</span><span class="chip">Adobe Suite (Photoshop, Premiere Pro)</span>
+          <span class="chip">MS Office (Project, Excel, PowerBI)</span><span class="chip">Unix</span>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="contact" class="contact">
-    <div class="eyebrow reveal" style="justify-content:center">04 — Contact</div>
-    <div class="big reveal">Let's build something.<br><a href="mailto:contact@danielrbenjamin.com">contact@danielrbenjamin.com</a></div>
-    <p class="sec-sub reveal" style="margin:18px auto 0;text-align:center">Open to co-op and project collaboration at the mechanical–software boundary.</p>
-    <div class="links reveal">
-      <a href="mailto:contact@danielrbenjamin.com" class="btn">✉ Email</a>
-      <a href="https://github.com" target="_blank" rel="noopener" class="btn">⌥ GitHub</a>
-      <a href="https://linkedin.com" target="_blank" rel="noopener" class="btn">in LinkedIn</a>
-    </div>
-  </section>
+  <div data-site-contact></div>
 </main>
 
-<footer>
-  <span>© 2026 Daniel Benjamin</span>
-  <span>built from the shop floor</span>
-</footer>
+<div data-site-footer></div>
 
 <script type="module">
 /* index intro animation (once per session) */

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MECH 223 Rail Hauler — Daniel Benjamin</title>
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png">
+<link rel="apple-touch-icon" href="../../favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../site-header.css">
+<script src="../../site-header.js" defer></script>
+<script src="../../site-footer.js" defer></script>
+<script src="../../site-contact.js" defer></script>
+<style>
+/* ── project layout: sticky TOC + body ── */
+.project-layout{display:grid;grid-template-columns:190px 1fr;gap:52px;align-items:start}
+@media(max-width:860px){.project-layout{grid-template-columns:1fr}}
+
+.project-toc{position:sticky;top:36px}
+@media(max-width:860px){.project-toc{position:static;margin-bottom:36px}}
+.toc-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-list a{display:block;padding:7px 0 7px 14px;border-left:2px solid var(--line);font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);transition:color .15s,border-color .15s}
+.toc-list a:hover{color:var(--ink-dim)}
+.toc-list a.active{color:var(--amber);border-left-color:var(--amber)}
+@media(max-width:860px){
+  .toc-list{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .toc-list a{border-left:none;border:1px solid var(--line);border-radius:2px;padding:6px 11px}
+  .toc-list a.active{border-color:var(--amber);background:rgba(255,180,84,.06)}
+}
+
+.project-body h2{font-size:1.42rem;font-weight:600;letter-spacing:-.01em;margin:56px 0 16px;scroll-margin-top:28px}
+.project-body h2:first-child{margin-top:0}
+.project-body p{color:var(--ink-dim);font-size:1.02rem;line-height:1.72;margin-bottom:16px;max-width:680px}
+.project-body ul{margin:0 0 20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;max-width:680px}
+.project-body li{color:var(--ink-dim);font-size:.98rem;line-height:1.6;padding-left:18px;position:relative}
+.project-body li::before{content:"▸";position:absolute;left:0;color:var(--ink-faint);font-size:.85em;top:2px}
+.project-body b{color:var(--ink);font-weight:500}
+
+/* ── inline figures ── */
+.figure{margin:8px 0 32px;max-width:680px}
+.figure .shot{
+  border:1px dashed var(--line-bright);border-radius:4px;background:var(--panel);
+  aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
+}
+.figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+
+.note{
+  margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
+  font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.7;max-width:680px;
+}
+.note b{color:var(--amber)}
+
+/* ── hero image ── */
+.hero-shot{
+  margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
+}
+.hero-shot img{display:block;width:100%;height:auto;max-height:520px;object-fit:cover}
+</style>
+</head>
+<body>
+
+<div data-site-header></div>
+
+<main class="wrap">
+
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; MECH 004</div>
+    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">Course Project · Jan – Apr 2025</div>
+    <h2 class="sec-h reveal">MECH 223 Rail Hauler <span style="color:var(--green);font-family:var(--mono);font-size:.5em;font-weight:400">// hardware</span></h2>
+    <p class="sec-sub reveal" style="margin-bottom:18px">A load-carrying rail vehicle, built by a team of five in one term — and the version-control system I set up so five people could work on the same assembly without wrecking it.</p>
+    <div class="chips reveal" style="margin-bottom:28px">
+      <span class="chip">SolidWorks</span><span class="chip">Machining</span><span class="chip">Laser Cutting</span><span class="chip">3D Printing</span><span class="chip">SVN</span>
+    </div>
+    <div class="hero-shot reveal">
+      <img src="rail-hauler-presentation.png" alt="MECH 223 Rail Hauler — final vehicle on track">
+    </div>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+    <div class="project-layout">
+
+      <aside class="project-toc reveal">
+        <div class="toc-label">On this page</div>
+        <ul class="toc-list">
+          <li><a href="#problem">Problem</a></li>
+          <li><a href="#concept">Concept &amp; Design</a></li>
+          <li><a href="#fabrication">CAD &amp; Fabrication</a></li>
+          <li><a href="#version-control">Keeping the CAD Sane</a></li>
+          <li><a href="#assembly">Assembly &amp; Testing</a></li>
+          <li><a href="#results">Results</a></li>
+        </ul>
+      </aside>
+
+      <div class="project-body reveal">
+
+        <h2 id="problem">Problem</h2>
+        <p>MECH 223 is UBC Mechanical Engineering's second-year design-build course. Teams take a vehicle concept from a blank assembly to a working physical prototype in a single term, on a shared budget and a hard deadline. Our brief: a rail-bound hauler — a vehicle that rides a fixed track and carries a payload from one end to the other, judged on how reliably it could do that, lap after lap.</p>
+        <p>The engineering problem wasn't any one part. It was that five people needed to design interdependent pieces — chassis, drivetrain, the wheel-to-rail interface, the payload mount — at the same time, in the same CAD assembly, without quietly breaking each other's work.</p>
+
+        <h2 id="concept">Concept &amp; Design</h2>
+        <p>We started from layout sketches and worked out how load, drivetrain, and structure would share the same small footprint. The vehicle had to stay inside the track's clearance envelope, keep its payload from shifting in transit, and carry enough of its mass low and centered that it wouldn't ride up off the rail under power. Those three constraints fought each other more than any single one was hard on its own, and most of the early design cycles were spent trading off between them rather than solving any one in isolation.</p>
+        <p>We iterated the layout in CAD before committing to fabrication drawings — cheaper to move a mounting boss around on screen than to remachine it.</p>
+
+        <figure class="figure reveal">
+          <div class="shot">CAD — chassis &amp; drivetrain layout (placeholder)</div>
+          <figcaption>Full assembly, early layout — payload bed, drivetrain, and wheel trucks sharing one footprint.</figcaption>
+        </figure>
+
+        <h2 id="fabrication">CAD &amp; Fabrication</h2>
+        <p>I modeled the full mechanical assembly in SolidWorks — chassis, wheel trucks, drivetrain mounts, payload bed — and produced the fabrication drawings the team machined and cut from. We split manufacturing across three processes, matched to what each part actually needed rather than whatever was easiest to draw:</p>
+        <ul>
+          <li><b>Machining</b> for load-bearing metal parts — axles, mounts, anything needing a tight tolerance or real strength</li>
+          <li><b>Laser cutting</b> for flat structural panels, where repeatability and turnaround mattered more than complex geometry</li>
+          <li><b>3D printing</b> for low-load brackets and the wheel-to-rail interface fixtures, where geometry was the priority and load was not</li>
+        </ul>
+        <p>That split kept the schedule realistic — we weren't waiting on the machine shop for parts that a printer could turn around overnight, and we weren't trusting a printed part with a load it wasn't suited for.</p>
+
+        <figure class="figure reveal">
+          <div class="shot">fabrication drawing — payload mount detail (placeholder)</div>
+          <figcaption>Dimensioned drawing for the payload mount, toleranced for the machines we had access to.</figcaption>
+        </figure>
+
+        <h2 id="version-control">Keeping the CAD Sane</h2>
+        <p>Five people editing the same SolidWorks assembly is a merge-conflict problem, except SolidWorks doesn't have merge conflicts — it has silently broken references and someone's afternoon of work overwritten by a file save. Before we'd cut a single part, I set up a self-hosted SVN server to host the team's CAD, with a folder structure per subassembly and a check-out/check-in workflow so two people couldn't edit the same file at once.</p>
+        <p>It's the least visible part of this project and the part I'd point to first. It meant every part had a version history, nobody's local copy of the assembly could silently drift from everyone else's, and we lost zero work to file conflicts for the rest of the term — which, on a five-person team sharing one CAD tree under a deadline, is not the default outcome.</p>
+
+        <h2 id="assembly">Assembly &amp; Testing</h2>
+        <p>Once parts came back from machining, laser cutting, and printing, we brought them together on the bench — checking fits, adjusting anything that didn't line up with the drawing, and wiring up the drivetrain. From there it was track runs: load the payload, run it end to end, see what shifted, what dragged, what came loose, and fix it before the next run.</p>
+
+        <figure class="figure reveal">
+          <div class="shot">physical build — assembled vehicle on track (placeholder)</div>
+          <figcaption>The assembled hauler on the test track, mid design–build–test cycle.</figcaption>
+        </figure>
+
+        <h2 id="results">Results</h2>
+        <p>The vehicle carried its payload across the track reliably, on schedule, having gone through a full design–build–test cycle as a team. The version-control setup outlived its original purpose too — it's the reason we could tell, after the fact, exactly which revision of which part went into the vehicle that ran.</p>
+
+        <div class="note reveal">
+          <b>Note:</b> figures throughout are placeholders — swap each one for the real CAD render or photo, and drop in specifics (weight targets, track dimensions, what actually broke during testing) once you've got them handy.
+        </div>
+
+        <div class="cta-row reveal" style="margin-top:40px">
+          <a href="https://github.com/danielrbenjamin/MECH-223-Rail-Speeder-and-Hauler" target="_blank" rel="noopener" class="btn">⌥ Source on GitHub</a>
+          <a href="../../projects.html" class="btn">← All projects</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div data-site-contact></div>
+
+</main>
+
+<div data-site-footer></div>
+
+<script>
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// TOC active-heading tracking
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const headings = document.querySelectorAll('.project-body h2[id]');
+  if(!links.length || !headings.length) return;
+  const byId = {};
+  links.forEach(a => byId[a.getAttribute('href').slice(1)] = a);
+
+  const tocIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = byId[entry.target.id];
+      if(!link) return;
+      if(entry.isIntersecting) links.forEach(a => a.classList.remove('active')), link.classList.add('active');
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  headings.forEach(h => tocIO.observe(h));
+})();
+</script>
+</body>
+</html>

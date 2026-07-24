@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="site-header.css">
 <script src="site-header.js" defer></script>
+<script src="site-footer.js" defer></script>
 <style>
 .pdf-shell{width:min(100%,760px);margin:0 auto;aspect-ratio:8.5/11;overflow:hidden;background:transparent}
 .pdf-actions{width:min(100%,760px);margin:0 auto 12px;display:flex;justify-content:flex-end}
@@ -33,7 +34,7 @@ body.pdf-load-failed .pdf-fallback{display:block}
   <section class="page-head" style="border-top:none">
     <div class="eyebrow reveal">Résumé</div>
     <h2 class="sec-h reveal">The condensed version.</h2>
-    <p class="sec-sub reveal">One page covering the full spread — chassis structures, suspension analysis, embedded systems, and software tooling. For the full picture, <a href="experience.html" style="color:var(--amber)">experience is here →</a>.</p>
+    <p class="sec-sub reveal">One page covering the whole spread. </p>
   </section>
 
   <section style="border-top:none;padding-top:0">
@@ -50,10 +51,7 @@ body.pdf-load-failed .pdf-fallback{display:block}
 
 </main>
 
-<footer class="wrap">
-  <span>© 2026 Daniel Benjamin</span>
-  <span>built from the shop floor</span>
-</footer>
+<div data-site-footer></div>
 <script src="https://acrobatservices.adobe.com/view-sdk/viewer.js"></script>
 <script>
 (function(){

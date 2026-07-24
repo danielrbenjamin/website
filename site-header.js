@@ -2,6 +2,21 @@
   const mounts = document.querySelectorAll("[data-site-header]");
   if (!mounts.length) return;
 
+  const thisScript =
+    document.currentScript || document.querySelector('script[src$="site-header.js"]');
+  const basePath = thisScript
+    ? thisScript.getAttribute("src").replace(/site-header\.js(?:\?.*)?$/, "")
+    : "";
+
+  const currentPath = window.location.pathname;
+  const currentFile = currentPath.split("/").pop() || "index.html";
+
+  function isCurrent(href) {
+    if (href === currentFile) return true;
+    if (href === "projects.html" && currentPath.includes("/projects/")) return true;
+    return false;
+  }
+
   const desktopLinks = [
     { href: "index.html", label: "home" },
     { href: "about.html", label: "about" },
@@ -57,8 +72,11 @@
   function renderLinks(links) {
     return links
       .map((link) => {
+        const current = !link.external && isCurrent(link.href);
         const attrs = link.external ? ' target="_blank" rel="noopener"' : "";
-        return `<a href="${link.href}"${attrs}>${link.label}</a>`;
+        const currentAttrs = current ? ' class="is-current" aria-current="page"' : "";
+        const href = link.external ? link.href : basePath + link.href;
+        return `<a href="${href}"${attrs}${currentAttrs}>${link.label}</a>`;
       })
       .join("");
   }
@@ -69,7 +87,7 @@
     mount.innerHTML = `
       <div class="bar">
         <div class="id">
-          <a href="index.html" aria-label="Home">${logo}</a>
+          <a href="${basePath}index.html" aria-label="Home">${logo}</a>
           <span>danielrbenjamin</span>
         </div>
         <nav>${renderLinks(desktopLinks)}</nav>

@@ -10,18 +10,12 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="site-header.css">
 <script src="site-header.js" defer></script>
+<script src="site-footer.js" defer></script>
+<script src="site-contact.js" defer></script>
 <style>
 /* terminal + photo row */
 .term-row{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start;margin-bottom:44px}
 @media(max-width:760px){.term-row{grid-template-columns:1fr;gap:28px}}
-.profile-photo-wrap{display:flex;justify-content:center}
-.profile-photo{
-  display:block;width:220px;height:220px;object-fit:cover;object-position:center top;
-  border-radius:50%;
-  box-shadow:0 0 0 4px rgba(255,181,84,.7);
-  filter:grayscale(18%) contrast(1.04);
-}
-@media(max-width:760px){.profile-photo{width:180px;height:180px}}
 
 /* two-column bio layout */
 .bio-grid{
@@ -75,27 +69,6 @@
 .interest-item .icon{font-size:1.5rem;margin-bottom:12px;display:block}
 .interest-item h4{font-size:.97rem;font-weight:600;margin-bottom:6px;color:var(--ink)}
 .interest-item p{font-size:.9rem;color:var(--ink-dim);line-height:1.6}
-
-/* contact strip */
-.contact-strip{text-align:center;padding-bottom:40px}
-.contact-strip .big{
-  font-size:clamp(1.6rem,4.5vw,2.8rem);font-weight:600;
-  letter-spacing:-.02em;margin-bottom:10px;
-}
-.contact-strip .big a{color:var(--amber);border-bottom:2px solid transparent;transition:border .15s}
-.contact-strip .big a:hover{border-color:var(--amber)}
-.contact-strip .links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px}
-
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
-.reveal.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
-
-footer{
-  border-top:1px solid var(--line);padding:26px 28px;
-  font-family:var(--mono);font-size:12px;color:var(--ink-faint);
-  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
-  max-width:1080px;margin:0 auto;
-}
 </style>
 </head>
 <body>
@@ -106,8 +79,8 @@ footer{
 
   <section class="page-head" style="border-top:none">
     <div class="eyebrow reveal">About Me</div>
-    <h2 class="sec-h reveal">Why I build.</h2>
-    <p class="sec-sub reveal">Driven by curiosity, shaped by experimentation. An exploration of what led to engineering, the mindset behind building, and the pursuit of learning beyond the classroom.
+    <h2 class="sec-h reveal">Who I am.</h2>
+    <p class="sec-sub reveal">Driven by curiosity, shaped by experimentation. An exploration of what led to engineering and the pursuit of learning beyond the classroom.
 </p>
   </section>
 
@@ -152,7 +125,7 @@ footer{
   </section>
 
   <!-- FSAE -->
-  <section id="fsae">
+  <section id="fsae" style="border-top:none;padding-top:0">
     <div class="eyebrow reveal">02 — UBC Formula Electric</div>
     <h2 class="sec-h reveal">Building a race car, seriously.</h2>
     <p class="sec-sub reveal">FSAE is a student engineering competition where teams design, build, and race a formula-style car. UBC's electric entry means high-voltage powertrain, custom chassis, and a full engineering package that gets judged by industry experts.</p>
@@ -181,7 +154,7 @@ footer{
   </section>
 
   <!-- INTERESTS -->
-  <section id="interests">
+  <section id="interests" style="border-top:none;padding-top:0">
     <div class="eyebrow reveal">03 — Beyond the Bench</div>
     <h2 class="sec-h reveal">What else drives me.</h2>
     <div class="interests-grid">
@@ -219,23 +192,11 @@ footer{
   </section>
 
   <!-- CONTACT -->
-  <section id="contact" class="contact-strip">
-    <div class="eyebrow reveal" style="justify-content:center">04 — Get in Touch</div>
-    <div class="big reveal">Let's build something.<br><a href="mailto:contact@danielrbenjamin.com">contact@danielrbenjamin.com</a></div>
-    <p class="sec-sub reveal" style="margin:18px auto 0;text-align:center">Open to co-op and project collaboration at the mechanical–software boundary.</p>
-    <div class="links reveal">
-      <a href="mailto:contact@danielrbenjamin.com" class="btn">✉ Email</a>
-      <a href="https://github.com" target="_blank" rel="noopener" class="btn">⌥ GitHub</a>
-      <a href="https://linkedin.com" target="_blank" rel="noopener" class="btn">in LinkedIn</a>
-    </div>
-  </section>
+  <div data-site-contact></div>
 
 </main>
 
-<footer>
-  <span>© 2026 Daniel Benjamin</span>
-  <span>built from the shop floor</span>
-</footer>
+<div data-site-footer></div>
 
 <script>
 (function(){
