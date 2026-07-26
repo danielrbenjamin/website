@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suspension Load Analysis Pipeline — Daniel Benjamin</title>
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png">
+<link rel="apple-touch-icon" href="../../favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../site-header.css">
+<script src="../../site-header.js" defer></script>
+<script src="../../site-footer.js" defer></script>
+<script src="../../site-contact.js" defer></script>
+<style>
+.project-layout{display:grid;grid-template-columns:190px 1fr;gap:52px;align-items:start}
+@media(max-width:860px){.project-layout{grid-template-columns:1fr}}
+
+.project-toc{position:sticky;top:36px}
+@media(max-width:860px){.project-toc{position:static;margin-bottom:36px}}
+.toc-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-list a{display:block;padding:7px 0 7px 14px;border-left:2px solid var(--line);font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);transition:color .15s,border-color .15s}
+.toc-list a:hover{color:var(--ink-dim)}
+.toc-list a.active{color:var(--amber);border-left-color:var(--amber)}
+@media(max-width:860px){
+  .toc-list{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .toc-list a{border-left:none;border:1px solid var(--line);border-radius:2px;padding:6px 11px}
+  .toc-list a.active{border-color:var(--amber);background:rgba(255,180,84,.06)}
+}
+
+.project-body h2{font-size:1.42rem;font-weight:600;letter-spacing:-.01em;margin:56px 0 16px;scroll-margin-top:28px}
+.project-body h2:first-child{margin-top:0}
+.project-body p{color:var(--ink-dim);font-size:1.02rem;line-height:1.72;margin-bottom:16px;max-width:680px}
+.project-body ul{margin:0 0 20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;max-width:680px}
+.project-body li{color:var(--ink-dim);font-size:.98rem;line-height:1.6;padding-left:18px;position:relative}
+.project-body li::before{content:"▸";position:absolute;left:0;color:var(--ink-faint);font-size:.85em;top:2px}
+.project-body b{color:var(--ink);font-weight:500}
+
+.figure{margin:8px 0 32px;max-width:680px}
+.figure .shot{
+  border:1px dashed var(--line-bright);border-radius:4px;background:var(--panel);
+  aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
+}
+.figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+
+.note{
+  margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
+  font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.7;max-width:680px;
+}
+.note b{color:var(--amber)}
+
+.hero-shot{
+  margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
+}
+
+/* ── pipeline stage diagram ── */
+.pipeline{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:8px 0 32px;max-width:680px}
+.pipeline .stage{
+  flex:1 1 130px;border:1px solid var(--line-bright);border-radius:5px;background:var(--panel);
+  padding:14px 16px;font-family:var(--mono);
+}
+.pipeline .stage .k{font-size:10px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.pipeline .stage .v{font-size:12px;color:var(--ink-dim);line-height:1.5}
+.pipeline .sep{align-self:center;color:var(--ink-faint);font-family:var(--mono);font-size:14px}
+@media(max-width:600px){.pipeline{flex-direction:column}.pipeline .sep{display:none}}
+</style>
+</head>
+<body>
+
+<div data-site-header></div>
+
+<main class="wrap">
+
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; MECH-004</div>
+    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">UBC Formula Electric · Suspension &amp; Analysis</div>
+    <h2 class="sec-h reveal">Suspension Load Analysis Pipeline</h2>
+    <p class="sec-sub reveal" style="margin-bottom:18px">A full Python pipeline that replaced legacy MATLAB scripts — turning raw vehicle parameters into the design load cases that drive every chassis and upright structural decision.</p>
+    <div class="chips reveal" style="margin-bottom:28px">
+      <span class="chip">Python</span><span class="chip">NumPy</span><span class="chip">Pacejka MF5.2</span><span class="chip">ANSYS</span>
+    </div>
+    <div class="hero-shot reveal">
+      <div class="figure" style="margin:0">
+        <div class="shot" style="aspect-ratio:21/9">tire force curves + load case output plot (placeholder)</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+    <div class="project-layout">
+
+      <aside class="project-toc reveal">
+        <div class="toc-label">On this page</div>
+        <ul class="toc-list">
+          <li><a href="#problem">Problem</a></li>
+          <li><a href="#pipeline">Pipeline Overview</a></li>
+          <li><a href="#tire-model">Tire Model</a></li>
+          <li><a href="#load-cases">Design Load Cases</a></li>
+          <li><a href="#fea-export">ANSYS FEA Export</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#links">Links</a></li>
+        </ul>
+      </aside>
+
+      <div class="project-body reveal">
+
+        <h2 id="problem">Problem</h2>
+        <p>Every structural decision on the car — chassis tube sizing, upright geometry, suspension mounting — ultimately traces back to a set of design loads. For years those loads came out of a tangle of legacy MATLAB scripts: hard to audit, harder to hand off, and slow to rerun whenever a vehicle parameter changed. Getting a fresh set of load cases after a suspension geometry change was a manual, error-prone afternoon.</p>
+        <p>The team needed a single, reproducible workflow: feed in vehicle parameters, get out a documented, versioned set of load cases that the chassis and suspension teams could build FEA around with confidence.</p>
+
+        <h2 id="pipeline">Pipeline Overview</h2>
+        <p>The pipeline takes raw vehicle parameters — mass distribution, CG height, track, wheelbase, tire data — and turns them into the full set of design loads the structural teams need, end to end in Python rather than spread across disconnected scripts.</p>
+
+        <div class="pipeline reveal">
+          <div class="stage"><div class="k">Input</div><div class="v">vehicle parameters — mass, CG, track, wheelbase, tire data</div></div>
+          <div class="sep">→</div>
+          <div class="stage"><div class="k">Tire model</div><div class="v">Pacejka MF5.2 — lateral &amp; longitudinal force curves</div></div>
+          <div class="sep">→</div>
+          <div class="stage"><div class="k">Load cases</div><div class="v">8 design load cases — braking, cornering, bump, combined</div></div>
+          <div class="sep">→</div>
+          <div class="stage"><div class="k">Export</div><div class="v">CSV, keyed to the ANSYS chassis FEA setup</div></div>
+        </div>
+
+        <h2 id="tire-model">Tire Model</h2>
+        <p>At the core of the pipeline is a Pacejka MF5.2 tire model, which generates realistic lateral and longitudinal force curves from the tire's characterization data rather than relying on simplified linear approximations. That accuracy matters most at the limit — cornering and combined-load cases are exactly where a crude tire model diverges furthest from reality, and those are the cases that size the most highly loaded parts.</p>
+
+        <h2 id="load-cases">Design Load Cases</h2>
+        <p>From the tire model's output, the pipeline assembles eight distinct design load cases — braking, cornering, combined braking-and-cornering, bump, and their variations — each representing a scenario the suspension and chassis structure has to survive. Torsional stiffness analysis, based on the Deakin et al. approach, ties these load cases back to the chassis's structural targets so front and rear stiffness stay matched to what the suspension geometry was designed around.</p>
+
+        <h2 id="fea-export">ANSYS FEA Export</h2>
+        <p>Every load case is exported as a clean CSV, keyed directly to the ANSYS chassis FEA setup, so there's no manual re-entry step between "the pipeline computed this load" and "ANSYS is running against it." That link is also where most of the legacy MATLAB workflow's error surface used to live — a mistyped or stale value carried from a spreadsheet into FEA without anyone noticing.</p>
+
+        <figure class="figure reveal">
+          <div class="shot">sample load-case CSV export, keyed to FEA node sets (placeholder)</div>
+          <figcaption>One of eight design load cases, exported and ready to drop into the ANSYS chassis FEA model.</figcaption>
+        </figure>
+
+        <h2 id="results">Results</h2>
+        <p>What used to be a manual, error-prone afternoon of MATLAB scripts is now a parameter change and a re-run. Every downstream structural decision — chassis tube sizing, upright geometry, suspension hardpoint loads — traces back to a documented, versioned load case instead of a spreadsheet nobody fully trusted.</p>
+
+        <div class="note reveal">
+          <b>Note:</b> the hero plot, load-case CSV figure, and any code snippets are still placeholders — swap in real tire-curve plots and sample output once you're ready to publish them.
+        </div>
+
+        <h2 id="links">Links</h2>
+        <div class="cta-row reveal">
+          <a href="../../projects.html" class="btn">← All projects</a>
+        </div>
+
+        <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
+
+      </div>
+    </div>
+  </section>
+
+  <div data-site-contact></div>
+
+</main>
+
+<div data-site-footer></div>
+
+<script>
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const headings = document.querySelectorAll('.project-body h2[id]');
+  if(!links.length || !headings.length) return;
+  const byId = {};
+  links.forEach(a => byId[a.getAttribute('href').slice(1)] = a);
+
+  const tocIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = byId[entry.target.id];
+      if(!link) return;
+      if(entry.isIntersecting) links.forEach(a => a.classList.remove('active')), link.classList.add('active');
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  headings.forEach(h => tocIO.observe(h));
+})();
+</script>
+</body>
+</html>

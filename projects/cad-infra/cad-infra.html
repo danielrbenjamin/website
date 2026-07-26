@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVNWORKS: CAD Version Control + Team Infra — Daniel Benjamin</title>
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png">
+<link rel="apple-touch-icon" href="../../favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../site-header.css">
+<script src="../../site-header.js" defer></script>
+<script src="../../site-footer.js" defer></script>
+<script src="../../site-contact.js" defer></script>
+<style>
+.project-layout{display:grid;grid-template-columns:190px 1fr;gap:52px;align-items:start}
+@media(max-width:860px){.project-layout{grid-template-columns:1fr}}
+
+.project-toc{position:sticky;top:36px}
+@media(max-width:860px){.project-toc{position:static;margin-bottom:36px}}
+.toc-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-list a{display:block;padding:7px 0 7px 14px;border-left:2px solid var(--line);font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);transition:color .15s,border-color .15s}
+.toc-list a:hover{color:var(--ink-dim)}
+.toc-list a.active{color:var(--amber);border-left-color:var(--amber)}
+@media(max-width:860px){
+  .toc-list{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .toc-list a{border-left:none;border:1px solid var(--line);border-radius:2px;padding:6px 11px}
+  .toc-list a.active{border-color:var(--amber);background:rgba(255,180,84,.06)}
+}
+
+.project-body h2{font-size:1.42rem;font-weight:600;letter-spacing:-.01em;margin:56px 0 16px;scroll-margin-top:28px}
+.project-body h2:first-child{margin-top:0}
+.project-body p{color:var(--ink-dim);font-size:1.02rem;line-height:1.72;margin-bottom:16px;max-width:680px}
+.project-body ul{margin:0 0 20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;max-width:680px}
+.project-body li{color:var(--ink-dim);font-size:.98rem;line-height:1.6;padding-left:18px;position:relative}
+.project-body li::before{content:"▸";position:absolute;left:0;color:var(--ink-faint);font-size:.85em;top:2px}
+.project-body b{color:var(--ink);font-weight:500}
+
+.figure{margin:8px 0 32px;max-width:680px}
+.figure .shot{
+  border:1px dashed var(--line-bright);border-radius:4px;background:var(--panel);
+  aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
+}
+.figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+
+.note{
+  margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
+  font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.7;max-width:680px;
+}
+.note b{color:var(--amber)}
+
+.hero-shot{
+  margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
+}
+</style>
+</head>
+<body>
+
+<div data-site-header></div>
+
+<main class="wrap">
+
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; SWE-002</div>
+    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">UBC Formula Electric · Team Infrastructure</div>
+    <h2 class="sec-h reveal">SVNWORKS: CAD Version Control + Team Infra</h2>
+    <p class="sec-sub reveal" style="margin-bottom:18px">SVN-based CAD version control on Oracle Cloud, Jira milestone tracking across subteams, plus SOPs and onboarding docs — the unglamorous infrastructure that keeps a 100-person student team from losing work.</p>
+    <div class="chips reveal" style="margin-bottom:28px">
+      <span class="chip">SVN</span><span class="chip">Oracle Cloud</span><span class="chip">Jira</span>
+    </div>
+    <div class="hero-shot reveal">
+      <div class="figure" style="margin:0">
+        <div class="shot" style="aspect-ratio:21/9">SVN repository tree — subteam folder structure (placeholder)</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+    <div class="project-layout">
+
+      <aside class="project-toc reveal">
+        <div class="toc-label">On this page</div>
+        <ul class="toc-list">
+          <li><a href="#problem">Problem</a></li>
+          <li><a href="#svn">SVN on Oracle Cloud</a></li>
+          <li><a href="#jira">Jira Milestone Tracking</a></li>
+          <li><a href="#docs">SOPs &amp; Onboarding</a></li>
+          <li><a href="#results">Results</a></li>
+        </ul>
+      </aside>
+
+      <div class="project-body reveal">
+
+        <h2 id="problem">Problem</h2>
+        <p>UBC Formula Electric is roughly 100 students across a dozen subteams, all editing CAD, firmware, and documentation that ultimately has to fit together into one car. That scale turns "keep everyone's files in sync" from a nicety into a real infrastructure problem — the kind that, left unsolved, costs the team actual rework every single build season.</p>
+        <p>SVNWORKS is the name I gave to the combined effort: hosting, version control, task tracking, and documentation, built and maintained so the team's process scales with its headcount instead of breaking under it.</p>
+
+        <h2 id="svn">SVN on Oracle Cloud</h2>
+        <p>I set up and maintain a self-hosted SVN server on Oracle Cloud to host the team's CAD — SolidWorks assemblies across every subteam, organized into a folder structure that mirrors the car's own subsystem breakdown. SVN's check-out/check-in model, unlike a naive shared-drive setup, means two people can't silently overwrite each other's work on the same file, and every part carries a real version history.</p>
+        <p>Running it on Oracle Cloud rather than a spare laptop under someone's desk means the server's uptime doesn't depend on any one person's machine being on — a real risk for infrastructure a hundred-person team depends on daily.</p>
+
+        <h2 id="jira">Jira Milestone Tracking</h2>
+        <p>Version control solves "whose file is this," but not "what's actually left to do before the car needs to run." For that, I set up Jira milestone tracking across subteams, giving leads a shared view of where each subsystem stands against the competition timeline instead of a dozen separate mental models of the schedule.</p>
+
+        <h2 id="docs">SOPs &amp; Onboarding</h2>
+        <p>A student team turns over roughly a third of its membership every year, which means undocumented process knowledge evaporates constantly. I wrote and maintain the SOPs and onboarding documentation for the CAD and infrastructure side of the team, so a new member's first week is spent learning the car, not reverse-engineering how the file server works from tribal knowledge.</p>
+
+        <figure class="figure reveal">
+          <div class="shot">SVN check-out workflow — onboarding doc excerpt (placeholder)</div>
+          <figcaption>Part of the onboarding SOP walking new members through the SVN check-out/check-in workflow.</figcaption>
+        </figure>
+
+        <h2 id="results">Results</h2>
+        <p>The team hasn't lost CAD work to file conflicts since the SVN setup went live, milestone visibility through Jira gives leads an actual read on schedule risk instead of a guess, and new members ramp up against written process instead of whoever happens to be in the shop that day. None of this is visible in a competition result, but it's the reason the visible work gets done on time.</p>
+
+        <div class="note reveal">
+          <b>Note:</b> the repository-tree and onboarding-doc figures above are still placeholders — swap in real screenshots once you're ready to publish them.
+        </div>
+
+        <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
+
+      </div>
+    </div>
+  </section>
+
+  <div data-site-contact></div>
+
+</main>
+
+<div data-site-footer></div>
+
+<script>
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const headings = document.querySelectorAll('.project-body h2[id]');
+  if(!links.length || !headings.length) return;
+  const byId = {};
+  links.forEach(a => byId[a.getAttribute('href').slice(1)] = a);
+
+  const tocIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = byId[entry.target.id];
+      if(!link) return;
+      if(entry.isIntersecting) links.forEach(a => a.classList.remove('active')), link.classList.add('active');
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  headings.forEach(h => tocIO.observe(h));
+})();
+</script>
+</body>
+</html>

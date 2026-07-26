@@ -63,17 +63,48 @@
   aspect-ratio:4/3;min-height:200px;
 }
 .photo-col img.photo-placeholder{
-  object-fit:cover;width:100%;
+  display:block;object-fit:cover;width:100%;height:100%;min-width:0;
 }
 .photo-tag{
-  position:absolute;left:14px;bottom:14px;
+  position:absolute;left:14px;bottom:14px;z-index:2;
   font-family:var(--mono);font-size:11px;color:var(--ink-dim);
   background:var(--bg);border:1px solid var(--line);border-radius:3px;
   padding:5px 10px;letter-spacing:.04em;
-  opacity:0;transform:translateY(6px);
-  transition:opacity .3s ease,transform .3s ease;
 }
-.img-ph:hover .photo-tag{opacity:1;transform:translateY(0)}
+
+/* a real photo, framed the same way as the placeholders but without the
+   dashed placeholder pattern, and captioned like the rest of the site */
+.photo-frame{
+  position:relative;overflow:hidden;border-radius:3px;
+  border:1px solid var(--line-bright);height:100%;width:fit-content;
+  transition:border-color .3s ease;will-change:transform;
+}
+.photo-frame:hover{border-color:var(--amber)}
+.photo-frame img{display:block;height:100%;width:auto;max-width:100%;object-fit:contain}
+@media(max-width:600px){
+  .photo-frame{width:100%;height:auto}
+  .photo-frame img{width:100%;height:auto}
+}
+
+/* carousel — cycles through a few slides inside an .img-ph frame */
+.carousel-track{position:relative;width:100%;height:100%}
+.carousel-slide{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .6s ease;pointer-events:none;
+}
+.carousel-slide.is-active{opacity:1;pointer-events:auto}
+.carousel-slide img{width:100%;height:100%;object-fit:cover;display:block}
+@media(prefers-reduced-motion:reduce){.carousel-slide{transition:none}}
+.carousel-dots{
+  position:absolute;right:14px;bottom:14px;
+  display:flex;gap:6px;z-index:2;
+}
+.carousel-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--line-bright);
+  opacity:.5;cursor:pointer;transition:opacity .25s ease,background .25s ease;
+}
+.carousel-dot:hover{opacity:.8}
+.carousel-dot.is-active{background:var(--amber);opacity:1}
 
 /* FSAE section — alternating media + content rows */
 .fsae-row{display:grid;grid-template-columns:1fr 1.25fr;gap:40px;align-items:center;margin-bottom:48px}
@@ -103,12 +134,18 @@
 
 /* interests — a small terminal-style table beside a couple of hiking shots */
 .interests-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
-.interests-wrap .photo-col{flex-direction:row;gap:20px}
+.interests-wrap .photo-col{flex-direction:row;gap:20px;height:350px}
+.interests-wrap .photo-col > *{flex:1 1 0;min-width:0}
+/* the reading photo keeps its own proportions — don't force it into the 4:3
+   box or crop it, just match the carousel's fixed row height and let width follow */
+.interests-wrap .photo-col > .photo-frame{flex:0 1 auto}
 @media(max-width:760px){
   .interests-wrap{grid-template-columns:1fr;gap:28px}
   .interests-wrap .photo-col{flex-direction:row}
 }
-@media(max-width:600px){.interests-wrap .photo-col{flex-direction:column}}
+@media(max-width:600px){
+  .interests-wrap .photo-col{flex-direction:column;height:auto}
+}
 .interests-graph{width:100%;display:flex;align-items:center;justify-content:center}
 .graph-svg{width:100%;max-width:460px;height:auto;display:block}
 .edge-filler{stroke:var(--line);stroke-width:.75;opacity:.5}
@@ -121,6 +158,20 @@
 .graph-node:hover line{stroke:var(--amber)}
 .graph-node:hover circle{stroke:var(--amber)}
 .graph-node:hover text{fill:var(--ink)}
+
+/* draggable graph nodes — obsidian-style hub graph */
+.graph-svg{overflow:visible}
+.graph-node circle:not(.node-filler),.hub-dot{cursor:grab;touch-action:none}
+.graph-node circle:not(.node-filler):active,.hub-dot:active{cursor:grabbing}
+.hub-dot{transition:stroke .2s ease}
+.graph-node circle.is-dragging,.hub-dot.is-dragging{stroke:var(--amber);stroke-width:2}
+.graph-node text.is-dragging{fill:var(--amber)}
+.graph-node line.is-dragging{stroke:var(--amber)}
+
+/* filler dots/lines are nested inside .graph-node so they travel with their
+   parent node, but keep their own faint styling rather than inheriting it */
+.graph-node line.edge-filler{stroke:var(--line);stroke-width:.75;opacity:.5}
+.graph-node circle.node-filler{fill:var(--line-bright);stroke:none;opacity:.6;cursor:default}
 </style>
 </head>
 <body>
@@ -203,43 +254,64 @@
     <div class="interests-wrap">
       <div class="interests-graph reveal">
         <svg class="graph-svg" viewBox="0 0 460 340" xmlns="http://www.w3.org/2000/svg">
-          <line class="edge-filler" x1="60" y1="80" x2="20" y2="150"/>
-          <line class="edge-filler" x1="400" y1="140" x2="330" y2="230"/>
-          <line class="edge-filler" x1="190" y1="295" x2="140" y2="303"/>
-          <line class="edge-filler" x1="250" y1="45" x2="300" y2="12"/>
-
-          <circle class="node-filler" cx="20" cy="150" r="4"/>
-          <circle class="node-filler" cx="330" cy="230" r="4"/>
-          <circle class="node-filler" cx="140" cy="303" r="4"/>
-          <circle class="node-filler" cx="300" cy="12" r="3"/>
-
           <g class="graph-node">
             <line x1="150" y1="175" x2="60" y2="80"/>
+            <line class="edge-filler" x1="60" y1="80" x2="20" y2="150"/>
             <circle cx="60" cy="80" r="9"/>
             <text x="60" y="60" text-anchor="middle">Reading</text>
+            <circle class="node-filler" cx="20" cy="150" r="4"/>
           </g>
           <g class="graph-node">
             <line x1="150" y1="175" x2="250" y2="45"/>
+            <line class="edge-filler" x1="250" y1="45" x2="300" y2="12"/>
             <circle cx="250" cy="45" r="8"/>
             <text x="250" y="26" text-anchor="middle">Hiking</text>
+            <circle class="node-filler" cx="300" cy="12" r="3"/>
           </g>
           <g class="graph-node">
             <line x1="150" y1="175" x2="190" y2="295"/>
+            <line class="edge-filler" x1="190" y1="295" x2="140" y2="303"/>
             <circle cx="190" cy="295" r="9"/>
             <text x="190" y="322" text-anchor="middle">Woodworking</text>
+            <circle class="node-filler" cx="140" cy="303" r="4"/>
           </g>
           <g class="graph-node">
             <line x1="150" y1="175" x2="400" y2="140"/>
+            <line class="edge-filler" x1="400" y1="140" x2="330" y2="230"/>
             <circle cx="400" cy="140" r="10"/>
             <text x="400" y="118" text-anchor="middle">Photography</text>
+            <circle class="node-filler" cx="330" cy="230" r="4"/>
           </g>
 
           <circle class="hub-dot" cx="150" cy="175" r="11"/>
         </svg>
       </div>
       <div class="photo-col reveal">
-        <div class="photo-placeholder img-ph tilt">photo<span class="photo-tag">05 — Hiking, BC</span></div>
-        <div class="photo-placeholder img-ph tilt">photo<span class="photo-tag">06 — Hiking, summit</span></div>
+        <div class="photo-placeholder img-ph tilt carousel" data-carousel>
+          <div class="carousel-track">
+            <div class="carousel-slide is-active">
+              <img src="about/landslide_berg_lake.jpg" alt="Berg Lake via Elk River Trail">
+              <span class="photo-tag">Berg Lake</span>
+            </div>
+            <div class="carousel-slide">
+              <img src="about/5040_hut.jpg" alt="5040">
+              <span class="photo-tag">5040 Peak</span>
+            </div>
+            <div class="carousel-slide">
+              <img src="about/5040_squirrel.jpg" alt="squirrel">
+              <span class="photo-tag">trail companion</span>
+            </div>
+          </div>
+          <div class="carousel-dots">
+            <span class="carousel-dot is-active"></span>
+            <span class="carousel-dot"></span>
+            <span class="carousel-dot"></span>
+          </div>
+        </div>
+        <div class="photo-frame tilt">
+          <img src="about/currently_reading.jpg" alt="What I'm currently reading">
+          <span class="photo-tag">CURRENTLY READING</span>
+        </div>
       </div>
     </div>
   </section>
@@ -345,6 +417,46 @@ const io = new IntersectionObserver((entries) => {
 }, { threshold:.1, rootMargin:'0px 0px -40px 0px' });
 document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
+// interest photo carousel — auto-advances through slides, pauses on hover
+document.querySelectorAll('[data-carousel]').forEach((root) => {
+  const slides = Array.from(root.querySelectorAll('.carousel-slide'));
+  const dots = Array.from(root.querySelectorAll('.carousel-dot'));
+  if(slides.length < 2) return;
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let current = slides.findIndex((s) => s.classList.contains('is-active'));
+  if(current < 0) current = 0;
+  let timer = null;
+
+  function goTo(index){
+    slides[current].classList.remove('is-active');
+    dots[current] && dots[current].classList.remove('is-active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('is-active');
+    dots[current] && dots[current].classList.add('is-active');
+  }
+
+  function start(){
+    if(reduce || timer) return;
+    timer = setInterval(() => goTo(current + 1), 4000);
+  }
+  function stop(){
+    clearInterval(timer);
+    timer = null;
+  }
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      goTo(i);
+      stop();
+      start();
+    });
+  });
+  root.addEventListener('mouseenter', stop);
+  root.addEventListener('mouseleave', start);
+
+  start();
+});
+
 // cursor-tracking tilt on the image placeholders
 if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
   document.querySelectorAll('.tilt').forEach((el) => {
@@ -362,6 +474,197 @@ if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
     });
   });
 }
+
+// interests graph — obsidian-style draggable hub graph
+(function(){
+  const svg = document.querySelector('.graph-svg');
+  if(!svg) return;
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const VB_W = 460, VB_H = 340;
+
+  const hubEl = svg.querySelector('.hub-dot');
+  const hub = {
+    x:+hubEl.getAttribute('cx'), y:+hubEl.getAttribute('cy'),
+    vx:0, vy:0, r:+hubEl.getAttribute('r'), el:hubEl, fixed:false
+  };
+  hub.homeX = hub.x;
+  hub.homeY = hub.y;
+
+  const leaves = Array.from(svg.querySelectorAll('.graph-node')).map((g) => {
+    const line = g.querySelector('line');
+    const circle = g.querySelector('circle');
+    const text = g.querySelector('text');
+    const fillerLine = g.querySelector('.edge-filler');
+    const fillerDot = g.querySelector('.node-filler');
+    const cx = +circle.getAttribute('cx'), cy = +circle.getAttribute('cy');
+    const node = {
+      x:cx, y:cy, vx:0, vy:0, r:+circle.getAttribute('r'),
+      el:circle, line, text, group:g,
+      textDy:+text.getAttribute('y') - cy,
+      homeX:cx, homeY:cy,
+      offX:cx - hub.x, offY:cy - hub.y,
+      fixed:false
+    };
+    if(fillerDot){
+      node.fillerLine = fillerLine;
+      node.fillerDot = fillerDot;
+      node.fillerDx = +fillerDot.getAttribute('cx') - cx;
+      node.fillerDy = +fillerDot.getAttribute('cy') - cy;
+    }
+    return node;
+  });
+
+  const allNodes = [hub, ...leaves];
+
+  function clamp(node){
+    node.x = Math.max(node.r + 12, Math.min(VB_W - node.r - 12, node.x));
+    node.y = Math.max(node.r + 22, Math.min(VB_H - node.r - 12, node.y));
+  }
+
+  function render(){
+    hub.el.setAttribute('cx', hub.x);
+    hub.el.setAttribute('cy', hub.y);
+    leaves.forEach((n) => {
+      n.el.setAttribute('cx', n.x);
+      n.el.setAttribute('cy', n.y);
+      n.text.setAttribute('x', n.x);
+      n.text.setAttribute('y', n.y + n.textDy);
+      n.line.setAttribute('x1', hub.x);
+      n.line.setAttribute('y1', hub.y);
+      n.line.setAttribute('x2', n.x);
+      n.line.setAttribute('y2', n.y);
+      if(n.fillerDot){
+        const fx = n.x + n.fillerDx, fy = n.y + n.fillerDy;
+        n.fillerDot.setAttribute('cx', fx);
+        n.fillerDot.setAttribute('cy', fy);
+        n.fillerLine.setAttribute('x1', n.x);
+        n.fillerLine.setAttribute('y1', n.y);
+        n.fillerLine.setAttribute('x2', fx);
+        n.fillerLine.setAttribute('y2', fy);
+      }
+    });
+  }
+
+  function simulate(){
+    // repulsion between every pair, so dragging one node pushes neighbors aside
+    for(let i = 0; i < allNodes.length; i++){
+      for(let j = i + 1; j < allNodes.length; j++){
+        const a = allNodes[i], b = allNodes[j];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 0.01;
+        const minDist = a.r + b.r + 42;
+        if(dist < minDist){
+          const force = (minDist - dist) / dist * 0.08;
+          const fx = dx * force, fy = dy * force;
+          if(!a.fixed){ a.vx -= fx; a.vy -= fy; }
+          if(!b.fixed){ b.vx += fx; b.vy += fy; }
+        }
+      }
+    }
+    // each leaf eases toward a point offset from the hub's current position
+    // (not its home) — so moving the hub drags every leaf along with it, and
+    // a leaf straying from that spot tugs back on the hub in return, letting
+    // a single drag ripple through the whole graph before it settles
+    leaves.forEach((n) => {
+      const tx = hub.x + n.offX, ty = hub.y + n.offY;
+      const strayX = n.x - tx, strayY = n.y - ty;
+      if(!n.fixed){
+        n.vx -= strayX * 0.05;
+        n.vy -= strayY * 0.05;
+      }
+      if(!hub.fixed){
+        hub.vx += strayX * 0.012;
+        hub.vy += strayY * 0.012;
+      }
+    });
+    // hub eases back toward its own home position over time, which in turn
+    // pulls the whole formation back to its original layout
+    if(!hub.fixed){
+      hub.vx += (hub.homeX - hub.x) * 0.015;
+      hub.vy += (hub.homeY - hub.y) * 0.015;
+    }
+    // integrate with damping
+    allNodes.forEach((n) => {
+      if(n.fixed){ n.vx = 0; n.vy = 0; return; }
+      n.vx *= 0.8;
+      n.vy *= 0.8;
+      n.x += n.vx;
+      n.y += n.vy;
+      clamp(n);
+    });
+  }
+
+  let dragging = null;
+  let running = false;
+
+  function tick(){
+    simulate();
+    render();
+    const energy = allNodes.reduce((s, n) => s + Math.abs(n.vx) + Math.abs(n.vy), 0);
+    if(!dragging && energy < 0.02){
+      running = false;
+      return;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function wake(){
+    if(running) return;
+    running = true;
+    requestAnimationFrame(tick);
+  }
+
+  function toSvgPoint(evt){
+    const pt = svg.createSVGPoint();
+    pt.x = evt.clientX;
+    pt.y = evt.clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  }
+
+  function startDrag(node, evt){
+    evt.preventDefault();
+    dragging = node;
+    node.fixed = true;
+    node.vx = 0;
+    node.vy = 0;
+    node.el.setPointerCapture(evt.pointerId);
+    node.el.classList.add('is-dragging');
+    node.text && node.text.classList.add('is-dragging');
+    node.line && node.line.classList.add('is-dragging');
+    if(reduce) render();
+    else wake();
+  }
+
+  function moveDrag(node, evt){
+    if(dragging !== node) return;
+    const p = toSvgPoint(evt);
+    node.x = p.x;
+    node.y = p.y;
+    clamp(node);
+    if(reduce) render();
+  }
+
+  function endDrag(node, evt){
+    if(dragging !== node) return;
+    node.fixed = false;
+    node.el.classList.remove('is-dragging');
+    node.text && node.text.classList.remove('is-dragging');
+    node.line && node.line.classList.remove('is-dragging');
+    try{ node.el.releasePointerCapture(evt.pointerId); }catch(e){}
+    dragging = null;
+  }
+
+  function wire(node){
+    node.el.addEventListener('pointerdown', (e) => startDrag(node, e));
+    node.el.addEventListener('pointermove', (e) => moveDrag(node, e));
+    node.el.addEventListener('pointerup', (e) => endDrag(node, e));
+    node.el.addEventListener('pointercancel', (e) => endDrag(node, e));
+  }
+  wire(hub);
+  leaves.forEach(wire);
+
+  render();
+})();
 </script>
 
 </body>

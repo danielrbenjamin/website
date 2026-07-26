@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FSAE Chassis Design and Manufacture — Daniel Benjamin</title>
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png">
+<link rel="apple-touch-icon" href="../../favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../site-header.css">
+<script src="../../site-header.js" defer></script>
+<script src="../../site-footer.js" defer></script>
+<script src="../../site-contact.js" defer></script>
+<style>
+/* ── project layout: sticky TOC + body ── */
+.project-layout{display:grid;grid-template-columns:190px 1fr;gap:52px;align-items:start}
+@media(max-width:860px){.project-layout{grid-template-columns:1fr}}
+
+.project-toc{position:sticky;top:36px}
+@media(max-width:860px){.project-toc{position:static;margin-bottom:36px}}
+.toc-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-list a{display:block;padding:7px 0 7px 14px;border-left:2px solid var(--line);font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);transition:color .15s,border-color .15s}
+.toc-list a:hover{color:var(--ink-dim)}
+.toc-list a.active{color:var(--amber);border-left-color:var(--amber)}
+@media(max-width:860px){
+  .toc-list{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .toc-list a{border-left:none;border:1px solid var(--line);border-radius:2px;padding:6px 11px}
+  .toc-list a.active{border-color:var(--amber);background:rgba(255,180,84,.06)}
+}
+
+.project-body h2{font-size:1.42rem;font-weight:600;letter-spacing:-.01em;margin:56px 0 16px;scroll-margin-top:28px}
+.project-body h2:first-child{margin-top:0}
+.project-body p{color:var(--ink-dim);font-size:1.02rem;line-height:1.72;margin-bottom:16px;max-width:680px}
+.project-body ul{margin:0 0 20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;max-width:680px}
+.project-body li{color:var(--ink-dim);font-size:.98rem;line-height:1.6;padding-left:18px;position:relative}
+.project-body li::before{content:"▸";position:absolute;left:0;color:var(--ink-faint);font-size:.85em;top:2px}
+.project-body b{color:var(--ink);font-weight:500}
+
+/* ── inline figures ── */
+.figure{margin:8px 0 32px;max-width:680px}
+.figure .shot{
+  border:1px dashed var(--line-bright);border-radius:4px;background:var(--panel);
+  aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
+}
+.figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+
+.note{
+  margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
+  font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.7;max-width:680px;
+}
+.note b{color:var(--amber)}
+
+/* ── hero image ── */
+.hero-shot{
+  margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
+}
+.hero-shot img{display:block;width:100%;height:auto;max-height:520px;object-fit:cover}
+
+/* ── live-experience launch cards ── */
+.launch-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:8px 0 32px;max-width:680px}
+@media(max-width:600px){.launch-grid{grid-template-columns:1fr}}
+.launch-card{
+  display:block;border:1px solid var(--line-bright);border-radius:6px;background:var(--panel);
+  padding:22px;transition:border-color .18s,transform .18s;
+}
+.launch-card:hover{border-color:var(--amber);transform:translateY(-2px)}
+.launch-card .lc-tag{font-family:var(--mono);font-size:10.5px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.launch-card h4{font-size:1.05rem;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.launch-card p{color:var(--ink-dim);font-size:.92rem;line-height:1.55;margin-bottom:0}
+.launch-card .lc-arrow{font-family:var(--mono);color:var(--amber);font-size:12px;margin-top:14px;display:block;transition:transform .15s}
+.launch-card:hover .lc-arrow{transform:translateX(4px)}
+</style>
+</head>
+<body>
+
+<div data-site-header></div>
+
+<main class="wrap">
+
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; MECH-001</div>
+    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">UBC Formula Electric · Chassis Lead · 2025 – Present</div>
+    <h2 class="sec-h reveal">FSAE Chassis Design and Manufacture</h2>
+    <p class="sec-sub reveal" style="margin-bottom:18px">The 2026 UBC Formula Electric car's structure, owned end to end: a 4130 chromoly tube frame, custom-machined uprights, planetary gearboxes, an adjustable pedal box, and the full aero package.</p>
+    <div class="chips reveal" style="margin-bottom:28px">
+      <span class="chip">SolidWorks</span><span class="chip">AutoCAD</span><span class="chip">ANSYS</span><span class="chip">Three.js</span><span class="chip">4130 Chromoly</span>
+    </div>
+    <div class="hero-shot reveal">
+      <div class="figure" style="margin:0">
+        <div class="shot" style="aspect-ratio:21/9">hero render — 2026 chassis, three-quarter view (placeholder)</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+    <div class="project-layout">
+
+      <aside class="project-toc reveal">
+        <div class="toc-label">On this page</div>
+        <ul class="toc-list">
+          <li><a href="#problem">Problem</a></li>
+          <li><a href="#structure">Structure &amp; Load Path</a></li>
+          <li><a href="#analysis">Analysis &amp; Documentation</a></li>
+          <li><a href="#manufacture">Manufacturing</a></li>
+          <li><a href="#interactive">Interactive: Explode &amp; Drawings</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#links">Links</a></li>
+        </ul>
+      </aside>
+
+      <div class="project-body reveal">
+
+        <h2 id="problem">Problem</h2>
+        <p>UBC Formula Electric designs, builds, and races a formula-style electric car against other university teams every year. The chassis is the one system every other subteam bolts to — suspension, powertrain, aero, the driver — so it has to be right before almost anything else can be finalized. As Chassis Lead for the 2026 car, I own that structure from concept sketch through competition scrutineering.</p>
+        <p>The brief is really three competing constraints at once: keep the frame light enough to help lap time, stiff enough that suspension geometry doesn't wander under load, and strong enough to pass FSAE's structural rules and protect the driver in an impact. None of those are optional, and trading between them is most of the job.</p>
+
+        <h2 id="structure">Structure &amp; Load Path</h2>
+        <p>The frame is a 4130 chromoly tube-steel space frame, sized member by member from the loads it actually sees — suspension pickups, harness attachment points, impact attenuator mounting, and the torsional loads that come from cornering. I model the full assembly in SolidWorks and reason about load path before committing to a tube diameter or wall thickness, since moving a node in CAD is a lot cheaper than re-notching a tube.</p>
+        <ul>
+          <li><b>Suspension pickups</b> — sized against both simply-supported and fixed-fixed boundary assumptions, since the real mounting condition sits between the two</li>
+          <li><b>Torsional stiffness</b> — modeled following the Deakin et al. approach, so front and rear stiffness stay matched to the suspension's designed weight-transfer balance</li>
+          <li><b>Impact attenuator &amp; harness mounts</b> — sized against FSAE's regulatory loads, including the 30 kN harness-anchor requirement</li>
+        </ul>
+
+        <h2 id="analysis">Analysis &amp; Documentation</h2>
+        <p>Every structural decision is backed by hand calculations and ANSYS Static Structural runs, and every one of those is written up in a formal design document — CHS-F04 for the chassis, SUS-F01 for the suspension-mounting interface — plus a maintained design-decision log. That's not paperwork for its own sake: FSAE's design event asks teams to defend their choices, and "here's the calc, here's the FEA, here's why we picked this tube" is a much stronger answer than "it hasn't broken yet."</p>
+        <p>It also means the next chassis lead inherits a frame they can actually reason about, instead of a black box they're afraid to touch.</p>
+
+        <figure class="figure reveal">
+          <div class="shot">ANSYS static structural — torsional stiffness case (placeholder)</div>
+          <figcaption>Torsional stiffness FEA, front vs. rear compliance compared against the suspension's target weight-transfer split.</figcaption>
+        </figure>
+
+        <h2 id="manufacture">Manufacturing</h2>
+        <p>The frame is TIG-welded from notched 4130 tube, jigged to hold the suspension hardpoints within competition tolerance through the welding process. Uprights are custom-machined rather than off-the-shelf, and the planetary gearboxes and adjustable pedal box were both designed in-house to fit inside a chassis envelope that was never going to accommodate a catalog part.</p>
+
+        <h2 id="interactive">Interactive: Explode &amp; Drawings</h2>
+        <p>Two pieces of this project are live on this site rather than just described. The first is a scroll-driven exploded view of the full car — 794 parts, each flying outward along its own vector from the chassis centroid as you scroll, staggered by distance from center so it reads as a bloom rather than a blast. The second is the full AutoCAD assembly drawing set, which draws itself onto the sheet like a plotter laying down ink, scrubbed by scroll or replayed on demand.</p>
+
+        <div class="launch-grid">
+          <a class="launch-card" href="../../chassis-viewer.html">
+            <div class="lc-tag">Three.js · scroll-scrubbed</div>
+            <h4>Exploded assembly</h4>
+            <p>794-part car model, disassembling radially as you scroll. Drag to orbit at any point.</p>
+            <span class="lc-arrow">Open the explode view →</span>
+          </a>
+          <a class="launch-card" href="../../drawings-viewer.html">
+            <div class="lc-tag">AutoCAD · self-drawing</div>
+            <h4>Assembly drawings</h4>
+            <p>Top, side, and front views of Car #85, drawn line by line, scroll-scrubbed or replayed.</p>
+            <span class="lc-arrow">Open the drawing set →</span>
+          </a>
+        </div>
+
+        <h2 id="results">Results</h2>
+        <p>The 2026 chassis carries the full structural package — frame, uprights, gearboxes, pedal box, and aero mounting — through design, FEA, and fabrication as one coherent system, with every major decision traceable back to a calc or a documented tradeoff. That traceability is the part I'd point to: it's what lets the team defend the car at competition, and what lets whoever leads chassis after me pick up exactly where the documentation left off.</p>
+
+        <div class="note reveal">
+          <b>Note:</b> the hero render and ANSYS figures on this page are still placeholders — swap in the real renders, FEA plots, and final competition numbers once the 2026 car is built and scrutineered.
+        </div>
+
+        <h2 id="links">Links</h2>
+        <div class="cta-row reveal">
+          <a href="../../chassis-viewer.html" class="btn">◈ Explode the 3D model</a>
+          <a href="../../drawings-viewer.html" class="btn">✎ Self-drawing drawings</a>
+        </div>
+
+        <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
+
+      </div>
+    </div>
+  </section>
+
+  <div data-site-contact></div>
+
+</main>
+
+<div data-site-footer></div>
+
+<script>
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// TOC active-heading tracking
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const headings = document.querySelectorAll('.project-body h2[id]');
+  if(!links.length || !headings.length) return;
+  const byId = {};
+  links.forEach(a => byId[a.getAttribute('href').slice(1)] = a);
+
+  const tocIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = byId[entry.target.id];
+      if(!link) return;
+      if(entry.isIntersecting) links.forEach(a => a.classList.remove('active')), link.classList.add('active');
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  headings.forEach(h => tocIO.observe(h));
+})();
+</script>
+</body>
+</html>

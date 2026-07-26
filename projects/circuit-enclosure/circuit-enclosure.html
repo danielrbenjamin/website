@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circuit Board Enclosure Design — Daniel Benjamin</title>
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png">
+<link rel="apple-touch-icon" href="../../favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../site-header.css">
+<script src="../../site-header.js" defer></script>
+<script src="../../site-footer.js" defer></script>
+<script src="../../site-contact.js" defer></script>
+<style>
+.project-layout{display:grid;grid-template-columns:190px 1fr;gap:52px;align-items:start}
+@media(max-width:860px){.project-layout{grid-template-columns:1fr}}
+
+.project-toc{position:sticky;top:36px}
+@media(max-width:860px){.project-toc{position:static;margin-bottom:36px}}
+.toc-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-list a{display:block;padding:7px 0 7px 14px;border-left:2px solid var(--line);font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);transition:color .15s,border-color .15s}
+.toc-list a:hover{color:var(--ink-dim)}
+.toc-list a.active{color:var(--amber);border-left-color:var(--amber)}
+@media(max-width:860px){
+  .toc-list{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .toc-list a{border-left:none;border:1px solid var(--line);border-radius:2px;padding:6px 11px}
+  .toc-list a.active{border-color:var(--amber);background:rgba(255,180,84,.06)}
+}
+
+.project-body h2{font-size:1.42rem;font-weight:600;letter-spacing:-.01em;margin:56px 0 16px;scroll-margin-top:28px}
+.project-body h2:first-child{margin-top:0}
+.project-body p{color:var(--ink-dim);font-size:1.02rem;line-height:1.72;margin-bottom:16px;max-width:680px}
+.project-body ul{margin:0 0 20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;max-width:680px}
+.project-body li{color:var(--ink-dim);font-size:.98rem;line-height:1.6;padding-left:18px;position:relative}
+.project-body li::before{content:"▸";position:absolute;left:0;color:var(--ink-faint);font-size:.85em;top:2px}
+.project-body b{color:var(--ink);font-weight:500}
+
+.figure{margin:8px 0 32px;max-width:680px}
+.figure .shot{
+  border:1px dashed var(--line-bright);border-radius:4px;background:var(--panel);
+  aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
+}
+.figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+
+.note{
+  margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
+  font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.7;max-width:680px;
+}
+.note b{color:var(--amber)}
+
+.hero-shot{
+  margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
+}
+</style>
+</head>
+<body>
+
+<div data-site-header></div>
+
+<main class="wrap">
+
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; MECH-003</div>
+    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">UBC Formula Electric · Electrical/Chassis Interface</div>
+    <h2 class="sec-h reveal">Circuit Board Enclosure Design</h2>
+    <p class="sec-sub reveal" style="margin-bottom:18px">Waterproof electrical enclosures and mounting systems for the car's onboard electronics, rated to IPX5 and designed to survive a season of vibration, heat, and the occasional hose-down.</p>
+    <div class="chips reveal" style="margin-bottom:28px">
+      <span class="chip">SolidWorks</span><span class="chip">IPX5</span><span class="chip">Sheet Metal</span>
+    </div>
+    <div class="hero-shot reveal">
+      <div class="figure" style="margin:0">
+        <div class="shot" style="aspect-ratio:21/9">enclosure render — vehicle controller housing, mounted (placeholder)</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+    <div class="project-layout">
+
+      <aside class="project-toc reveal">
+        <div class="toc-label">On this page</div>
+        <ul class="toc-list">
+          <li><a href="#problem">Problem</a></li>
+          <li><a href="#requirements">Design Requirements</a></li>
+          <li><a href="#vc-enclosure">Vehicle Controller Enclosure</a></li>
+          <li><a href="#mounting">Mounting Systems</a></li>
+          <li><a href="#results">Results</a></li>
+        </ul>
+      </aside>
+
+      <div class="project-body reveal">
+
+        <h2 id="problem">Problem</h2>
+        <p>A formula car's onboard electronics live in one of the worst environments you could design for: constant vibration, thermal cycling from the powertrain, exposure to rain and track debris, and almost no spare volume in the chassis to fit them. Every enclosure has to protect its board without stealing space or weight the rest of the car needs.</p>
+        <p>Off-the-shelf enclosures generally solve one of those problems, not all of them at once — they're either sealed and bulky, or compact and unsealed. Custom-designed housings, sized and rated to the specific board and mounting location, were the only way to hit every constraint at the same time.</p>
+
+        <h2 id="requirements">Design Requirements</h2>
+        <ul>
+          <li><b>IPX5 water ingress rating</b> — sealed against low-pressure water jets from any direction, since enclosures sit exposed near wheels and splash zones</li>
+          <li><b>Vibration tolerance</b> — mounting had to hold a rigid board fixture through sustained road-course vibration without fatiguing fasteners loose</li>
+          <li><b>Thermal clearance</b> — enough internal volume and venting geometry to keep board temperatures in range next to a powertrain that runs hot</li>
+          <li><b>Chassis-envelope fit</b> — every enclosure had to fit the specific mounting location it was assigned, not a generic one</li>
+        </ul>
+
+        <h2 id="vc-enclosure">Vehicle Controller Enclosure</h2>
+        <p>I led the Vehicle Controller enclosure design end to end — from board dimensions and connector clearances through to the sealed housing and its mount. The VC is one of the car's most safety-critical boards, so the enclosure design went through the same design-review process as structural chassis parts: dimensioned drawings, a defined seal strategy, and a mounting scheme that survives vibration without transmitting it straight into the board.</p>
+
+        <figure class="figure reveal">
+          <div class="shot">fabrication drawing — VC enclosure, sealed lid detail (placeholder)</div>
+          <figcaption>Vehicle Controller enclosure, dimensioned for sheet-metal fabrication with a gasketed lid seal.</figcaption>
+        </figure>
+
+        <h2 id="mounting">Mounting Systems</h2>
+        <p>Beyond the enclosures themselves, I designed the mounting hardware that ties each box to the chassis — brackets sized for the vibration environment at their specific location, rather than a single generic mount reused everywhere. That meant treating each enclosure's mount as its own small design problem: what's the local chassis geometry, what's the expected vibration mode, and what's the lightest bracket that survives it.</p>
+
+        <h2 id="results">Results</h2>
+        <p>The enclosures shipped on the car and held their seal and mounting integrity through the season — no water ingress failures and no board losses from vibration-related mounting fatigue. Each enclosure's design is also handed down as a template for other subteams, since the same IPX5-and-vibration problem shows up anywhere electronics live on the vehicle.</p>
+
+        <div class="note reveal">
+          <b>Note:</b> the enclosure render and fabrication drawing above are still placeholders — swap in the actual VC housing render and dimensioned drawing once available.
+        </div>
+
+        <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
+
+      </div>
+    </div>
+  </section>
+
+  <div data-site-contact></div>
+
+</main>
+
+<div data-site-footer></div>
+
+<script>
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const headings = document.querySelectorAll('.project-body h2[id]');
+  if(!links.length || !headings.length) return;
+  const byId = {};
+  links.forEach(a => byId[a.getAttribute('href').slice(1)] = a);
+
+  const tocIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = byId[entry.target.id];
+      if(!link) return;
+      if(entry.isIntersecting) links.forEach(a => a.classList.remove('active')), link.classList.add('active');
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  headings.forEach(h => tocIO.observe(h));
+})();
+</script>
+</body>
+</html>

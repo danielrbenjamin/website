@@ -5,12 +5,13 @@
   mounts.forEach((mount) => {
     mount.outerHTML = `
       <section id="contact" class="contact">
-        <div class="eyebrow reveal" style="justify-content:center">Contact</div>
-        <div class="big reveal">Let's build something.<br><a href="mailto:contact@danielrbenjamin.com">contact@danielrbenjamin.com</a></div>
+        <div class="eyebrow reveal">Contact</div>
+        <h2 class="sec-h reveal">Let's build something.</h2>
+        <a href="mailto:contact@danielrbenjamin.com" class="contact-email reveal">contact@danielrbenjamin.com</a>
         <div class="links reveal">
           <a href="mailto:contact@danielrbenjamin.com" class="btn">✉ Email</a>
-          <a href="https://github.com" target="_blank" rel="noopener" class="btn">⌥ GitHub</a>
-          <a href="https://linkedin.com" target="_blank" rel="noopener" class="btn">in LinkedIn</a>
+          <a href="https://github.com/danielrbenjamin" target="_blank" rel="noopener" class="btn">⌥ GitHub</a>
+          <a href="https://linkedin.com/in/danielrbenjamin" target="_blank" rel="noopener" class="btn">in LinkedIn</a>
         </div>
       </section>`;
   });

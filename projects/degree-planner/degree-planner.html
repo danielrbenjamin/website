@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UBC MECH Degree Planner — Daniel Benjamin</title>
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png">
+<link rel="apple-touch-icon" href="../../favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../site-header.css">
+<script src="../../site-header.js" defer></script>
+<script src="../../site-footer.js" defer></script>
+<script src="../../site-contact.js" defer></script>
+<style>
+.project-layout{display:grid;grid-template-columns:190px 1fr;gap:52px;align-items:start}
+@media(max-width:860px){.project-layout{grid-template-columns:1fr}}
+
+.project-toc{position:sticky;top:36px}
+@media(max-width:860px){.project-toc{position:static;margin-bottom:36px}}
+.toc-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-list a{display:block;padding:7px 0 7px 14px;border-left:2px solid var(--line);font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);transition:color .15s,border-color .15s}
+.toc-list a:hover{color:var(--ink-dim)}
+.toc-list a.active{color:var(--amber);border-left-color:var(--amber)}
+@media(max-width:860px){
+  .toc-list{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .toc-list a{border-left:none;border:1px solid var(--line);border-radius:2px;padding:6px 11px}
+  .toc-list a.active{border-color:var(--amber);background:rgba(255,180,84,.06)}
+}
+
+.project-body h2{font-size:1.42rem;font-weight:600;letter-spacing:-.01em;margin:56px 0 16px;scroll-margin-top:28px}
+.project-body h2:first-child{margin-top:0}
+.project-body p{color:var(--ink-dim);font-size:1.02rem;line-height:1.72;margin-bottom:16px;max-width:680px}
+.project-body ul{margin:0 0 20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;max-width:680px}
+.project-body li{color:var(--ink-dim);font-size:.98rem;line-height:1.6;padding-left:18px;position:relative}
+.project-body li::before{content:"▸";position:absolute;left:0;color:var(--ink-faint);font-size:.85em;top:2px}
+.project-body b{color:var(--ink);font-weight:500}
+
+.figure{margin:8px 0 32px;max-width:680px}
+.figure .shot{
+  border:1px dashed var(--line-bright);border-radius:4px;background:var(--panel);
+  aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
+}
+.figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+
+.note{
+  margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
+  font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.7;max-width:680px;
+}
+.note b{color:var(--amber)}
+
+.hero-shot{
+  margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
+}
+
+.arch{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:8px 0 32px;max-width:680px}
+.arch .node{
+  flex:1 1 130px;border:1px solid var(--line-bright);border-radius:5px;background:var(--panel);
+  padding:14px 16px;font-family:var(--mono);
+}
+.arch .node .k{font-size:10px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.arch .node .v{font-size:12px;color:var(--ink-dim);line-height:1.5}
+.arch .sep{align-self:center;color:var(--ink-faint);font-family:var(--mono);font-size:14px}
+@media(max-width:600px){.arch{flex-direction:column}.arch .sep{display:none}}
+</style>
+</head>
+<body>
+
+<div data-site-header></div>
+
+<main class="wrap">
+
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; SWE-003</div>
+    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">Personal Project · Full-Stack</div>
+    <h2 class="sec-h reveal">UBC MECH Degree Planner</h2>
+    <p class="sec-sub reveal" style="margin-bottom:18px">A full-stack planning tool for navigating UBC's Mechanical Engineering degree, built on Next.js and PostgreSQL, with course data scraped from the UBC calendar and historical grade distributions pulled through a ubcgrades.com API proxy.</p>
+    <div class="chips reveal" style="margin-bottom:28px">
+      <span class="chip">Next.js</span><span class="chip">PostgreSQL</span>
+    </div>
+    <div class="hero-shot reveal">
+      <div class="figure" style="margin:0">
+        <div class="shot" style="aspect-ratio:21/9">degree planner UI — course timeline view (placeholder)</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+    <div class="project-layout">
+
+      <aside class="project-toc reveal">
+        <div class="toc-label">On this page</div>
+        <ul class="toc-list">
+          <li><a href="#problem">Problem</a></li>
+          <li><a href="#stack">Stack &amp; Data</a></li>
+          <li><a href="#grades">Grade Distribution Proxy</a></li>
+          <li><a href="#results">Results</a></li>
+        </ul>
+      </aside>
+
+      <div class="project-body reveal">
+
+        <h2 id="problem">Problem</h2>
+        <p>UBC's Mechanical Engineering degree has enough prerequisite chains, elective options, and option-specific requirements (like the BMMD stream) that planning a full four years by hand means cross-referencing the calendar, degree navigator, and word of mouth from upper-year students. That process is slow and error-prone, and it's the same problem every single MECH student solves independently, from scratch, every term.</p>
+
+        <h2 id="stack">Stack &amp; Data</h2>
+        <p>The planner is a Next.js app backed by PostgreSQL, with course data scraped directly from the UBC calendar rather than hand-entered — so prerequisites, corequisites, and course descriptions stay accurate as the calendar updates instead of drifting out of date the way a manually maintained spreadsheet would.</p>
+
+        <div class="arch reveal">
+          <div class="node"><div class="k">Next.js</div><div class="v">frontend + API routes — the planning UI itself</div></div>
+          <div class="sep">↔</div>
+          <div class="node"><div class="k">PostgreSQL</div><div class="v">course catalog, prerequisites, user plans</div></div>
+          <div class="sep">↔</div>
+          <div class="node"><div class="k">UBC calendar scrape</div><div class="v">source of truth for course data</div></div>
+        </div>
+
+        <h2 id="grades">Grade Distribution Proxy</h2>
+        <p>Beyond just sequencing courses, the planner surfaces historical grade distributions through a proxy in front of ubcgrades.com's API — so a student choosing between electives can see how a course has actually graded in past terms, not just its title and description. That's the difference between "this satisfies the requirement" and "this satisfies the requirement, and here's what past students experienced."</p>
+
+        <figure class="figure reveal">
+          <div class="shot">grade distribution chart, pulled via ubcgrades.com proxy (placeholder)</div>
+          <figcaption>Historical grade distribution surfaced inline while comparing elective options.</figcaption>
+        </figure>
+
+        <h2 id="results">Results</h2>
+        <p>The planner turns a manual, error-prone cross-referencing exercise into a single tool that already knows the prerequisite structure and can show real grade history alongside it — built to answer the actual question a MECH student has every registration period: what should I take, and in what order.</p>
+
+        <div class="note reveal">
+          <b>Note:</b> the UI screenshots above are still placeholders — swap in real screens of the timeline view and grade-distribution charts once available.
+        </div>
+
+        <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
+
+      </div>
+    </div>
+  </section>
+
+  <div data-site-contact></div>
+
+</main>
+
+<div data-site-footer></div>
+
+<script>
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const headings = document.querySelectorAll('.project-body h2[id]');
+  if(!links.length || !headings.length) return;
+  const byId = {};
+  links.forEach(a => byId[a.getAttribute('href').slice(1)] = a);
+
+  const tocIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = byId[entry.target.id];
+      if(!link) return;
+      if(entry.isIntersecting) links.forEach(a => a.classList.remove('active')), link.classList.add('active');
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  headings.forEach(h => tocIO.observe(h));
+})();
+</script>
+</body>
+</html>
