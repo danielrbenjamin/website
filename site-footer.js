@@ -6,7 +6,7 @@
     mount.outerHTML = `
       <footer class="wrap">
         <span class="copyright">© 2026 Daniel Benjamin</span>
-        <span>built from the shop floor</span>
+        <span>ad astra.</span>
       </footer>`;
   });
 })();

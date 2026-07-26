@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEX — Precision Machines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0d0f12;--amber:#f0a500;--rust:#c0562b;--steel:#7b8794;--paper:#e8e4da}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--paper);font-family:'Archivo',sans-serif;overflow-x:hidden}
+#scene{position:fixed;inset:0;z-index:1}
+#spacer{position:relative;z-index:0}
+nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:1.6rem 7vw;mix-blend-mode:difference}
+.brand{font-weight:900;font-size:1.2rem;letter-spacing:.2em;color:#fff}
+.navlinks{display:flex;gap:1.6rem;font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+.navlinks a{color:#fff;text-decoration:none;opacity:.7;cursor:pointer}
+.navlinks a:hover{opacity:1}
+.hud{position:fixed;left:7vw;bottom:2rem;z-index:10;font-family:'Space Mono',monospace;font-size:.7rem;color:var(--steel);letter-spacing:.15em;display:flex;align-items:center;gap:.8rem}
+.hud .bar{width:90px;height:2px;background:#2a3138;position:relative;overflow:hidden}
+.hud .bar span{position:absolute;left:0;top:0;height:100%;background:var(--amber);width:0}
+.speed{position:fixed;right:7vw;bottom:2rem;z-index:10;text-align:right;font-family:'Space Mono',monospace;color:var(--steel);letter-spacing:.12em}
+.speed .n{font-size:1.6rem;color:var(--amber);font-weight:700;line-height:1}
+.speed .u{font-size:.6rem;letter-spacing:.2em}
+.hint{position:fixed;left:50%;bottom:2.2rem;transform:translateX(-50%);z-index:10;font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--steel);animation:pulse 2s infinite;transition:opacity .6s}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.9}}
+@media(max-width:640px){.navlinks{display:none}}
+@media(prefers-reduced-motion:reduce){#scene{opacity:.6}}
+</style>
+</head>
+<body>
+<div id="scene"></div>
+<nav>
+  <div class="brand">APEX⁄</div>
+  <div class="navlinks">
+    <a data-to="0">Start</a><a data-to="1">Build</a><a data-to="2">Track</a><a data-to="3">Contact</a>
+  </div>
+</nav>
+<div class="hud"><span id="pct">000</span><div class="bar"><span id="pbar"></span></div>M</div>
+<div class="speed"><div class="n" id="mph">0</div><div class="u">KM/H</div></div>
+<div class="hint" id="hint">Scroll to drive ↓</div>
+<div id="spacer"></div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const BOARDS=[
+  {kind:'hero', eyebrow:'CHASSIS No.04 · ELECTRIC PROTOTYPE', title:'DRIVEN BY\nPRECISION', body:'A hand-built single-seat racer,\nengineered from the tube up.', accent:'#f0a500'},
+  {kind:'board',eyebrow:'01 — THE BUILD', title:'WELDED\nBY HAND', body:'Chromoly spaceframe.\n1855 Nm/deg torsional stiffness.\n214 tube segments · 31.4 kg.', accent:'#f0a500'},
+  {kind:'board',eyebrow:'02 — ON THE TRACK', title:'TUNED FOR\nTHE APEX', body:'80 kW · 4WD · 0–100 in 3.1s\n1.6 g sustained · 218 kg curb', accent:'#c0562b'},
+  {kind:'board',eyebrow:'03 — GET IN', title:'TAKE\nTHE WHEEL', body:'Limited prototype builds.\nReserve a seat · book a tour\nbuilt@apexworks.dev', accent:'#f0a500'},
+];
+
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x0d0f12,14,62);
+const camera=new THREE.PerspectiveCamera(46,innerWidth/innerHeight,0.1,300);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setClearColor(0x0d0f12);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.getElementById('scene').appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0x8899aa,0x0a0c10,0.5));
+const key=new THREE.DirectionalLight(0xffe9c0,1.5);
+key.position.set(6,16,8);key.castShadow=true;key.shadow.mapSize.set(2048,2048);
+key.shadow.camera.near=1;key.shadow.camera.far=70;
+Object.assign(key.shadow.camera,{left:-24,right:24,top:24,bottom:-24});
+scene.add(key,key.target);
+const rim=new THREE.DirectionalLight(0xf0a500,0.7);rim.position.set(-8,5,-6);scene.add(rim);
+
+const GAP=42,START_Z=10;
+const END_Z=START_Z-GAP*(BOARDS.length-1)-20;
+const ROAD_LEN=Math.abs(END_Z-START_Z)+60;
+
+const road=new THREE.Mesh(new THREE.PlaneGeometry(7,ROAD_LEN),new THREE.MeshStandardMaterial({color:0x191d22,roughness:0.9}));
+road.rotation.x=-Math.PI/2;road.position.z=START_Z-ROAD_LEN/2+15;road.receiveShadow=true;scene.add(road);
+const dashMat=new THREE.MeshStandardMaterial({color:0xf0a500,emissive:0xf0a500,emissiveIntensity:0.35});
+for(let z=START_Z;z>END_Z-20;z-=3.4){const d=new THREE.Mesh(new THREE.BoxGeometry(0.16,0.02,1.5),dashMat);d.position.set(0,0.02,z);scene.add(d);}
+const railMat=new THREE.MeshStandardMaterial({color:0x2a3138,roughness:0.7,metalness:0.4});
+[-3.6,3.6].forEach(x=>{const r=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.4,ROAD_LEN),railMat);r.position.set(x,0.2,road.position.z);r.castShadow=r.receiveShadow=true;scene.add(r);});
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(600,600),new THREE.MeshStandardMaterial({color:0x0b0d10,roughness:1}));
+ground.rotation.x=-Math.PI/2;ground.position.y=-0.02;ground.receiveShadow=true;scene.add(ground);
+const bMat=new THREE.MeshStandardMaterial({color:0x12151a,roughness:1});
+for(let i=0;i<80;i++){const side=i%2?1:-1,h=3+Math.random()*12;const b=new THREE.Mesh(new THREE.BoxGeometry(2+Math.random()*3,h,2+Math.random()*3),bMat);b.position.set(side*(9+Math.random()*20),h/2,START_Z-Math.random()*ROAD_LEN);b.castShadow=b.receiveShadow=true;scene.add(b);}
+
+function makeSignTexture(b){
+  const W=1024,H=640,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  x.fillStyle='#0d0f12';x.fillRect(0,0,W,H);
+  x.strokeStyle=b.accent;x.lineWidth=10;x.strokeRect(24,24,W-48,H-48);
+  x.fillStyle=b.accent;[[40,40],[W-88,40],[40,H-88],[W-88,H-88]].forEach(([px,py])=>x.fillRect(px,py,48,8));
+  x.textBaseline='top';
+  x.fillStyle=b.accent;x.font='700 30px "Space Mono", monospace';x.fillText(b.eyebrow,72,96);x.fillRect(72,140,120,4);
+  x.fillStyle='#e8e4da';x.font='900 116px Archivo, sans-serif';
+  const tl=b.title.split('\n');tl.forEach((ln,i)=>x.fillText(ln,66,172+i*116));
+  x.fillStyle='#b8b3a8';x.font='400 33px "Space Mono", monospace';
+  const sY=172+tl.length*116+26;b.body.split('\n').forEach((ln,i)=>x.fillText(ln,72,sY+i*46));
+  const t=new THREE.CanvasTexture(c);t.anisotropy=8;return t;
+}
+
+const boardMeshes=[];
+BOARDS.forEach((b,i)=>{
+  const z=START_Z-i*GAP, side=i%2===0?1:-1, g=new THREE.Group();
+  const w=b.kind==='hero'?12:9, h=b.kind==='hero'?7.5:5.6;
+  const panel=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.3),new THREE.MeshStandardMaterial({map:makeSignTexture(b),roughness:0.55}));
+  panel.position.y=h/2+2.2;panel.castShadow=true;g.add(panel);
+  const frame=new THREE.Mesh(new THREE.BoxGeometry(w+0.5,h+0.5,0.18),new THREE.MeshStandardMaterial({color:0x2a3138,roughness:0.6,metalness:0.5}));
+  frame.position.set(0,h/2+2.2,-0.2);g.add(frame);
+  const postMat=new THREE.MeshStandardMaterial({color:0x14181d,roughness:0.6,metalness:0.6});
+  [-w*0.32,w*0.32].forEach(px=>{const p=new THREE.Mesh(new THREE.BoxGeometry(0.35,h/2+2.4,0.35),postMat);p.position.set(px,(h/2+2.2)/2,0);p.castShadow=true;g.add(p);});
+  const spot=new THREE.SpotLight(0xfff2d8,0,26,0.6,0.5,1.2);
+  spot.position.set(0,h+3.4,4);spot.target.position.set(0,h/2+2.2,0);g.add(spot,spot.target);
+  g.position.set(side*5.8,0,z);g.rotation.y=side>0?-0.5:0.5;
+  scene.add(g);boardMeshes.push({g,z,spot});
+});
+
+const car=new THREE.Group();
+const paint=new THREE.MeshStandardMaterial({color:0xf0a500,roughness:0.35,metalness:0.6});
+const dark=new THREE.MeshStandardMaterial({color:0x14181d,roughness:0.5,metalness:0.7});
+const glass=new THREE.MeshStandardMaterial({color:0x1a2733,roughness:0.1,metalness:0.9,transparent:true,opacity:0.75});
+const tub=new THREE.Mesh(new THREE.BoxGeometry(1.1,0.34,2.9),paint);tub.position.y=0.42;tub.castShadow=true;car.add(tub);
+const nose=new THREE.Mesh(new THREE.BoxGeometry(0.8,0.26,1.0),paint);nose.position.set(0,0.38,1.7);nose.castShadow=true;car.add(nose);
+const fwing=new THREE.Mesh(new THREE.BoxGeometry(1.5,0.06,0.4),dark);fwing.position.set(0,0.24,2.15);fwing.castShadow=true;car.add(fwing);
+const rwing=new THREE.Mesh(new THREE.BoxGeometry(1.4,0.05,0.45),dark);rwing.position.set(0,0.78,-1.55);rwing.castShadow=true;car.add(rwing);
+const rpost=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.4,0.3),dark);rpost.position.set(0,0.58,-1.5);car.add(rpost);
+const cock=new THREE.Mesh(new THREE.BoxGeometry(0.7,0.3,0.9),glass);cock.position.set(0,0.62,-0.1);cock.castShadow=true;car.add(cock);
+const roll=new THREE.Mesh(new THREE.TorusGeometry(0.28,0.05,8,16,Math.PI),dark);roll.position.set(0,0.7,-0.45);roll.rotation.y=Math.PI/2;car.add(roll);
+[-0.62,0.62].forEach(px=>{const pod=new THREE.Mesh(new THREE.BoxGeometry(0.24,0.28,1.2),paint);pod.position.set(px,0.42,-0.2);pod.castShadow=true;car.add(pod);});
+const wheels=[];const tireMat=new THREE.MeshStandardMaterial({color:0x0a0b0d,roughness:0.85});const hubMat=new THREE.MeshStandardMaterial({color:0x7b8794,roughness:0.3,metalness:0.9});
+function wheel(px,pz){const w=new THREE.Group();const t=new THREE.Mesh(new THREE.CylinderGeometry(0.34,0.34,0.28,20),tireMat);t.rotation.z=Math.PI/2;t.castShadow=true;w.add(t);const hb=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.16,0.3,10),hubMat);hb.rotation.z=Math.PI/2;w.add(hb);w.position.set(px,0.34,pz);car.add(w);wheels.push(w);}
+wheel(-0.72,1.15);wheel(0.72,1.15);wheel(-0.72,-1.1);wheel(0.72,-1.1);
+const hl=new THREE.PointLight(0xffeecc,0.8,8);hl.position.set(0,0.4,2.4);car.add(hl);
+car.rotation.y=Math.PI;scene.add(car);
+
+document.getElementById('spacer').style.height=(BOARDS.length*100)+'vh';
+let currentT=0;
+const pbar=document.getElementById('pbar'),pct=document.getElementById('pct'),mph=document.getElementById('mph'),hint=document.getElementById('hint');
+function scrollT(){const max=document.body.scrollHeight-innerHeight;return max>0?Math.min(1,Math.max(0,scrollY/max)):0;}
+document.querySelectorAll('.navlinks a').forEach(a=>{a.onclick=()=>{const i=+a.dataset.to,frac=i/(BOARDS.length-1),max=document.body.scrollHeight-innerHeight;scrollTo({top:frac*max,behavior:reduced?'auto':'smooth'});};});
+
+let t0=performance.now(),prevZ=START_Z;
+function animate(now){
+  requestAnimationFrame(animate);
+  const dt=Math.min(0.05,(now-t0)/1000)||0.016;t0=now;
+  const target=scrollT();currentT+=(target-currentT)*(reduced?1:0.07);
+  if(scrollY>40)hint.style.opacity=0;
+  const carZ=START_Z+(END_Z-START_Z)*currentT;
+  const carX=Math.sin(currentT*Math.PI*5)*1.1;
+  car.position.set(carX,0,carZ);
+  car.rotation.y=Math.PI-Math.cos(currentT*Math.PI*5)*0.3;
+  car.rotation.z=Math.cos(currentT*Math.PI*5)*0.07;
+  const dz=carZ-prevZ,speed=Math.abs(dz);prevZ=carZ;
+  wheels.forEach(w=>w.rotation.x-=(speed*2+0.12));
+  camera.position.x+=((carX*0.5+3.4)-camera.position.x)*0.06;
+  camera.position.z+=((carZ+7)-camera.position.z)*0.06;
+  camera.position.y+=(3.6-camera.position.y)*0.06;
+  camera.lookAt(carX,0.6,carZ-4);
+  key.position.set(carX+6,16,carZ+8);key.target.position.set(carX,0,carZ);key.target.updateMatrixWorld();
+  // light up the billboard the car is nearest
+  boardMeshes.forEach(({z,spot})=>{const d=Math.abs(carZ-z);spot.intensity=Math.max(0,1-d/18)*7;});
+  pbar.style.width=(currentT*100)+'%';
+  pct.textContent=String(Math.round(currentT*100)).padStart(3,'0');
+  mph.textContent=Math.round(speed*60/dt||0);
+  renderer.render(scene,camera);
+}
+camera.position.set(3.4,3.6,START_Z+7);
+requestAnimationFrame(animate);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+</script>
+</body>
+</html>
