@@ -24,24 +24,18 @@ window.__animeModulePromise = import(window.__animeImportUrl);
 <script src="site-header.js" defer></script>
 <script src="site-footer.js" defer></script>
 <script src="site-contact.js" defer></script>
-<script src="site-console.js" defer></script>
 <style>
 /* homepage-only: APEX-style continuous drive.
    The canvas is FIXED full-viewport behind everything (z-index 0). The hero hosts
    the name->car morph (drag-to-orbit). As you keep scrolling, the same car rotates
    into a chase view and drives away down a road while the page CONTENT scrolls over
    the fixed canvas on top of it. */
-/* the fine CSS square grid is replaced on this page by the 3D topographic
-   grid drawn in the WebGL scene, so the flat page-background grid is dropped —
-   #intro has its own separate background-image in styles.css (for other pages,
-   where the body grid stays), so it needs the same override here too. */
-body{background-attachment:fixed;background-image:none}
-#intro{background-image:none}
+body{background-attachment:fixed}
 .scroll-stage{position:relative;height:200vh}
 .hero{position:relative;height:100vh;height:100dvh;min-height:640px;overflow:visible;
   background:transparent;}
 #cv{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;touch-action:pan-y}
-.hint{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:6;font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.2em;animation:pulse 2.4s ease-in-out infinite}
+.hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:6;font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.2em;animation:pulse 2.4s ease-in-out infinite}
 /* content sits ABOVE the fixed canvas so the car drives behind it */
 main.wrap{padding-top:48px;position:relative;z-index:2}
 [data-site-footer]{position:relative;z-index:2}
@@ -306,10 +300,6 @@ let streaks = null;                   // speed-line field, built after framing
 const camHome = new THREE.Vector3();  // framed orbit camera pose; drive blends out of & back into this
 const camHandoff = new THREE.Vector3(); // exact camera pose captured when the drive takes over
 let camFramed = false;
-let homeRadius = 0, homePhi = 0;      // camHome, in spherical form (filled in once framed)
-// radius/phi the orbit camera is currently sitting at, damped back toward
-// homeRadius/homePhi after a chase — see the wantOrbit block in loop().
-let camRadiusCur = 0, camPhiCur = 0;
 
 // ---- build a glyph atlas texture (grid of characters) ----
 function buildGlyphAtlas(glyphs){
@@ -549,20 +539,12 @@ function buildLayer(rawArr, count, sizeScale, brightBoost, startArr){
   return { mesh:new THREE.Points(geo,mat), geo };
 }
 
-// Start the network fetch immediately — pure I/O, doesn't touch the main thread —
-// so the data has the WHOLE loading-screen duration to arrive. The synchronous
-// scene build (point-cloud generation, geometry upload, shader compile) stays
-// gated behind initScene() below, which is only called once the intro logo has
-// finished its own draw animation, so the two don't fight over the main thread
-// and the logo stays smooth.
-const carPointsPromise = fetch('car-points.json').then(r=>r.json());
-
 let sceneInitStarted = false;
 function initScene(){
   if(sceneInitStarted) return;
   sceneInitStarted = true;
 
-  carPointsPromise.then(data=>{
+  fetch('car-points.json').then(r=>r.json()).then(data=>{
   WORLD.center.fromArray(data.center);   // share the exact model center
     const vw = window.innerWidth;
     const vh = Math.max(window.innerHeight, 1);
@@ -596,22 +578,13 @@ function initScene(){
   const radius=shape.geo.boundingSphere.radius;
   const mobileFrameScale = isTouchDevice || window.innerWidth < 700 ? 2 : 1.35;
   const dist=radius/Math.tan((camera.fov*Math.PI/180)/2)*mobileFrameScale;
-  // elevation ~-0.9° (just below level, from the camera-tuning HUD) so the
-  // camera looks very slightly up at the target; azimuth (x/z) unchanged.
-  camera.position.set(dist*0.62, dist*-0.014, dist*0.62);
+  camera.position.set(dist*0.62, dist*0.30, dist*0.62);
   camHome.copy(camera.position);   // remember the framed orbit pose for the drive blend
   camFramed = true;
-  const homeSphInit = new THREE.Spherical().setFromVector3(camHome);
-  homeRadius = homeSphInit.radius; homePhi = homeSphInit.phi;
-  camRadiusCur = homeRadius; camPhiCur = homePhi;
 
-  // Near clip must stay closer than the terrain grid ever gets to the camera.
-  // At this low a camera elevation the ground grid passes only ~1.5-2 radii
-  // below/in front of the camera itself (not just far off near the subject),
-  // so the old subject-only formula (dist - radius*2.4, ~13 radii) clipped the
-  // near part of the grid — that's the "grid missing near the bottom of the
-  // screen" bug. Traded some depth-buffer precision on the car mesh for this.
-  camera.near = Math.max(0.5, radius * 0.8);
+  // Tight clip planes around the subject to maximize depth-buffer precision.
+  // A very wide near/far range causes z-fighting flicker on detailed meshes.
+  camera.near = Math.max(0.5, dist - radius * 2.4);
   camera.far = dist + radius * 3.2;
   camera.updateProjectionMatrix();
 
@@ -636,20 +609,6 @@ function initScene(){
   buildStreaks(radius);
   buildRoad(radius);
 
-  // Extend the far clip to fully cover the terrain grid — match the same
-  // formula the drive phase uses (ROAD.len + R*40) plus the camera's own
-  // distance from the origin, so the ground doesn't render only partially
-  // until scrolling later widens this exact value (which is what used to
-  // "fix" it — this makes the initial value already match).
-  camera.far = Math.max(camera.far, (ROAD.len||radius*40) + radius*40 + dist);
-  camera.updateProjectionMatrix();
-
-  // Warm up shader compilation + GPU buffer uploads for the point-cloud/terrain/
-  // streak materials NOW, while still hidden behind the opaque intro overlay, so
-  // the first frame after the loading screen fades isn't the one paying for it.
-  renderer.compile(scene, camera);
-  renderer.render(scene, camera);
-
   }).catch(err=>{ console.error(err); });
 }
 
@@ -658,126 +617,17 @@ function initScene(){
 // (the GLB's front), so "driving away" = translating driveRig toward +Z while a
 // chase cam trails behind at -Z.
 let road = null, roadDashes = [], roadRails = [], roadProps = [];
-let terrainGrid = null, terrainWrap = null;
-// current hero auto-rotate angle, captured every frame while orbiting and used
-// to counter-spin terrainWrap so the ground reads as frozen while the name/car
-// appears to rotate (see the loop() code near controls.autoRotate).
-let heroSpinTheta = 0;
-// world-space height sampler for the terrain grid, rebuilt in buildRoad() and
-// reused every frame to tilt the car realistically over the ground it's on.
-let terrainHeightAt = ()=>0;
-// slope sampler for the car's pitch/roll tilt — same broad, gradual terrain
-// shape as terrainHeightAt (no sharp features left to exclude).
-let terrainSlopeAt = ()=>0;
 const ROAD = { built:false, len:0, halfW:0, dashGap:0, y:0 };
 function buildRoad(R){
   if(ROAD.built) return;
   const S = R;
   const len   = S * 90;
   const halfW = S * 2.6;
-  // Raised toward the car (instead of dropping the car down onto the ground)
-  // so the car stays glued to the same y it had as the glyph cloud/hero pose
-  // for the whole drive — only the ground moves up to meet it.
-  const GROUND_MEET = R * 0.09;
-  const y     = -R * 0.62 + GROUND_MEET;
+  const y     = -R * 0.62;
   ROAD.len = len; ROAD.halfW = halfW; ROAD.dashGap = S*2.4; ROAD.y = y; ROAD.built = true;
-  // Road geometry (asphalt mesh, dashes, rails, cones) intentionally not created —
+  // Road geometry (mesh, dashes, rails, cones) intentionally not created —
   // the ROAD dimensions above are kept so the drive-away car path/camera math
   // (END_Z, halfW weave, camera.far) still has values to work with.
-
-  // ---- topographic ground grid: a draped wireframe grid (like a contour map)
-  // that the car drives across, and fills the whole visible world (not just a
-  // strip along the road) so it reads as the page's background at every angle.
-  // A few larger, gradual hills sit off to the sides purely as background
-  // scenery (no small mounds — they read as ugly little bumps up close).
-  // the car's drive stops at END_Z = len - S*10 (see below), so extend well
-  // past that point too, otherwise the map's edge lines up with where the car
-  // stops and the terrain looks like it just ends there.
-  const zMin = -S*30, zMax = len + S*20;
-  const gridHalfW = halfW * 6.0;
-  const bigPeaks = [];
-  for(let i=0;i<5;i++){                 // larger background hills, off to the sides
-    const side = Math.random()<0.5?-1:1;
-    const r = S*(4.5+Math.random()*4.5);
-    let x = side*(halfW*2.2 + Math.random()*gridHalfW*0.55);
-    let z = zMin + (zMax-zMin)*(0.35+Math.random()*0.65);
-    // Keep the hill's rise (it falls off out to 3r, per the exp(-t), t<9 cutoff
-    // below) clear of the camera's hero-orbit sphere — otherwise a hill can
-    // occasionally land close enough to origin that the orbiting camera starts
-    // out inside it, with the topo lines filling the view. Push it straight
-    // out along its own direction from the origin until it clears that ring.
-    const distFromOrigin = Math.hypot(x,z);
-    const minSafe = homeRadius + r*3 + S*1.5;
-    if(distFromOrigin < minSafe){
-      const scale = minSafe/distFromOrigin;
-      x *= scale; z *= scale;
-    }
-    bigPeaks.push({ x, z, r, h: S*(0.9+Math.random()*1.4) });
-  }
-  // ground height = gentle base swell + the big, gradual background hills only
-  // (no small mounds — those read as ugly little bumps on the map). Slope
-  // sampling uses the exact same function since there's nothing sharp left to
-  // exclude from the car's tilt calculation.
-  const baseUndulation = (x,z)=>Math.sin(x*0.012)*Math.cos(z*0.01)*S*0.035;
-  terrainHeightAt = (x,z)=>{
-    let hgt = baseUndulation(x,z);
-    for(const p of bigPeaks){
-      const dx=x-p.x, dz=z-p.z, t=(dx*dx+dz*dz)/(p.r*p.r);
-      if(t<9) hgt += p.h*Math.exp(-t);
-    }
-    return hgt;
-  };
-  terrainSlopeAt = terrainHeightAt;
-
-  // draped grid, built as clean row/column line segments (no diagonals) so it
-  // reads as a warped square grid rather than a triangulated wireframe mesh.
-  // nx/nz are picked first and the field extents snapped to exact multiples of
-  // CELL, so every cell is a true CELL x CELL square (not a rounded-off rectangle).
-  const CELL = S*0.85;
-  const nx = Math.max(2, Math.round((gridHalfW*2)/CELL));
-  const nz = Math.max(2, Math.round((zMax-zMin)/CELL));
-  const cellX = CELL, cellZ = CELL;
-  const gridHalfWSnapped = nx*cellX/2;
-  const cols = [];
-  for(let i=0;i<=nx;i++){
-    const x = -gridHalfWSnapped + i*cellX, col = [];
-    for(let j=0;j<=nz;j++){
-      const z = zMin + j*cellZ;
-      col.push(new THREE.Vector3(x, y+terrainHeightAt(x,z), z));
-    }
-    cols.push(col);
-  }
-  const gridPos = [];
-  for(let j=0;j<=nz;j++){
-    for(let i=0;i<nx;i++){
-      const a=cols[i][j], b=cols[i+1][j];
-      gridPos.push(a.x,a.y,a.z, b.x,b.y,b.z);
-    }
-  }
-  for(let i=0;i<=nx;i++){
-    for(let j=0;j<nz;j++){
-      const a=cols[i][j], b=cols[i][j+1];
-      gridPos.push(a.x,a.y,a.z, b.x,b.y,b.z);
-    }
-  }
-  const gridGeo = new THREE.BufferGeometry();
-  gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridPos,3));
-  const gridMat = new THREE.LineBasicMaterial({ color:0xffffff, transparent:true, opacity:0.14, fog:true });
-  terrainGrid = new THREE.LineSegments(gridGeo, gridMat);
-  terrainGrid.frustumCulled = false;
-  // visible throughout, including the hero/orbit phase. A static ground
-  // reference would normally give away that it's the CAMERA circling (the grid
-  // visibly sweeping past) rather than the name/car spinning in place — so
-  // during orbit, terrainWrap is counter-rotated to cancel the camera's own
-  // auto-rotate angle each frame, keeping the ground looking frozen while the
-  // name/car still appears to turn. See heroSpinTheta in loop().
-  terrainWrap = new THREE.Group();
-  terrainWrap.add(terrainGrid);
-  scene.add(terrainWrap);
-
-  // fade the grid into the background color toward the horizon, matching the
-  // page background it replaces
-  scene.fog = new THREE.Fog(0x0c0f11, S*9, S*68);
 }
 function setRoadVisible(v){
   if(road) road.visible = v;
@@ -788,21 +638,17 @@ function setRoadVisible(v){
 
 let renderActive = reduce || !!window.__introDone;
 if(!renderActive){
-  // Build the scene once the logo's own draw animation has finished (it's still
-  // static on screen for a beat before fading), so the point-cloud/terrain build
-  // and shader compile don't steal frames from the anime.js logo animation.
+  // Begin heavy setup while intro logo is static before fade-out.
   window.addEventListener('intro:settled', ()=>{
     initScene();
   }, { once:true });
 
-  // Fallback: if settled hook is missed for any reason, still init on completion.
+  // Fallback: if settled hook is missed, still init on intro completion.
   window.addEventListener('intro:done', ()=>{
     renderActive = true;
     initScene();
   }, { once:true });
 }else{
-  // Reduced motion or intro already seen this session — no logo animation to
-  // protect, so build immediately.
   initScene();
 }
 
@@ -879,11 +725,6 @@ function loadSolidCar(){
     const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(3,5,2); scene.add(key);
     const rim = new THREE.DirectionalLight(0xffb454, 0.8); rim.position.set(-4,2,-3); scene.add(rim);
     const fill= new THREE.DirectionalLight(0x5ee6a0, 0.25); fill.position.set(0,-3,4); scene.add(fill);
-
-    // Warm the GLTF + dissolve-morph shader path as soon as it loads, rather than
-    // waiting for the render loop (which stays paused until the intro finishes) —
-    // that way the compile/upload cost lands while the loading screen is still up.
-    prewarmMorphPass();
   },undefined,(e)=>console.warn('solid car load failed (points-only hero is fine):',e));
 }
 
@@ -910,8 +751,6 @@ function realignGlyphs(trueCenter){
 //   drive : solid car drives away, over the NEXT stretch of scroll
 let morphTarget = 0, morphCurrent = 0;
 let driveTarget = 0, driveCurrent = 0;
-let hintTarget = 0, hintCurrent = 0;
-let hintAnimating = true;
 function computeMorph(){
   const h = window.innerHeight;
   const y = window.scrollY || window.pageYOffset || 0;
@@ -926,13 +765,6 @@ function computeMorph(){
   const driveStart = h * 0.05;
   const maxScroll  = Math.max(1, document.documentElement.scrollHeight - h);
   driveTarget = Math.max(0, Math.min(1, (y - driveStart) / Math.max(1, maxScroll - driveStart)));
-  // the hint's own fade-out, kept separate from driveTarget: driveTarget's window
-  // stretches across ALL remaining page scroll, so on long pages it barely moves
-  // by the time content scrolls into view (main.wrap starts at the bottom of the
-  // 200vh scroll-stage, i.e. around y=h) and the hint is still overlapping the
-  // content. Fade it out over a fixed, viewport-relative distance instead, so it's
-  // always fully gone well before that point regardless of total page length.
-  hintTarget = Math.max(0, Math.min(1, (y - driveStart) / (h*0.45)));
 }
 window.addEventListener('scroll', computeMorph, {passive:true});
 computeMorph();
@@ -1022,29 +854,11 @@ function loop(){
   // Smoothly chase scroll progress so morphing is fluid instead of jumpy.
   morphCurrent = THREE.MathUtils.damp(morphCurrent, morphTarget, 7.0, dt);
   driveCurrent = THREE.MathUtils.damp(driveCurrent, driveTarget, 5.5, dt);
-  hintCurrent  = THREE.MathUtils.damp(hintCurrent, hintTarget, 5.5, dt);
+  if(hintEl) hintEl.style.opacity = String(Math.max(0, 1 - morphCurrent*3));
 
   // computed early (rather than down in the DRIVE-phase section below) so the
   // leftover-glyph explode logic can react to it during the dissolve step too.
   const drv = reduce ? 1 : THREE.MathUtils.smootherstep(driveCurrent, 0, 1);
-  // stays fully visible through the name->car morph; only fades once the car
-  // actually enters the drive phase. Uses hintCurrent (a fixed viewport-relative
-  // fade window) rather than drv (which spans ALL remaining page scroll) so it's
-  // always fully gone before content scrolls into view, regardless of page length.
-  if(hintEl){
-    hintEl.style.opacity = String(Math.max(0, 1 - THREE.MathUtils.smootherstep(hintCurrent, 0, 1)));
-    // .hint's CSS `animation:pulse` (its opacity keyframes happen to share a name
-    // with .scroll-hint's in styles.css) overrides the fade-out above every frame
-    // — CSS animations win over inline styles on the same property regardless of
-    // scroll. So once the user actually starts scrolling, kill the animation
-    // outright and let the JS-driven opacity take over; restore it if they scroll
-    // back up to the very top.
-    const shouldAnimate = hintTarget <= 0;
-    if(shouldAnimate !== hintAnimating){
-      hintEl.style.animation = shouldAnimate ? '' : 'none';
-      hintAnimating = shouldAnimate;
-    }
-  }
 
   // One scroll pipeline:
   // 1) early segment assembles name cloud -> car glyph cloud
@@ -1095,18 +909,18 @@ function loop(){
   // settled behind it, so the car's orientation is continuous the whole way.
   const wantOrbit = drv <= 0.0005;
   if(wantOrbit && !controls.enabled){
-    // returning to the hero: resume orbit FROM the current camera angle (no snap
-    // on theta — that's an arbitrary turntable angle and looks fine continuing
-    // from wherever the chase view left it). The chase view sits at its own tuned
-    // CHASE_PHI and approaches its target radius only via a per-frame lerp, so
-    // both are left sitting at the wrong value once the drive ends. Rather than
-    // snapping radius/phi back to the framed pose instantly (which read as a
-    // hard jump when scrolling back up), seed the catch-up state from wherever
-    // the chase left off and let the per-frame damp below (in the
-    // controls.enabled block) ease it back to home over the next few frames.
-    const curSph = _sph.setFromVector3(camera.position);
-    camRadiusCur = curSph.radius;
-    camPhiCur = curSph.phi;
+    // returning to the hero: resume orbit FROM the current camera angle (no snap),
+    // but snap the RADIUS back to the original framed distance. The chase blend only
+    // approaches its target via a per-frame lerp, so a fast scroll flick can leave the
+    // camera short of home when this fires — left uncorrected, orbit then continues
+    // from that wrong distance (enableZoom is off, so nothing else fixes it), which
+    // reads as the model's zoom being "messed up" after a scroll down+up.
+    const homeRadius = camHome.length();
+    if(homeRadius > 0){
+      _sph.setFromVector3(camera.position);
+      _sph.radius = homeRadius;
+      camera.position.setFromSpherical(_sph);
+    }
     // OrbitControls reads camera.position on the next update(); we just realign the
     // target to the car center so it orbits the car again.
     controls.target.set(0,0,0);
@@ -1131,10 +945,6 @@ function loop(){
     const roll  = THREE.MathUtils.clamp((drv-TURN)/(1-TURN), 0, 1);
 
     setRoadVisible(m > 0.85 || drv > 0.0005);
-    // unwind the hero's counter-rotation as the camera swings into the chase
-    // pose, so the terrain is back to its true world orientation (matching the
-    // drive path) by the time turn completes.
-    if(terrainWrap) terrainWrap.rotation.y = THREE.MathUtils.lerp(heroSpinTheta, 0, turn);
 
     // --- car travel: none during the turn, then the full runway ---
     const END_Z = (ROAD.len ? ROAD.len - R*10 : R*80);
@@ -1150,36 +960,18 @@ function loop(){
     const BOB_FREQ = Math.PI * 9.0;
     const PITCH_FREQ = Math.PI * 3.4;
     const bob = Math.sin(roll*BOB_FREQ) * 0.01 * R * roll;
-
-    // --- tilt: sampled from the broad/gradual terrain (big background hills
-    // + the gentle base swell), over a wide baseline, so the car leans into
-    // long slopes smoothly. ---
-    const SLOPE_EPS = R*6.0;
-    const slopeZ = (terrainSlopeAt(carX, carZ+SLOPE_EPS) - terrainSlopeAt(carX, carZ-SLOPE_EPS)) / (2*SLOPE_EPS);
-    const slopeX = (terrainSlopeAt(carX+SLOPE_EPS, carZ) - terrainSlopeAt(carX-SLOPE_EPS, carZ)) / (2*SLOPE_EPS);
-    const MAX_TILT = 0.4;
-    const pitchSlope = THREE.MathUtils.clamp(-Math.atan(slopeZ), -MAX_TILT, MAX_TILT) * roll;
-    const rollSlope  = THREE.MathUtils.clamp( Math.atan(slopeX), -MAX_TILT, MAX_TILT) * roll;
-
-    // Car rides the same terrainHeightAt(x,z) the grid itself is drawn with
-    // (see buildRoad), so it rises and falls exactly with hills instead of
-    // clipping through them. No constant drop is subtracted here — GROUND_MEET
-    // already raised the grid's own baseline to close that gap, so at the
-    // start (flat ground, terrainHeightAt≈0) the car sits at the same y it had
-    // as the glyph cloud, with no snap.
-    const groundHere = terrainHeightAt(carX, carZ);
-    driveRig.position.set(carX, bob + groundHere, carZ);
+    driveRig.position.set(carX, bob, carZ);
     driveRig.rotation.set(
-      Math.sin(roll*PITCH_FREQ) * 0.01 * roll + pitchSlope,
+      Math.sin(roll*PITCH_FREQ) * 0.01 * roll,
       Math.cos(roll * CURVE_FREQ) * 0.36 * roll,   // heading weave grows from 0
-      -Math.cos(roll * CURVE_FREQ) * 0.09 * roll + rollSlope
+      -Math.cos(roll * CURVE_FREQ) * 0.09 * roll
     );
 
     // --- camera sub-phase A: swing in spherical space from the handoff angle to a
     // pose directly behind the car (theta = 0 puts the camera on +Z... but the car
     // FRONT is +Z, so "behind" is -Z which is theta = PI). We move to theta=PI, a
     // low phi (shallow, near the road), at a comfortable trailing radius. ---
-    const CHASE_RADIUS = R * 19.0;
+    const CHASE_RADIUS = R * 13.0;
     const CHASE_PHI    = Math.PI * 0.40;      // above the road but not top-down
     const targetTheta  = Math.PI;             // directly behind the car (-Z side)
     // shortest-path interpolation of theta so it swings the short way around
@@ -1243,27 +1035,10 @@ function loop(){
   }
 
   if(controls.enabled){
-    // ease radius/phi back toward the framed home pose (see the wantOrbit block
-    // above) instead of leaving them at whatever mismatched value the chase
-    // handed back — damped rather than snapped, so re-entering orbit after a
-    // scroll down+up settles in smoothly instead of jumping.
-    camRadiusCur = THREE.MathUtils.damp(camRadiusCur, homeRadius, 4.5, dt);
-    camPhiCur    = THREE.MathUtils.damp(camPhiCur, homePhi, 4.5, dt);
-    _sph.setFromVector3(camera.position);
-    _sph.radius = camRadiusCur;
-    _sph.phi = camPhiCur;
-    camera.position.setFromSpherical(_sph);
     // hero turntable — only runs while we're not driving (the drive owns the camera otherwise)
     controls.autoRotate = !reduce;
     controls.autoRotateSpeed = 0.55;
     controls.update();
-    // counter-rotate the terrain by the camera's own orbit angle so the ground
-    // reads as frozen while the name/car appears to spin in place.
-    if(terrainWrap){
-      _sph.setFromVector3(camera.position);
-      heroSpinTheta = _sph.theta;
-      terrainWrap.rotation.y = heroSpinTheta;
-    }
   }
   renderer.render(scene,camera);
   requestAnimationFrame(loop);
