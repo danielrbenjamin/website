@@ -51,6 +51,9 @@ html.intro-active{overflow:hidden}
 /* homepage-only: featured project preview cards */
 .proj-feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .proj-feat{border:1px solid var(--line);border-radius:5px;background:var(--panel);padding:26px;display:flex;flex-direction:column;align-items:flex-start}
+.proj-feat-image{width:100%;aspect-ratio:16/10;overflow:hidden;border:1px solid var(--line);border-radius:3px;margin-bottom:20px;background:var(--bg)}
+.proj-feat-image img{width:100%;height:100%;display:block;object-fit:cover;filter:grayscale(18%) contrast(1.04);transition:filter .25s ease,transform .35s ease}
+.proj-feat-image:hover img{filter:grayscale(0%) contrast(1.06);transform:scale(1.025)}
 .proj-feat .ptag{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:12px}
 .proj-feat h3{font-size:1.22rem;font-weight:600;letter-spacing:-.01em;margin-bottom:10px}
 .proj-feat p{color:var(--ink-dim);font-size:.97rem;line-height:1.6;margin-bottom:16px}
@@ -134,20 +137,24 @@ html.intro-active{overflow:hidden}
     <p class="sec-sub reveal">see all projects on the <a href="projects.html" style="color:var(--amber)">projects page →</a></p>
     <div class="proj-feat-grid">
       <div class="proj-feat reveal">
-        <span class="ptag">// interactive</span>
+        <a class="proj-feat-image" href="projects/fsae-chassis/fsae-chassis.html" aria-label="View FSAE Chassis Design and Manufacture project">
+          <img src="projects/fsae-chassis/comp-car.png" alt="UBC Formula Electric competition car" loading="lazy" decoding="async">
+        </a>
         <h3>FSAE Chassis Design and Manufacture</h3>
-        <p>The 2026 UBC Formula Electric car, from the ground up: a 4130 chromoly tube frame with custom-machined uprights, planetary gearboxes, adjustable pedal box, and full aero package. I own the chassis structure end to end. Two pieces here are live and interactive — a scroll-driven exploded 3D model, and the AutoCAD assembly drawings that self-draw as you scroll.</p>
+        <p>Led the design and manufacture of the 2026 UBC Formula Electric chassis, including the 4130 chromoly space frame, structural analysis, manufacturing drawings, welding fixtures, and frame fabrication.</p>
         <div class="chips">
-          <span class="chip">SolidWorks</span><span class="chip">AutoCAD</span><span class="chip">ANSYS</span><span class="chip">Three.js</span><span class="chip">4130 Chromoly</span>
+          <span class="chip">SolidWorks</span><span class="chip">AutoCAD</span><span class="chip">ANSYS</span><span class="chip">MATLAB</span><span class="chip">MIG Welding</span>
         </div>
         <a href="projects/fsae-chassis/fsae-chassis.html" class="btn solid">View project →</a>
       </div>
       <div class="proj-feat reveal">
-        <span class="ptag">// interactive</span>
+        <a class="proj-feat-image" href="projects/mems-hand/mems-hand.html" aria-label="View MEMS Soft-Actuated Hand project">
+          <img src="projects/mems-hand/mems-2.jpg" alt="Tendon-driven prosthetic hand grasping an object on a Kinova robotic arm" loading="lazy" decoding="async">
+        </a>
         <h3>MEMS Soft-Actuated Hand</h3>
         <p>A tendon-driven prosthetic hand developed at the UBC MEMS Lab to demonstrate soft pneumatic robotic actuators, refined through 3D-printed iterations and custom-molded silicone return bands.</p>
         <div class="chips">
-          <span class="chip">SolidWorks</span><span class="chip">Soft Robotics</span><span class="chip">Pneumatic Actuation</span><span class="chip">Three.js</span>
+          <span class="chip">SolidWorks</span><span class="chip">3D Printing</span><span class="chip">Silicone Molding</span>
         </div>
         <a href="projects/mems-hand/mems-hand.html" class="btn solid">View project →</a>
       </div>
@@ -162,7 +169,7 @@ html.intro-active{overflow:hidden}
       <div class="stack-col reveal">
         <h4>// mechanical</h4>
         <div class="chips">
-          <span class="chip">SOLIDWORKS</span><span class="chip">Fusion360</span>
+          <span class="chip">SolidWorks</span><span class="chip">Fusion 360</span>
           <span class="chip">DFMA</span>
           <span class="chip">AutoCAD + AutoLISP</span><span class="chip">HVAC Design</span><span class="chip">Plumbing Design</span>
           <span class="chip">ANSYS</span><span class="chip">3D Printing</span>
@@ -180,7 +187,7 @@ html.intro-active{overflow:hidden}
           <span class="chip">Apache SVN</span><span class="chip">Arduino/ESP32 (PlatformIO)</span>
           <span class="chip">Docker</span><span class="chip">AWS</span>
           <span class="chip">Atlassian Suite (Jira, Confluence)</span><span class="chip">Adobe Suite (Photoshop, Premiere Pro)</span>
-          <span class="chip">MS Office (Project, Excel, PowerBI)</span><span class="chip">Linux</span>
+          <span class="chip">MS Office (Project, Excel, Power BI)</span><span class="chip">Linux</span>
         </div>
       </div>
     </div>
