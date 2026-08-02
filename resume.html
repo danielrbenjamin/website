@@ -61,7 +61,7 @@ body.pdf-load-failed .pdf-fallback{display:block}
   document.addEventListener('adobe_dc_view_sdk.ready',function(){
     clearTimeout(sdkReadyTimeout);
     try{
-      var adobeDCView=new AdobeDC.View({clientId:'16c68820aef1401c9f3d0ae1a7a43183',divId:'adobe-dc-view'});
+      var adobeDCView=new AdobeDC.View({clientId:'00dc2426b7a54c56a26940e1c0ecaf4e',divId:'adobe-dc-view'});
       adobeDCView.previewFile(
         {content:{location:{url:'https://cdn.jsdelivr.net/gh/danielrbenjamin/resume@main/tesla_format/Daniel_Benjamin_Resume.pdf'}},metaData:{fileName:'Daniel_Benjamin_Resume.pdf'}},
         {embedMode:'IN_LINE'}
