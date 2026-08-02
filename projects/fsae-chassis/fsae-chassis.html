@@ -16,6 +16,12 @@
 <script src="../../site-footer.js" defer></script>
 <script src="../../site-contact.js" defer></script>
 <script src="../../site-console.js" defer></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
 <style>
 /* ── project layout: sticky TOC + body ── */
 .project-layout{display:grid;grid-template-columns:190px 1fr;gap:52px;align-items:start}
@@ -49,7 +55,14 @@
   aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
   font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
 }
+.figure img{display:block;width:100%;height:auto;border:1px solid var(--line-bright);border-radius:4px;background:var(--panel)}
 .figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 28px;max-width:680px}
+.metric{padding:16px;border:1px solid var(--line);border-radius:4px;background:var(--panel)}
+.metric-value{display:block;font-family:var(--mono);font-size:1.12rem;color:var(--amber);margin-bottom:6px}
+.metric-label{display:block;font-family:var(--mono);font-size:10.5px;line-height:1.45;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em}
+@media(max-width:600px){.metric-grid{grid-template-columns:1fr}.metric{display:grid;grid-template-columns:120px 1fr;align-items:center}.metric-value{margin-bottom:0}}
 
 .note{
   margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
@@ -64,19 +77,25 @@
 }
 .hero-shot img{display:block;width:100%;height:auto;max-height:520px;object-fit:cover}
 
-/* ── live-experience launch cards ── */
-.launch-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:8px 0 32px;max-width:680px}
-@media(max-width:600px){.launch-grid{grid-template-columns:1fr}}
-.launch-card{
-  display:block;border:1px solid var(--line-bright);border-radius:6px;background:var(--panel);
-  padding:22px;transition:border-color .18s,transform .18s;
-}
-.launch-card:hover{border-color:var(--amber);transform:translateY(-2px)}
-.launch-card .lc-tag{font-family:var(--mono);font-size:10.5px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
-.launch-card h4{font-size:1.05rem;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
-.launch-card p{color:var(--ink-dim);font-size:.92rem;line-height:1.55;margin-bottom:0}
-.launch-card .lc-arrow{font-family:var(--mono);color:var(--amber);font-size:12px;margin-top:14px;display:block;transition:transform .15s}
-.launch-card:hover .lc-arrow{transform:translateX(4px)}
+/* ── embedded engineering viewers ── */
+.embed-block{margin:22px 0 34px;max-width:680px}
+.embed-label{font-family:var(--mono);font-size:10.5px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.embed-caption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+.cad-viewer{position:relative;border:1px solid var(--line-bright);border-radius:4px;overflow:hidden;aspect-ratio:16/10}
+.cad-viewer canvas{display:block;width:100%;height:100%;cursor:grab}
+.cad-viewer canvas:active{cursor:grabbing}
+.cad-viewer .cv-note{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--ink-dim);text-align:center;padding:20px;pointer-events:none}
+.cad-viewer .cv-note b{color:var(--amber)}
+.cad-viewer .cv-note .blink{display:inline-block;width:7px;height:12px;background:var(--green);margin-left:3px;vertical-align:-1px;animation:cvblink 1.1s step-end infinite}
+@keyframes cvblink{50%{opacity:0}}
+.cad-viewer .cv-hint{position:absolute;bottom:10px;right:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--ink-faint);background:rgba(12,14,15,.55);padding:4px 8px;border-radius:2px;pointer-events:none;transition:opacity .4s}
+.drawing-sheet{border:1px solid var(--line);border-radius:4px;background:#0a0c0d;padding:18px;position:relative;overflow:hidden;min-height:220px}
+.drawing-sheet::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(127,176,212,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(127,176,212,.05) 1px,transparent 1px);background-size:24px 24px;pointer-events:none}
+.drawing-svg{position:relative;z-index:1;color:#7fb0d4}
+.drawing-svg svg{display:block;width:100%;height:auto}
+.drawing-svg svg [data-draw]{stroke-width:1.1;vector-effect:non-scaling-stroke}
+.drawing-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--ink-dim)}
+@media(max-width:600px){.drawing-sheet{padding:10px;min-height:150px}}
 </style>
 </head>
 <body>
@@ -94,9 +113,7 @@
       <span class="chip">SolidWorks</span><span class="chip">AutoCAD</span><span class="chip">ANSYS</span><span class="chip">Three.js</span><span class="chip">4130 Chromoly</span>
     </div>
     <div class="hero-shot reveal">
-      <div class="figure" style="margin:0">
-        <div class="shot" style="aspect-ratio:21/9">hero render — 2026 chassis, three-quarter view (placeholder)</div>
-      </div>
+      <img src="comp-car.png" alt="UBC Formula Electric competition car">
     </div>
   </section>
 
@@ -107,71 +124,166 @@
         <div class="toc-label">On this page</div>
         <ul class="toc-list">
           <li><a href="#problem">Problem</a></li>
-          <li><a href="#structure">Structure &amp; Load Path</a></li>
+          <li><a href="#goals">Goals for This Year</a></li>
+          <li><a href="#structure">Design</a></li>
+          <li><a href="#torsional-rigidity">Torsional Rigidity</a></li>
           <li><a href="#analysis">Analysis &amp; Documentation</a></li>
           <li><a href="#manufacture">Manufacturing</a></li>
-          <li><a href="#interactive">Interactive: Explode &amp; Drawings</a></li>
+          <li><a href="#interactive">Three-View Drawings</a></li>
           <li><a href="#results">Results</a></li>
-          <li><a href="#links">Links</a></li>
         </ul>
       </aside>
 
-      <div class="project-body reveal">
+    <div class="project-body">
+      <h2 class="project-summary-title">Project Summary</h2>
+      <div class="project-summary reveal" aria-label="Project summary">
+        <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Modelled the 4130 chromoly space frame in SolidWorks around suspension, harness, impact-attenuator, and cornering loads.</li><li>Connected an ANSYS beam model to the braking, cornering, bump, and combined-load cases from the suspension analysis pipeline.</li><li>Carried the design into manufacturing drawings, custom jigging, TIG welding, and tab installation.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>Led development of the 2026 car's frame and the structural package supporting its suspension, powertrain, aero, and driver systems.</li><li>Established documented requirements and validation methods so design decisions could be traced to calculations and trade-offs.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">Results</span><ul><li>The FEA model predicts <b>1,855 N·m/°</b> of chassis torsional stiffness.</li><li>The design exceeds the <b>1,446 N·m/°</b> threshold for less than 20% load-transfer-distribution loss, while identifying <b>3,168 N·m/°</b> as the next 10%-loss target.</li><li>The completed documentation links the frame's design, analysis, and fabrication decisions in one handoff-ready system.</li></ul></div>
+      </div>
 
         <h2 id="problem">Problem</h2>
-        <p>UBC Formula Electric designs, builds, and races a formula-style electric car against other university teams every year. The chassis is the one system every other subteam bolts to — suspension, powertrain, aero, the driver — so it has to be right before almost anything else can be finalized. As Chassis Lead for the 2026 car, I own that structure from concept sketch through competition scrutineering.</p>
-        <p>The brief is really three competing constraints at once: keep the frame light enough to help lap time, stiff enough that suspension geometry doesn't wander under load, and strong enough to pass FSAE's structural rules and protect the driver in an impact. None of those are optional, and trading between them is most of the job.</p>
+        <p>UBC Formula Electric designs, builds, and races a formula-style electric car against other university teams every year. The chassis is the one system every other subteam integrates with: suspension, powertrain, aero, the driver. As Chassis Lead for the 2026 car, I own that structure from concept sketch through competition scrutineering, as well as managing my subteam members in their projects like circuit board enclosures and the firewall design.</p>
 
-        <h2 id="structure">Structure &amp; Load Path</h2>
-        <p>The frame is a 4130 chromoly tube-steel space frame, sized member by member from the loads it actually sees — suspension pickups, harness attachment points, impact attenuator mounting, and the torsional loads that come from cornering. I model the full assembly in SolidWorks and reason about load path before committing to a tube diameter or wall thickness, since moving a node in CAD is a lot cheaper than re-notching a tube.</p>
+        <h2 id="goals">Goals for This Year</h2>
+        <p>The central goal is to move from a chassis with very little documented design justification to one built around <b>clear requirements, traceable decisions, and repeatable validation tools</b>.</p>
         <ul>
-          <li><b>Suspension pickups</b> — sized against both simply-supported and fixed-fixed boundary assumptions, since the real mounting condition sits between the two</li>
-          <li><b>Torsional stiffness</b> — modeled following the Deakin et al. approach, so front and rear stiffness stay matched to the suspension's designed weight-transfer balance</li>
-          <li><b>Impact attenuator &amp; harness mounts</b> — sized against FSAE's regulatory loads, including the 30 kN harness-anchor requirement</li>
+          <li><b>Set a concrete torsional-rigidity goal</b> — explain why additional stiffness improves suspension tuning authority, then derive a numerical target from literature, mathematics, and vehicle physics rather than relying on a rule of thumb</li>
+          <li><b>Expand structural validation</b> — conduct additional FEA and supporting hand calculations for the frame, suspension mounts, harness anchors, and other critical structural components</li>
+          <li><b>Research chassis geometry</b> — investigate space-frame geometry, triangulation, load paths, node placement, and packaging tradeoffs before committing to the next design</li>
+          <li><b>Establish a bolted-joint methodology</b> — create a consistent process for preload, shear transfer, bearing, tear-out, slip, fastener strength, and joint-level factors of safety</li>
         </ul>
 
-        <h2 id="analysis">Analysis &amp; Documentation</h2>
-        <p>Every structural decision is backed by hand calculations and ANSYS Static Structural runs, and every one of those is written up in a formal design document — CHS-F04 for the chassis, SUS-F01 for the suspension-mounting interface — plus a maintained design-decision log. That's not paperwork for its own sake: FSAE's design event asks teams to defend their choices, and "here's the calc, here's the FEA, here's why we picked this tube" is a much stronger answer than "it hasn't broken yet."</p>
-        <p>It also means the next chassis lead inherits a frame they can actually reason about, instead of a black box they're afraid to touch.</p>
+        <h2 id="structure">Design</h2>
+        <p>The frame is a 4130 chromoly tube-steel space frame, sized member by member from the loads it actually sees — suspension pickups, harness attachment points, impact attenuator mounting, and the torsional loads that come from cornering. I model the full assembly in SolidWorks and reason about load path before committing to a tube diameter or wall thickness.</p>
+
+        <h2 id="torsional-rigidity">Chassis Torsional Rigidity</h2>
+        <p>A chassis that twists between the axles absorbs part of the differential torsional moment generated by the suspension. That pulls the lateral load transfer (LLT) distribution back toward 50:50, so anti-roll bar changes produce less handling-balance adjustment at the tyres than the suspension model predicts.</p>
+        <p>I applied the quasi-static three-body model developed by Deakin et al. to the 2026 car. The model treats the front and rear suspension roll stiffnesses as springs connected by the chassis torsional stiffness, and shows that transmission is governed by the ratio of total suspension roll stiffness to chassis stiffness. The analysis uses <b>596 N·m/° front</b> and <b>513 N·m/° rear</b> roll stiffness, <b>49:51</b> weight distribution with driver, and the FEA-predicted chassis stiffness of <b>1,855 N·m/°</b>.</p>
 
         <figure class="figure reveal">
-          <div class="shot">ANSYS static structural — torsional stiffness case (placeholder)</div>
-          <figcaption>Torsional stiffness FEA, front vs. rear compliance compared against the suspension's target weight-transfer split.</figcaption>
+          <img src="lateral-load-transfer.png" alt="Plot of front lateral load transfer against front roll stiffness distribution for a range of chassis torsional stiffness values">
+          <figcaption>Front LLT versus front roll-stiffness distribution. Softer chassis curves flatten toward 50%, reducing the handling change delivered by an ARB adjustment. The filled marker shows the current 53.7:46.3 setup.</figcaption>
         </figure>
 
-        <h2 id="manufacture">Manufacturing</h2>
-        <p>The frame is TIG-welded from notched 4130 tube, jigged to hold the suspension hardpoints within competition tolerance through the welding process. Uprights are custom-machined rather than off-the-shelf, and the planetary gearboxes and adjustable pedal box were both designed in-house to fit inside a chassis envelope that was never going to accommodate a catalog part.</p>
+        <p>At the current 53.7:46.3 roll-stiffness split, the model delivers 53.13% front LLT versus 53.7% for a rigid chassis.</p>
 
-        <h2 id="interactive">Interactive: Explode &amp; Drawings</h2>
-        <p>Two pieces of this project are live on this site rather than just described. The first is a scroll-driven exploded view of the full car — 794 parts, each flying outward along its own vector from the chassis centroid as you scroll, staggered by distance from center so it reads as a bloom rather than a blast. The second is the full AutoCAD assembly drawing set, which draws itself onto the sheet like a plotter laying down ink, scrubbed by scroll or replayed on demand.</p>
-
-        <div class="launch-grid">
-          <a class="launch-card" href="../../chassis-viewer.html">
-            <div class="lc-tag">Three.js · scroll-scrubbed</div>
-            <h4>Exploded assembly</h4>
-            <p>794-part car model, disassembling radially as you scroll. Drag to orbit at any point.</p>
-            <span class="lc-arrow">Open the explode view →</span>
-          </a>
-          <a class="launch-card" href="../../drawings-viewer.html">
-            <div class="lc-tag">AutoCAD · self-drawing</div>
-            <h4>Assembly drawings</h4>
-            <p>Top, side, and front views of Car #85, drawn line by line, scroll-scrubbed or replayed.</p>
-            <span class="lc-arrow">Open the drawing set →</span>
-          </a>
+        <div class="metric-grid reveal">
+          <div class="metric"><span class="metric-value">16.2%</span><span class="metric-label">LLT distribution loss at 54:46</span></div>
+          <div class="metric"><span class="metric-value">1.293 pp</span><span class="metric-label">Absolute LLT error from an intended 8 pp difference</span></div>
+          <div class="metric"><span class="metric-value">0.598</span><span class="metric-label">K<sub>tot</sub> / K<sub>ch</sub> stiffness ratio</span></div>
         </div>
+
+        <figure class="figure reveal">
+          <img src="chassis-stiffness-requirement.png" alt="Plot of lateral load transfer loss against chassis stiffness ratio with 10 and 20 percent thresholds">
+          <figcaption>LLT loss at the maximum 54:46 tuning split. The current chassis passes Deakin's 20% example threshold but does not reach the more conservative 10% target.</figcaption>
+        </figure>
+
+        <p>The current design exceeds the <b>1,446 N·m/°</b> stiffness required to keep loss below 20%, but falls <b>1,313 N·m/°</b> short of the <b>3,168 N·m/°</b> required for 10% loss. In practical terms, about one seventh of the intended ARB adjustment at the maximum tuning split is absorbed as chassis twist rather than transmitted to the tyres.</p>
+        <p>This makes 1,855 N·m/° acceptable against the literature's minimum criterion, but not the future target. The next chassis should aim for at least <b>3,168 N·m/°</b>, with the analysis repeated using physical torsion-test data once available; joint and installation compliance may reduce effective stiffness below the FEA prediction.</p>
+
+        <div class="embed-label">ANSYS · beam-model validation</div>
+        <p>To find the stiffness of the current CAD design, I had one of my team members convert the SolidWorks space frame into an ANSYS line-body model, assigned each member its actual tube section, and connected the beam nodes at the welded joints. The suspension pickup nodes were loaded using the design cases generated by the <a href="../suspension-pipeline/suspension-pipeline.html">Suspension Load Analysis Pipeline I created</a>, keeping the structural model tied to the same braking, cornering, bump, and combined-load assumptions used across the car.</p>
+        <p>For the torsion case, one axle was constrained while the suspension loads formed a torque at the opposite axle. we measured the relative front-to-rear rotation of the pickup planes and divided the reacted torque by that angular deflection. That beam-model result produced the current <b>1,855 N·m/°</b> value used in the LLT analysis above.</p>
+
+        <div class="embed-block reveal">
+          <div class="embed-label">SolidWorks CAD · interactive frame</div>
+          <div class="cad-viewer" id="frame-viewer">
+            <canvas id="frame-cv" aria-label="Interactive 3D model of the 2026 tube frame"></canvas>
+            <div class="cv-note" id="frame-note">loading tube frame<span class="blink"></span></div>
+            <div class="cv-hint" id="frame-hint">drag to orbit</div>
+          </div>
+          <div class="embed-caption">The frame geometry evaluated in the ANSYS beam model. Drag to inspect the tube layout and suspension load paths.</div>
+        </div>
+
+        <h2 id="manufacture">Manufacturing</h2>
+        <p>The frame is TIG-welded from notched 4130 tube ordered from VR3, which I coordinated using the following drawings.</p>
+
+        <div class="embed-label">Frame manufacturing drawings</div>
+
+        <figure class="figure reveal">
+          <div class="drawing-sheet">
+            <div class="drawing-svg" data-drawing-src="frame-drawing-1-front+bom.svg" role="img" aria-label="Front frame assembly drawing and bill of materials"></div>
+            <div class="drawing-loading">loading front frame drawing</div>
+          </div>
+          <figcaption><b>Front frame assembly and bill of materials.</b> Primary frame geometry and the tube schedule used to coordinate fabrication.</figcaption>
+        </figure>
+
+        <figure class="figure reveal">
+          <div class="drawing-sheet">
+            <div class="drawing-svg" data-drawing-src="frame-drawing-2-rear.svg" role="img" aria-label="Rear frame assembly drawing"></div>
+            <div class="drawing-loading">loading rear frame drawing</div>
+          </div>
+          <figcaption><b>Rear frame assembly.</b> Rear structure, suspension pickup geometry, and drivetrain packaging references.</figcaption>
+        </figure>
+
+        <figure class="figure reveal">
+          <div class="drawing-sheet">
+            <div class="drawing-svg" data-drawing-src="frame-drawing-3-tube-details.svg" role="img" aria-label="Chassis frame tube-detail drawing"></div>
+            <div class="drawing-loading">loading tube details</div>
+          </div>
+          <figcaption><b>Tube details.</b> Individual member geometry for cutting, notching, and fit-up.</figcaption>
+        </figure>
+
+        <div class="embed-label">Jigging &amp; fabrication</div>
+        <p>To turn those drawings into an accurate welded frame, we designed a custom welding jig around the fixture table. The locating plates, clamps, and tie-downs held the chassis nodes and tubes in position while we assembled and welded the structure, helping preserve the suspension hardpoints and overall frame geometry as heat was introduced.</p>
+
+        <figure class="figure reveal">
+          <img src="wleding-jig.jpg" alt="2026 chassis secured in the custom welding jig on the fixture table">
+          <figcaption><b>Custom chassis welding jig.</b> The frame restrained on the fixture table with locating plates, clamps, and tie-downs during assembly.</figcaption>
+        </figure>
+
+        <p>During fabrication, I noticed that the existing headrest arrangement did not provide enough support to hold the part where it needed to be. I improvised a dedicated jig from leftover acrylic, using the frame itself as the locating reference so the headrest could be supported and aligned before its mounts were finalized.</p>
+
+        <figure class="figure reveal">
+          <img src="fe-headrestjig.jpg" alt="Improvised clear acrylic jig supporting and locating the chassis headrest">
+          <figcaption><b>Improvised headrest jig.</b> A support made from leftover acrylic after the existing setup proved insufficient.</figcaption>
+        </figure>
+
+        <p>I also completed much of the chassis welding work myself, including welding the majority of the mounting tabs onto the frame. The photo below shows me welding the tabs used to mount the tractive battery structure.</p>
+
+        <figure class="figure reveal">
+          <img src="welding.jpg" alt="Daniel welding tractive-battery mounting tabs onto the chassis frame">
+          <figcaption><b>Tractive-battery mounting tabs.</b> Welding one of the tab sets onto the chassis; I welded the majority of the frame's mounting tabs.</figcaption>
+        </figure>
 
         <h2 id="results">Results</h2>
         <p>The 2026 chassis carries the full structural package — frame, uprights, gearboxes, pedal box, and aero mounting — through design, FEA, and fabrication as one coherent system, with every major decision traceable back to a calc or a documented tradeoff. That traceability is the part I'd point to: it's what lets the team defend the car at competition, and what lets whoever leads chassis after me pick up exactly where the documentation left off.</p>
 
-        <div class="note reveal">
-          <b>Note:</b> the hero render and ANSYS figures on this page are still placeholders — swap in the real renders, FEA plots, and final competition numbers once the 2026 car is built and scrutineered.
-        </div>
+        <figure class="figure reveal">
+          <img src="comp-car.png" alt="UBC Formula Electric car at competition">
+          <figcaption><b>Competition car.</b> The completed UBC Formula Electric vehicle.</figcaption>
+        </figure>
 
-        <h2 id="links">Links</h2>
-        <div class="cta-row reveal">
-          <a href="../../chassis-viewer.html" class="btn">◈ Explode the 3D model</a>
-          <a href="../../drawings-viewer.html" class="btn">✎ Self-drawing drawings</a>
-        </div>
+        <h2 id="interactive">Three-View Drawings</h2>
+        <p>The AutoCAD assembly set documents the finished vehicle envelope and packaging from the top, side, and front.</p>
+
+        <div class="embed-label">AutoCAD · three-view assembly drawings</div>
+
+        <figure class="figure reveal">
+          <div class="drawing-sheet">
+            <div class="drawing-svg" data-drawing-src="top.svg" role="img" aria-label="Top-view AutoCAD assembly drawing of Car 85"></div>
+            <div class="drawing-loading">loading top view</div>
+          </div>
+          <figcaption><b>Top view.</b> Car #85 full-car assembly, showing the 1,550 mm wheelbase and chassis layout.</figcaption>
+        </figure>
+
+        <figure class="figure reveal">
+          <div class="drawing-sheet">
+            <div class="drawing-svg" data-drawing-src="side.svg" role="img" aria-label="Side-view AutoCAD assembly drawing of Car 85"></div>
+            <div class="drawing-loading">loading side view</div>
+          </div>
+          <figcaption><b>Side view.</b> The 2,846 mm overall vehicle length, driver envelope, and adjustable pedal-box packaging.</figcaption>
+        </figure>
+
+        <figure class="figure reveal">
+          <div class="drawing-sheet">
+            <div class="drawing-svg" data-drawing-src="front.svg" role="img" aria-label="Front-view AutoCAD assembly drawing of Car 85"></div>
+            <div class="drawing-loading">loading front view</div>
+          </div>
+          <figcaption><b>Front view.</b> The 1,280 mm vehicle width, suspension layout, and planetary-gearbox packaging.</figcaption>
+        </figure>
+
 
         <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
 
@@ -191,6 +303,23 @@ const io=new IntersectionObserver((es)=>{
 },{threshold:.1,rootMargin:'0px 0px -30px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
+// Load each AutoCAD SVG inline so currentColor reproduces the blueprint-blue
+// linework from the dedicated drawings viewer, without its draw animation.
+document.querySelectorAll('[data-drawing-src]').forEach(async sheet => {
+  const loading = sheet.parentElement.querySelector('.drawing-loading');
+  try {
+    const response = await fetch(sheet.dataset.drawingSrc);
+    if (!response.ok) throw new Error(`drawing request failed: ${response.status}`);
+    sheet.innerHTML = await response.text();
+    const svg = sheet.querySelector('svg');
+    if (svg) svg.setAttribute('aria-hidden', 'true');
+    loading.style.display = 'none';
+  } catch (error) {
+    loading.textContent = 'could not load drawing';
+    console.error(error);
+  }
+});
+
 // TOC active-heading tracking
 (function(){
   const links = document.querySelectorAll('.toc-list a');
@@ -208,6 +337,99 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
   headings.forEach(h => tocIO.observe(h));
 })();
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+const MODEL_URL = 'frame.glb';
+const AUTO_SPIN = 0.12;
+const canvas = document.getElementById('frame-cv');
+const noteEl = document.getElementById('frame-note');
+const hintEl = document.getElementById('frame-hint');
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 5000);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.enablePan = false;
+controls.enableZoom = true;
+controls.zoomSpeed = 0.7;
+controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE };
+
+scene.add(new THREE.HemisphereLight(0xcfe8ff, 0x202428, 0.9));
+const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(3,5,2); scene.add(key);
+const rim = new THREE.DirectionalLight(0xffb454, 0.8); rim.position.set(-4,2,-3); scene.add(rim);
+const fill = new THREE.DirectionalLight(0x5ee6a0, 0.25); fill.position.set(0,-3,4); scene.add(fill);
+
+let modelGroup = null, modelRadius = 1, spinning = true;
+const draco = new DRACOLoader();
+draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/');
+const loader = new GLTFLoader();
+loader.setDRACOLoader(draco);
+
+loader.load(MODEL_URL, (gltf) => {
+  modelGroup = gltf.scene;
+  const box = new THREE.Box3().setFromObject(modelGroup);
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  modelRadius = Math.max(size.x, size.y, size.z) * 0.5 || 1;
+  modelGroup.position.sub(center);
+  modelGroup.rotation.y = Math.PI / 3;
+  scene.add(modelGroup);
+
+  const dist = modelRadius / Math.tan((camera.fov*Math.PI/180)/2) * 0.8;
+  camera.position.set(dist*0.85, dist*0.5, dist*0.85);
+  controls.target.set(0,0,0);
+  controls.minDistance = modelRadius * 0.35;
+  controls.maxDistance = modelRadius * 4;
+  camera.near = Math.max(modelRadius * 0.005, 0.001);
+  camera.far = modelRadius * 20;
+  camera.updateProjectionMatrix();
+  controls.update();
+  noteEl.style.display = 'none';
+}, (xhr) => {
+  if (xhr.total) noteEl.innerHTML = `loading tube frame, ${Math.round(xhr.loaded/xhr.total*100)}%`;
+}, (err) => {
+  console.error(err);
+  noteEl.innerHTML = `couldn't load <b>${MODEL_URL}</b>`;
+});
+
+controls.addEventListener('start', () => { spinning = false; hintEl.style.opacity = '0'; });
+controls.addEventListener('end', () => { spinning = true; });
+
+let frameWidth = 0;
+let frameHeight = 0;
+function resizeFrameViewer(){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (w > 0 && h > 0 && (w !== frameWidth || h !== frameHeight)){
+    frameWidth = w;
+    frameHeight = h;
+    renderer.setSize(w, h, false);
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+  }
+}
+
+let last = performance.now();
+function renderFrame(now){
+  const dt = (now-last)/1000; last = now;
+  resizeFrameViewer();
+  if (modelGroup && spinning && AUTO_SPIN && !reduce) modelGroup.rotation.y += AUTO_SPIN*dt;
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(renderFrame);
+}
+requestAnimationFrame(renderFrame);
 </script>
 </body>
 </html>

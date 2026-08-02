@@ -42,6 +42,7 @@
 .project-body b{color:var(--ink);font-weight:500}
 
 .figure{margin:8px 0 32px;max-width:680px}
+.figure img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:5px;background:var(--panel)}
 .figure .shot{
   border:1px dashed var(--line-bright);border-radius:4px;background:var(--panel);
   aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
@@ -59,6 +60,8 @@
   margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
   background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
 }
+.hero-shot img{display:block;width:100%;height:auto}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 30px}
 </style>
 </head>
 <body>
@@ -71,14 +74,12 @@
     <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; SWE-002</div>
     <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">UBC Formula Electric · Team Infrastructure</div>
     <h2 class="sec-h reveal">SVNWORKS: CAD Version Control + Team Infra</h2>
-    <p class="sec-sub reveal" style="margin-bottom:18px">SVN-based CAD version control on Oracle Cloud, Jira milestone tracking across subteams, plus SOPs and onboarding docs — the unglamorous infrastructure that keeps a 100-person student team from losing work.</p>
+    <p class="sec-sub reveal" style="margin-bottom:18px">A Windows application that brings SVN file locking and repository status into the SOLIDWORKS file-opening workflow, backed by the version-control infrastructure used by UBC Formula Electric.</p>
     <div class="chips reveal" style="margin-bottom:28px">
-      <span class="chip">SVN</span><span class="chip">Oracle Cloud</span><span class="chip">Jira</span>
+      <span class="chip">C# / .NET</span><span class="chip">Apache SVN</span><span class="chip">SOLIDWORKS API</span><span class="chip">MSIX</span><span class="chip">Oracle Cloud</span>
     </div>
     <div class="hero-shot reveal">
-      <div class="figure" style="margin:0">
-        <div class="shot" style="aspect-ratio:21/9">SVN repository tree — subteam folder structure (placeholder)</div>
-      </div>
+      <img src="svnworks-ms-store.png" alt="SVNworks application listing on the Microsoft Store">
     </div>
   </section>
 
@@ -90,38 +91,66 @@
         <ul class="toc-list">
           <li><a href="#problem">Problem</a></li>
           <li><a href="#svn">SVN on Oracle Cloud</a></li>
-          <li><a href="#jira">Jira Milestone Tracking</a></li>
-          <li><a href="#docs">SOPs &amp; Onboarding</a></li>
+          <li><a href="#app">SVNworks Application</a></li>
           <li><a href="#results">Results</a></li>
+          <li><a href="#links">Links</a></li>
         </ul>
       </aside>
 
-      <div class="project-body reveal">
+    <div class="project-body">
+      <h2 class="project-summary-title">Project Summary</h2>
+      <div class="project-summary" aria-label="Project summary">
+        <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Deployed Apache SVN on Oracle Cloud.</li><li>Integrated repository state and locking with the SOLIDWORKS API and packaged the client as an MSIX application.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>A Windows application built around the SOLIDWORKS file-opening workflow.</li><li>Revision and lock-ownership checks before editing begins.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">Results</span><ul><li>Deployed in the chassis subteam's daily CAD workflow.</li><li>Reduced overwrite conflicts and exposed file ownership and stale local revisions at the point of use.</li></ul></div>
+      </div>
 
         <h2 id="problem">Problem</h2>
-        <p>UBC Formula Electric is roughly 100 students across a dozen subteams, all editing CAD, firmware, and documentation that ultimately has to fit together into one car. That scale turns "keep everyone's files in sync" from a nicety into a real infrastructure problem — the kind that, left unsolved, costs the team actual rework every single build season.</p>
-        <p>SVNWORKS is the name I gave to the combined effort: hosting, version control, task tracking, and documentation, built and maintained so the team's process scales with its headcount instead of breaking under it.</p>
+        <p>CAD files do not behave like source code. A text file can usually be merged when two people edit it at once; a binary SOLIDWORKS part or assembly cannot. If two designers work from the same revision, one person's update can overwrite the other's without a useful way to reconcile the changes afterward.</p>
+        <p>Apache Subversion already provides version history and file locking, but those safeguards only work when designers can see and use them at the point where they open a file. SVNworks closes that gap. It is a custom Windows application built around the way a CAD team actually works, providing immediate feedback about repository state and file ownership before editing begins.</p>
 
         <h2 id="svn">SVN on Oracle Cloud</h2>
-        <p>I set up and maintain a self-hosted SVN server on Oracle Cloud to host the team's CAD — SolidWorks assemblies across every subteam, organized into a folder structure that mirrors the car's own subsystem breakdown. SVN's check-out/check-in model, unlike a naive shared-drive setup, means two people can't silently overwrite each other's work on the same file, and every part carries a real version history.</p>
+        <p>I also deployed and maintain the SVN server on Oracle Cloud to host UBC Formula Electric's design files. SOLIDWORKS assemblies from across the team are organized around the car's subsystem structure, with version history and explicit file ownership replacing the ambiguity of a shared drive.</p>
         <p>Running it on Oracle Cloud rather than a spare laptop under someone's desk means the server's uptime doesn't depend on any one person's machine being on — a real risk for infrastructure a hundred-person team depends on daily.</p>
 
-        <h2 id="jira">Jira Milestone Tracking</h2>
-        <p>Version control solves "whose file is this," but not "what's actually left to do before the car needs to run." For that, I set up Jira milestone tracking across subteams, giving leads a shared view of where each subsystem stands against the competition timeline instead of a dozen separate mental models of the schedule.</p>
+        <h2 id="app">SVNworks Application</h2>
+        <p>I developed SVNworks in C# and .NET, integrated it with Apache Subversion and the SOLIDWORKS API, and packaged it as an MSIX application for distribution through the Microsoft Store. The tool checks the selected CAD file against the repository, reports whether the local copy is current, and exposes its lock state directly in the file-opening workflow.</p>
+        <p>If a file is unlocked, the user can acquire its SVN lock before opening it. If another user already owns the lock—or a newer revision exists on the server—the application makes that state visible immediately. This turns version control from a separate procedure that is easy to forget into part of the normal act of opening a design.</p>
 
-        <h2 id="docs">SOPs &amp; Onboarding</h2>
-        <p>A student team turns over roughly a third of its membership every year, which means undocumented process knowledge evaporates constantly. I wrote and maintain the SOPs and onboarding documentation for the CAD and infrastructure side of the team, so a new member's first week is spent learning the car, not reverse-engineering how the file server works from tribal knowledge.</p>
+        <ul>
+          <li><b>File-lock awareness:</b> shows whether a part or assembly is available to edit and lets the user acquire a lock.</li>
+          <li><b>Repository status:</b> warns when the server contains a newer revision before work begins.</li>
+          <li><b>CAD-focused workflow:</b> connects SVN state to SOLIDWORKS instead of requiring designers to interpret it in a separate client.</li>
+          <li><b>MSIX distribution:</b> provides a straightforward Windows installation and update path through the Microsoft Store.</li>
+        </ul>
 
         <figure class="figure reveal">
-          <div class="shot">SVN check-out workflow — onboarding doc excerpt (placeholder)</div>
-          <figcaption>Part of the onboarding SOP walking new members through the SVN check-out/check-in workflow.</figcaption>
+          <img src="SVN_unlocked.png" alt="SVNworks prompting a SOLIDWORKS user to lock an unlocked CAD file">
+          <figcaption>Before opening an unlocked SOLIDWORKS file, SVNworks gives the designer an opportunity to acquire its SVN lock.</figcaption>
+        </figure>
+
+        <figure class="figure reveal">
+          <img src="SVN_locked.png" alt="SVNworks confirming that the selected SOLIDWORKS part is locked by the current user">
+          <figcaption>Once acquired, SVNworks confirms that the current user owns the file lock and can safely begin editing.</figcaption>
+        </figure>
+
+        <figure class="figure reveal">
+          <img src="SVN_outdated.jpg" alt="SVNworks warning that a newer version of the selected SOLIDWORKS assembly is available">
+          <figcaption>The application also catches outdated local files before they open, prompting the designer to update from the repository first.</figcaption>
         </figure>
 
         <h2 id="results">Results</h2>
-        <p>The team hasn't lost CAD work to file conflicts since the SVN setup went live, milestone visibility through Jira gives leads an actual read on schedule risk instead of a guess, and new members ramp up against written process instead of whoever happens to be in the shop that day. None of this is visible in a competition result, but it's the reason the visible work gets done on time.</p>
+        <p>SVNworks is now used by UBC Formula Electric's chassis subteam as part of its daily CAD workflow. Making lock ownership and repository status visible before a file opens has reduced conflicting edits, improved accountability for design changes, and made version control easier for new members to follow. Publishing the application through the Microsoft Store also gives other SOLIDWORKS teams a simple way to install the same workflow.</p>
 
-        <div class="note reveal">
-          <b>Note:</b> the repository-tree and onboarding-doc figures above are still placeholders — swap in real screenshots once you're ready to publish them.
+        <ul>
+          <li>Reduced overwrite conflicts in a collaborative CAD environment.</li>
+          <li>Improved awareness of who is editing each design and whether a local file is current.</li>
+          <li>Deployed for daily use by the UBC Formula Electric chassis subteam.</li>
+        </ul>
+
+        <h2 id="links">Links</h2>
+        <div class="cta-row reveal">
+          <a href="https://apps.microsoft.com/detail/9njbjk44l04w?cid=DevShareMCLPCS&amp;hl=en-US&amp;gl=CA" target="_blank" rel="noopener" class="btn">View on Microsoft Store ↗</a>
         </div>
 
         <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>

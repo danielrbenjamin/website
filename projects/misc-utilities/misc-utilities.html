@@ -51,11 +51,18 @@
 .util-list{display:flex;flex-direction:column;gap:1px;margin:8px 0 32px;max-width:680px}
 .util{
   border:1px solid var(--line);border-radius:5px;background:var(--panel);
-  padding:18px 20px;margin-bottom:10px;
+  padding:18px 20px;margin-bottom:10px;scroll-margin-top:28px;
 }
 .util h4{font-size:1.02rem;font-weight:600;margin-bottom:6px;letter-spacing:-.005em}
 .util p{color:var(--ink-dim);font-size:.94rem;line-height:1.55;margin-bottom:0;max-width:none}
 .util .tag{font-family:var(--mono);font-size:10.5px;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;display:block}
+.util .link{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--amber);transition:color .15s}
+.util .link:hover{color:var(--green)}
+.util-image{
+  display:block;width:100%;height:auto;margin-top:16px;border:1px solid var(--line);
+  border-radius:4px;background:var(--bg);object-fit:cover;
+}
+.util-image--portrait{width:auto;max-width:100%;max-height:420px;object-fit:contain}
 </style>
 </head>
 <body>
@@ -65,12 +72,12 @@
 <main class="wrap">
 
   <section class="page-head" style="border-top:none">
-    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; SWE-006</div>
+    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; SWE-007</div>
     <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">Personal Projects · Ongoing</div>
     <h2 class="sec-h reveal">Miscellaneous Utilities</h2>
-    <p class="sec-sub reveal" style="margin-bottom:18px">A grab bag of smaller tools, built to solve small problems along the way rather than to be portfolio pieces in their own right.</p>
+    <p class="sec-sub reveal" style="margin-bottom:18px">A grab bag of smaller tools, built to solve small problems along the way.</p>
     <div class="chips reveal" style="margin-bottom:28px">
-      <span class="chip">Python</span><span class="chip">JavaScript</span>
+      <span class="chip">Next.js</span><span class="chip">React</span><span class="chip">Python</span><span class="chip">JavaScript</span>
     </div>
   </section>
 
@@ -81,36 +88,81 @@
         <div class="toc-label">On this page</div>
         <ul class="toc-list">
           <li><a href="#about">About This Page</a></li>
-          <li><a href="#utilities">The Utilities</a></li>
+          <li><a href="#degree-planner">Degree Planner</a></li>
+          <li><a href="#shop-inventory">Shop Inventory</a></li>
+          <li><a href="#volumelockr">VolumeLockr2</a></li>
+          <li><a href="#notion2ical">notion2ical</a></li>
+          <li><a href="#notion-rainmeter">Notion Rainmeter</a></li>
+          <li><a href="#autolisp">AutoLISP Scripts</a></li>
+          <li><a href="#workday-ics">workday-to-ics</a></li>
+          <li><a href="#monkey">Monkey</a></li>
         </ul>
       </aside>
 
-      <div class="project-body reveal">
+    <div class="project-body">
+      <h2 class="project-summary-title">Project Summary</h2>
+      <div class="project-summary reveal" aria-label="Project summary">
+        <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Turned recurring personal, school, shop, and drafting annoyances into narrowly scoped tools.</li><li>Built apps, scripts, calendar feeds, and automations around each problem.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>A living directory of <b>eight utilities</b>.</li><li>Projects spanning React, Next.js, Kotlin, PHP, JavaScript, Python, and AutoLISP.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">Results</span><ul><li>Delivered tools for degree planning, inventory, per-device audio, and Notion tasks.</li><li>Also covered CAD drafting, timetable export, and automatic guide creation.</li></ul></div>
+      </div>
 
         <h2 id="about">About This Page</h2>
-        <p>Not every tool is worth a dedicated write-up — some things get built in an afternoon to fix one specific annoyance, get used a few dozen times, and never need to be more than that. This page is a home for those: small scripts, one-off automations, and utilities that solved a real problem without needing to become a "project" in the fuller sense of the other pages here.</p>
+        <p>A lot of things I build are to fix one specific annoyance. This page is a home for those things: small programs, scripts, automations, and utilities that solved a real problem without needing to become a "project" in the fuller sense of the other pages here.</p>
 
-        <h2 id="utilities">The Utilities</h2>
         <div class="util-list">
-          <div class="util reveal">
-            <span class="tag">Python</span>
-            <h4>File &amp; naming cleanup scripts</h4>
-            <p>Small scripts for batch-renaming and reorganizing CAD exports, drawing sheets, and photo dumps into consistent naming conventions — the kind of tedious task that's trivial to script and easy to keep putting off otherwise.</p>
+          <div class="util reveal" id="degree-planner">
+            <span class="tag">Next.js · PostgreSQL</span>
+            <h4>UBC MECH Degree Planner</h4>
+            <p>A full-stack planning tool for navigating UBC's Mechanical Engineering degree, with course data collected from the UBC calendar and historical grade distributions supplied through a ubcgrades.com API proxy.</p>
           </div>
-          <div class="util reveal">
+          <div class="util reveal" id="shop-inventory">
+            <span class="tag">React · Three.js · Barcode</span>
+            <h4>Shop Inventory System (WIP)</h4>
+            <p>An inventory app for the team shop with an interactive 3D bay map, barcode scanning, respirator expiration tracking, and crate manifests, built to replace a spreadsheet that was difficult to keep current.</p>
+          </div>
+          <div class="util reveal" id="volumelockr">
+            <span class="tag">Kotlin · Android</span>
+            <h4>VolumeLockr2</h4>
+            <p>A fork of the VolumeLockr Android app with added per-device volume control support which lets you set and lock volume levels independently for each connected audio device (Bluetooth speakers, headphones, wired output) instead of one global slider.</p>
+            <a class="link" href="https://github.com/danielrbenjamin/VolumeLockr2" target="_blank" rel="noopener">↗ github.com/danielrbenjamin/VolumeLockr2</a>
+            <img class="util-image util-image--portrait" src="volume-locker.png" alt="VolumeLockr2 app interface" loading="lazy" decoding="async">
+          </div>
+          <div class="util reveal" id="notion2ical">
+            <span class="tag">PHP</span>
+            <h4>notion2ical</h4>
+            <p>A small PHP script that streams a Notion database's date-bearing items and pages into iCalendar format, so any calendar app can subscribe to a Notion database as a live feed.</p>
+            <a class="link" href="https://github.com/danielrbenjamin/notion2ical" target="_blank" rel="noopener">↗ github.com/danielrbenjamin/notion2ical</a>
+          </div>
+          <div class="util reveal" id="notion-rainmeter">
+            <span class="tag">Rainmeter</span>
+            <h4>Notion Tasks Rainmeter Skin</h4>
+            <p>A desktop Rainmeter skin that pulls tasks straight from a Notion database onto the desktop, so what's due is visible at a glance without opening Notion just to check.</p>
+            <img class="util-image" src="notion-rainmeter.gif" alt="Notion Tasks Rainmeter skin displaying tasks on a desktop" loading="lazy" decoding="async">
+          </div>
+          <div class="util reveal" id="autolisp">
+            <span class="tag">AutoLISP</span>
+            <h4>AutoLISP Automation Scripts</h4>
+            <p>A collection of AutoLISP scripts written during a mechanical co-op at Avalon Mechanical to cut down repetitive AutoCAD drafting work such as cleaning drawings, project setup, and more. The scripts are Avalon Mechanical–specific and are not public.</p>
+          </div>
+          <div class="util reveal" id="workday-ics">
             <span class="tag">JavaScript</span>
-            <h4>Quick-and-dirty browser helpers</h4>
-            <p>Bookmarklets and userscripts written to fix one specific annoyance on a site I use often — a missing keyboard shortcut, a layout that doesn't work well on a given screen size, a form that needs pre-filling.</p>
+            <h4>workday-to-ics</h4>
+            <p>A customizable exporter that turns a UBC Workday course-export spreadsheet into an iCal feed, with comparison features for lining a schedule up against friends' timetables. Runs entirely client-side.</p>
+            <a class="link" href="https://danielrbenjamin.github.io/workday-to-ics/" target="_blank" rel="noopener">↗ danielrbenjamin.github.io/workday-to-ics</a>
+            <img class="util-image" src="workday-ics.png" alt="Workday to ICS course schedule exporter interface" loading="lazy" decoding="async">
           </div>
-          <div class="util reveal">
-            <span class="tag">Python</span>
-            <h4>Data-wrangling one-offs</h4>
-            <p>Scripts written to reshape or clean up a specific dataset — sensor logs, competition results, exported spreadsheets — for a single analysis, without the overhead of building a reusable tool around a problem that only came up once.</p>
+          <div class="util reveal" id="monkey">
+            <span class="tag">JavaScript</span>
+            <h4>Monkey</h4>
+            <p>Monkey see, monkey do — record your workflow once and Monkey turns it into a polished step-by-step guide, with every click and keystroke captured and assembled into screenshots and annotations automatically. Built as a free and local Tango alternative.</p>
+            <a class="link" href="https://danielrbenjamin.github.io/monkey/" target="_blank" rel="noopener">↗ danielrbenjamin.github.io/monkey</a>
+            <img class="util-image" src="monkey.png" alt="Monkey workflow recording and guide creation interface" loading="lazy" decoding="async">
           </div>
         </div>
 
         <div class="note reveal">
-          <b>Note:</b> this page is intentionally a living list — new entries get added here as more small tools come up, rather than each one getting its own page.
+          <b>Note:</b> this page is intentionally a living directory with new entries being added here as more small tools come up. For more information on each of these projects, follow the links to their respective repositories or pages, where available.
         </div>
 
         <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
@@ -133,7 +185,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
 (function(){
   const links = document.querySelectorAll('.toc-list a');
-  const headings = document.querySelectorAll('.project-body h2[id]');
+  const headings = document.querySelectorAll('.project-body h2[id], .project-body .util[id]');
   if(!links.length || !headings.length) return;
   const byId = {};
   links.forEach(a => byId[a.getAttribute('href').slice(1)] = a);

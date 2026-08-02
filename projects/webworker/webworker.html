@@ -47,7 +47,15 @@
   aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
   font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
 }
+.figure .demo-gif{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:5px;background:var(--panel)}
 .figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+
+.highlight-list{max-width:680px;margin:22px 0 32px;border-left:1px solid var(--line-bright)}
+.highlight{position:relative;padding:0 0 25px 25px}
+.highlight:last-child{padding-bottom:0}
+.highlight::before{content:"";position:absolute;left:-4px;top:7px;width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px var(--bg)}
+.highlight h3{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--amber);margin-bottom:7px;letter-spacing:.02em}
+.highlight p{font-size:.96rem;line-height:1.65;margin:0;color:var(--ink-dim)}
 
 .note{
   margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
@@ -68,6 +76,36 @@
 }
 .stat .num{font-family:var(--mono);font-size:1.6rem;color:var(--green);font-weight:700;letter-spacing:-.01em}
 .stat .lbl{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.06em;margin-top:4px}
+
+/* ── adoption chart ── */
+.analytics-card{max-width:680px;margin:22px 0 30px;border:1px solid var(--line);border-radius:5px;background:rgba(20,24,25,.9);overflow:hidden}
+.analytics-card-top{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 17px;border-bottom:1px solid var(--line)}
+.analytics-card-title{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase}
+.analytics-current{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+.analytics-current strong{font-family:var(--mono);font-size:1.8rem;line-height:1;color:var(--amber);font-weight:500;letter-spacing:-.05em}
+.analytics-current span{font-family:var(--mono);font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em}
+.analytics-chart-wrap{position:relative;padding:12px 12px 2px;min-height:260px}
+.analytics-chart{display:block;width:100%;height:auto;overflow:visible}
+.analytics-grid-line{stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+.analytics-axis,.analytics-label{fill:var(--ink-faint);font:11px var(--mono)}
+.analytics-line{fill:none;stroke:var(--amber);stroke-width:2.25;stroke-linejoin:round;stroke-linecap:round}
+.analytics-guide{stroke:var(--line-bright);stroke-width:1;stroke-dasharray:4 5;vector-effect:non-scaling-stroke}
+.analytics-peak{fill:var(--panel);stroke:var(--green);stroke-width:2;vector-effect:non-scaling-stroke}
+.analytics-current-dot{fill:var(--amber);stroke:var(--bg);stroke-width:3;vector-effect:non-scaling-stroke}
+.analytics-label{fill:var(--green)}
+.analytics-hit{fill:transparent;cursor:crosshair;outline:none}
+.analytics-hit:focus{fill:transparent}
+.analytics-hover-guide{stroke:var(--amber);stroke-width:1;stroke-dasharray:3 4;opacity:0;vector-effect:non-scaling-stroke;transition:opacity .12s}
+.analytics-hover-dot{fill:var(--amber);stroke:var(--bg);stroke-width:3;opacity:0;vector-effect:non-scaling-stroke;transition:opacity .12s}
+.analytics-hover-guide.show,.analytics-hover-dot.show{opacity:1}
+.analytics-tooltip{position:absolute;z-index:2;display:block;opacity:0;pointer-events:none;transform:translate(var(--tip-shift,-50%),calc(-100% - 12px));padding:7px 10px;border:1px solid var(--line-bright);border-radius:2px;background:var(--bg);color:var(--ink);font:11px var(--mono);white-space:nowrap;transition:opacity .12s}
+.analytics-tooltip.show{opacity:1}
+@media(max-width:560px){
+  .analytics-card-top{align-items:flex-start;flex-direction:column}
+  .analytics-current{order:-1}
+  .analytics-chart-wrap{min-height:220px;padding:6px 2px 0}
+  .analytics-axis{font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -77,10 +115,10 @@
 <main class="wrap">
 
   <section class="page-head" style="border-top:none">
-    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; SWE-004</div>
+    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; SWE-005</div>
     <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">Personal Project · Browser Extension</div>
     <h2 class="sec-h reveal">WeBWorKer Chrome Extension</h2>
-    <p class="sec-sub reveal" style="margin-bottom:18px">A browser extension with over 500 users that streamlines problem content on WeBWorK, the online homework platform used across a number of university math and science courses.</p>
+    <p class="sec-sub reveal" style="margin-bottom:18px">A continuously improving browser extension that makes WeBWorK faster, clearer, and less error-prone—with live answer previews, input safeguards, better study tools, and hundreds of weekly users.</p>
     <div class="chips reveal" style="margin-bottom:28px">
       <span class="chip">JavaScript</span><span class="chip">HTML5</span><span class="chip">html2canvas</span>
     </div>
@@ -93,37 +131,78 @@
         <div class="toc-label">On this page</div>
         <ul class="toc-list">
           <li><a href="#problem">Problem</a></li>
-          <li><a href="#how">How It Works</a></li>
+          <li><a href="#process">User-Led Process</a></li>
+          <li><a href="#features">Highlights</a></li>
           <li><a href="#adoption">Adoption</a></li>
           <li><a href="#results">Results</a></li>
         </ul>
       </aside>
 
-      <div class="project-body reveal">
+    <div class="project-body">
+      <h2 class="project-summary-title">Project Summary</h2>
+      <div class="project-summary reveal" aria-label="Project summary">
+        <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Collected recurring student feedback and verified it against real workflows.</li><li>Shipped focused safeguards and study tools directly into WeBWorK.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>A browser extension with live math preview, parentheses checking, and limited-attempt warnings.</li><li>An inline PDF viewer and smaller workflow improvements.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">Results</span><ul><li>Grew from <b>93 weekly users</b> in January 2024 to <b>591</b> in July 2026.</li><li>Reached a recorded peak of <b>920</b> in November 2025.</li></ul></div>
+      </div>
 
         <h2 id="problem">Problem</h2>
-        <p>WeBWorK is a widely-used online homework system for math and science courses, but its default problem rendering is bare-bones — dense pages, awkward layouts for anyone trying to reference a problem outside the browser, and no easy way to pull a clean copy of a question for notes or a study group. It works, but it doesn't make studying from it pleasant.</p>
+        <p>WeBWorK is widely used for university math and science courses, but completing an assignment can involve a lot of unnecessary friction. Long expressions are difficult to inspect in fixed-size inputs, formatting mistakes can consume limited attempts, and useful actions—previewing an answer, finding learning resources, or saving a question for later—take more effort than they should.</p>
+        <p>I built <b>WeBWorKer</b> to remove that friction without changing the underlying platform. The extension adds focused improvements directly to the existing WeBWorK interface, helping students spend less time fighting the page and more time solving the problem.</p>
 
-        <h2 id="how">How It Works</h2>
-        <p>WeBWorKer injects into the WeBWorK page and restyles problem content for readability, and uses the html2canvas library to let a student capture a clean image of a problem directly from the page — useful for saving a problem to reference later, sharing with a study group, or pulling into personal notes without a screenshot tool fighting the page's original layout.</p>
+        <h2 id="process">Built Around Real Feedback</h2>
+        <p>I did not want to build features based only on my own assumptions. I asked friends and people already using the extension what frustrated them most about WeBWorK, watched for recurring complaints, and turned those problems into concrete improvements.</p>
+        <p>When someone reports an issue or suggests a change, I verify it against their workflow and ship a focused update quickly. The examples below show how that process shaped the extension.</p>
 
         <figure class="figure reveal">
-          <div class="shot">before/after — stock WeBWorK page vs. WeBWorKer-enhanced view (placeholder)</div>
-          <figcaption>Stock WeBWorK rendering next to the WeBWorKer-enhanced view of the same problem set.</figcaption>
+          <img class="demo-gif" src="webworker-demo.gif" alt="Animated demonstration of WeBWorKer enhancing a WeBWorK assignment page" loading="lazy">
+          <figcaption>WeBWorKer in action: useful controls and answer assistance are added directly to the familiar WeBWorK interface.</figcaption>
         </figure>
 
-        <h2 id="adoption">Adoption</h2>
-        <div class="stat-row reveal">
-          <div class="stat"><div class="num">500+</div><div class="lbl">active users</div></div>
+        <h2 id="features">How It Evolved</h2>
+        <p>WeBWorKer started with one focused improvement and grew as real usage exposed the next most valuable problem to solve.</p>
+        <div class="highlight-list reveal">
+          <article class="highlight">
+            <h3>01 · Starting with real-time preview</h3>
+            <p>The first version added a live, formatted mathematical preview while students typed. It made long expressions easier to read and gave immediate confidence that WeBWorK would interpret an answer as intended.</p>
+          </article>
+          <article class="highlight">
+            <h3>02 · Preventing parentheses mistakes</h3>
+            <p>Conversations with users revealed a recurring frustration: a missing or mismatched parenthesis could make a correct approach count as a wrong answer—and sometimes consume a limited attempt. I responded by building a visual parentheses checker that shows whether brackets are balanced and helps locate the mistake before submission.</p>
+          </article>
+          <article class="highlight">
+            <h3>03 · Making limited attempts harder to miss</h3>
+            <p>I noticed a pattern in Piazza posts: many students did not realize a question had limited attempts until after they had submitted an answer. I added a confirmation window for those questions that clearly surfaces the restriction before submission, giving students a deliberate chance to review their work instead of losing an attempt unexpectedly.</p>
+          </article>
+          <article class="highlight">
+            <h3>04 · Fixing problems around the platform</h3>
+            <p>Continued use also surfaced issues beyond answer entry. For example, solution PDFs were often broken or awkward to access, so I added an inline PDF viewer with an Open in New Tab option. Similar observations led to smaller workflow improvements such as resizable inputs and tools for saving or researching questions.</p>
+          </article>
         </div>
-        <p>The extension picked up over 500 users, entirely through word of mouth between students looking for a better way to work through WeBWorK problem sets — the kind of organic adoption that tells you the tool was solving a problem people actually had, not one I assumed they had.</p>
+
+        <h2 id="adoption">Adoption</h2>
+        <div class="analytics-card reveal" data-weekly-users>
+          <div class="analytics-card-top">
+            <span class="analytics-card-title">// weekly users · Jan 2024—Jul 2026</span>
+            <div class="analytics-current" aria-label="591 weekly users"><strong>591</strong><span>weekly users</span></div>
+          </div>
+          <div class="analytics-chart-wrap">
+            <svg class="analytics-chart" viewBox="0 0 900 360" role="img" aria-labelledby="weekly-users-title weekly-users-desc">
+              <title id="weekly-users-title">WeBWorKer weekly users over time</title>
+              <desc id="weekly-users-desc">Monthly weekly-user snapshots from January 2024 to July 2026, peaking at 920 in November 2025 with a current value of 591.</desc>
+              <defs><linearGradient id="weekly-users-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--amber)" stop-opacity=".22"/><stop offset="1" stop-color="var(--amber)" stop-opacity="0"/></linearGradient></defs>
+              <g class="analytics-grid"></g>
+              <path class="analytics-area" fill="url(#weekly-users-fill)"></path>
+              <polyline class="analytics-line" vector-effect="non-scaling-stroke"></polyline>
+              <g class="analytics-marks"></g><g class="analytics-hits"></g>
+            </svg>
+            <output class="analytics-tooltip" aria-live="polite"></output>
+          </div>
+        </div>
+        <p>The extension grew through students sharing it with one another and now serves hundreds of people each week, reaching a recorded peak of 920 weekly users.</p>
 
         <h2 id="results">Results</h2>
-        <p>What started as a personal fix for my own frustration with WeBWorK's UI turned into a tool other students found and kept using on their own. It's a small extension, but it's a clear example of shipping something for a real, immediate annoyance rather than a hypothetical one.</p>
-
-        <div class="note reveal">
-          <b>Note:</b> the before/after screenshot above is still a placeholder — swap in a real comparison once available.
-        </div>
+        <p>What began as a live-preview utility became a product used well beyond my immediate circle. I continue to maintain it as WeBWorK changes, prioritizing improvements that remove genuine obstacles without adding unnecessary complexity.</p>
 
         <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
 
@@ -158,6 +237,28 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     });
   }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
   headings.forEach(h => tocIO.observe(h));
+})();
+
+(function(){
+  const root=document.querySelector('[data-weekly-users]');
+  if(!root) return;
+  const data=[['2024-01-31',93],['2024-02-29',247],['2024-03-31',342],['2024-04-30',384],['2024-05-31',350],['2024-06-30',364],['2024-07-31',345],['2024-08-31',349],['2024-09-30',453],['2024-10-31',510],['2024-11-30',544],['2024-12-31',466],['2025-01-31',578],['2025-02-28',603],['2025-03-31',634],['2025-04-30',624],['2025-05-31',582],['2025-06-30',595],['2025-07-31',559],['2025-08-31',558],['2025-09-30',635],['2025-10-31',689],['2025-11-30',920],['2025-12-31',553],['2026-01-31',674],['2026-02-28',671],['2026-03-31',684],['2026-04-30',631],['2026-05-31',608],['2026-06-30',608],['2026-07-29',591]].map(([date,value])=>({date:new Date(date+'T00:00:00'),value}));
+  const svg=root.querySelector('svg'),grid=root.querySelector('.analytics-grid'),marks=root.querySelector('.analytics-marks'),hits=root.querySelector('.analytics-hits'),tooltip=root.querySelector('.analytics-tooltip');
+  const W=900,H=360,m={l:52,r:18,t:28,b:48},pw=W-m.l-m.r,ph=H-m.t-m.b,yMax=1000,x=i=>m.l+i*pw/(data.length-1),y=value=>m.t+ph-value/yMax*ph,ns='http://www.w3.org/2000/svg';
+  const make=(tag,attrs,parent)=>{const node=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([key,value])=>node.setAttribute(key,value));parent.appendChild(node);return node;};
+  [0,250,500,750,1000].forEach(value=>{make('line',{x1:m.l,y1:y(value),x2:W-m.r,y2:y(value),class:'analytics-grid-line'},grid);const label=make('text',{x:m.l-12,y:y(value)+4,'text-anchor':'end',class:'analytics-axis'},grid);label.textContent=value;});
+  [0,12,24,30].forEach(i=>{const label=make('text',{x:x(i),y:H-15,'text-anchor':i===0?'start':i===30?'end':'middle',class:'analytics-axis'},grid);label.textContent=data[i].date.toLocaleDateString('en-US',{month:'short',year:'numeric'});});
+  const points=data.map((point,i)=>`${x(i)},${y(point.value)}`).join(' ');
+  root.querySelector('.analytics-line').setAttribute('points',points);
+  root.querySelector('.analytics-area').setAttribute('d',`M${x(0)},${m.t+ph} L${points.replaceAll(' ',' L')} L${x(data.length-1)},${m.t+ph} Z`);
+  const peak=data.reduce((best,point,i)=>point.value>data[best].value?i:best,0);
+  make('line',{x1:x(peak),y1:y(data[peak].value)+9,x2:x(peak),y2:m.t+ph,class:'analytics-guide'},marks);make('circle',{cx:x(peak),cy:y(data[peak].value),r:5,class:'analytics-peak'},marks);
+  const peakLabel=make('text',{x:x(peak)-10,y:y(data[peak].value)-14,'text-anchor':'end',class:'analytics-label'},marks);peakLabel.textContent='920 peak';
+  make('circle',{cx:x(data.length-1),cy:y(data.at(-1).value),r:5,class:'analytics-current-dot'},marks);
+  const hoverGuide=make('line',{x1:0,y1:m.t,x2:0,y2:m.t+ph,class:'analytics-hover-guide'},marks);
+  const hoverDot=make('circle',{cx:0,cy:0,r:6,class:'analytics-hover-dot'},marks);
+  const hide=()=>{tooltip.classList.remove('show');hoverGuide.classList.remove('show');hoverDot.classList.remove('show');};
+  data.forEach((point,i)=>{const hit=make('rect',{x:x(i)-pw/data.length/2,y:m.t,width:pw/data.length+2,height:ph,class:'analytics-hit',tabindex:'0','aria-label':`${point.date.toLocaleDateString('en-US',{month:'long',year:'numeric'})}: ${point.value} weekly users`},hits);const show=()=>{const px=x(i),py=y(point.value);hoverGuide.setAttribute('x1',px);hoverGuide.setAttribute('x2',px);hoverDot.setAttribute('cx',px);hoverDot.setAttribute('cy',py);hoverGuide.classList.add('show');hoverDot.classList.add('show');tooltip.textContent=`${point.date.toLocaleDateString('en-US',{month:'short',year:'numeric'})}  /  ${point.value} users`;tooltip.style.left=`${px/W*100}%`;tooltip.style.top=`${py/H*100}%`;tooltip.style.setProperty('--tip-shift',i<2?'0%':i>28?'-100%':'-50%');tooltip.classList.add('show');};hit.addEventListener('pointerenter',show);hit.addEventListener('focus',show);hit.addEventListener('pointerleave',hide);hit.addEventListener('blur',hide);});
 })();
 </script>
 </body>

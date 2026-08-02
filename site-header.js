@@ -29,7 +29,7 @@
   const mobileLinks = [
     { href: "index.html", label: "home" },
     { href: "about.html", label: "about" },
-    { href: "projects.html", label: "work" },
+    { href: "projects.html", label: "projects" },
     { href: "experience.html", label: "experience" },
     { href: "resume.html", label: "résumé" },
     { href: "https://blog.danielrbenjamin.com/", label: "blog ↗", external: true },

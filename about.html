@@ -121,6 +121,8 @@
 .fsae-media{aspect-ratio:4/3}
 .fsae-media .photo-tag{left:auto;right:14px}
 .fsae-row.reverse .fsae-media .photo-tag{left:14px;right:auto}
+.fsae-media.photo-frame{width:100%;height:100%}
+.fsae-media.photo-frame img{width:100%;height:100%;object-fit:cover}
 .fsae-content h4{
   font-family:var(--mono);font-size:12.5px;color:var(--amber);
   letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;
@@ -208,21 +210,19 @@
     <div class="bio-grid">
       <div class="bio reveal">
         <p>
-          I'm drawn to problems that live at the seam between physical systems and the software that models, controls, or communicates about them. That's put me at a particular intersection: a mechanical engineer who actually writes the code, and a software builder who can read a stress plot.
+          I had decided I wanted to become an engineer at a fairly young age, perhaps because I enjoyed taking things apart (and then sometimes putting them back together). I knew I made the right choice when I started my first year at UBC and was exposed to courses that let me design and build tangible objects. I fell in love with the thrill of seeing designs come to life. That thrill has never gotten old, and it continues to be what drives me to this day.
         </p>
         <p>
-          At UBC I'm in the <b>Mechanical Engineering program's Mechatronics/Mechanical Design (BMMD) option</b>, which means coursework spans structures and dynamics on one side and embedded systems and control on the other. I'm also on the co-op stream, so the degree alternates with industry placements — most recently in <b>medical devices</b>.
+          At UBC I'm in the Mechanical Engineering program's  Biomechanics and Medical Devices Option (BMMD) option, with self-directed depth in AI engineering and robotics. These courses allow me to explore my interests and gain the skills to apply them in real-world contexts. I also have a strong interest in software development, which I pursue through personal projects.
         </p>
-        <p>
-          Outside the classroom, most of my serious engineering hours go into <b>UBC Formula Electric</b> — the university's FSAE electric car program. I started as a suspension and analysis engineer, built tooling the team still uses, and stepped up to <b>Chassis Lead</b> for the 2026 season, owning the full structural package from concept through competition.
-        </p>
-        <p>
-          My philosophy: <b>precision, traceability, and tools that outlive the person who wrote them.</b> I write documentation because future-me will need it. I build pipelines instead of one-off scripts because the team will grow. I do the math because the part might fail.
+        <p>Outside the classroom, most of my time goes into UBC Formula Electric, the university's FSAE electric car design team.
         </p>
       </div>
       <div class="photo-col reveal">
-        <div class="photo-placeholder img-ph tilt">photo<span class="photo-tag">01 — Daniel, on track</span></div>
-        <div class="photo-placeholder img-ph tilt">photo<span class="photo-tag">02 — UBC Formula Electric, shop</span></div>
+        <div class="photo-frame tilt">
+          <img src="about/claw.jpg" alt="APSC 101 Claw Manufacturing">
+          <span class="photo-tag">APSC 101 CLAW MANUFACTURING</span>
+        </div>
       </div>
     </div>
   </section>
@@ -231,19 +231,25 @@
   <section id="fsae" style="border-top:none;padding-top:0">
     <div class="eyebrow reveal">02 — UBC Formula Electric</div>
     <h2 class="sec-h reveal">Building more than just a race car.</h2>
-    <p class="sec-sub reveal">FSAE is a student competition where teams design, build, and race their own formula-style car. It's the thing that eats most of my free time outside of class — and I wouldn't have it any other way.</p>
+    <p class="sec-sub reveal">FSAE is a student competition where teams design, build, and race their own formula-style car. It's the thing that eats most of my free time outside of class but I wouldn't have it any other way.</p>
     <div class="fsae-row reveal">
-      <div class="fsae-media img-ph tilt">chassis render<span class="photo-tag">03 — Concept, 2026</span></div>
+      <div class="fsae-media photo-frame tilt">
+        <img src="about/welding-closeup.jpg" alt="Welding the chassis">
+        <span class="photo-tag">ME WELDING THE 2026 FRAME</span>
+      </div>
       <div class="fsae-content">
         <h4>// how it started</h4>
-        <p>I joined as a first-year with no suspension experience and a lot of curiosity. What began as tagging along to shop nights turned into late evenings tuning models on my laptop, and eventually the genuinely strange feeling of watching a car turn a corner the way my spreadsheet said it would.</p>
+        <p>I joined as a first-year with no experience, primarily because I'd always thought it would be cool to learn how to weld. I also wanted to gain hands-on experience and apply what I was learning in class to something real. It turned out to be an even greater experience than I had imagined. While I did gain real manufacturing skills and finally achieve my goal of learning to weld, what was more important was the community and mentorship I found.</p>
       </div>
     </div>
     <div class="fsae-row reverse reveal">
-      <div class="fsae-media img-ph tilt">shop night<span class="photo-tag">04 — Shop night, build season</span></div>
+      <div class="fsae-media photo-frame tilt">
+        <img src="about/team_picture.jpg" alt="Mech team picture at competition">
+        <span class="photo-tag">MECH TEAM PICTURE @ COMP 2026</span>
+      </div>
       <div class="fsae-content">
-        <h4>// chassis lead, now</h4>
-        <p>These days I'm leading the chassis program, which mostly means trading quiet analysis work for whiteboard arguments about tube geometry, keeping twenty people's designs compatible, and a lot of coffee before deadlines. It's stressful in the best way — and still the highlight of my week.</p>
+        <h4>// how it's going</h4>
+        <p>The things I learned from senior members shaped my growth on the team. As my own skills developed, I took on increasing responsibility, eventually becoming Chassis Lead and passing my knowledge on to the next generation of team members. Seeing others grow and being able to give back in the same way others invested in me has been incredibly rewarding.</p>
       </div>
     </div>
   </section>
@@ -252,6 +258,7 @@
   <section id="interests" style="border-top:none;padding-top:0">
     <div class="eyebrow reveal">03 — Beyond the Bench</div>
     <h2 class="sec-h reveal">What else drives me.</h2>
+    <p class="sec-sub reveal">I'm from Victoria, where growing up surrounded by Vancouver Island's beautitful landscapes inspired a love of the outdoors. I also enjoy reading and am always open to book recommendations.</p>
     <div class="interests-wrap">
       <div class="interests-graph reveal">
         <svg class="graph-svg" viewBox="0 0 460 340" xmlns="http://www.w3.org/2000/svg">
@@ -277,6 +284,16 @@
             <circle class="node-filler" cx="140" cy="303" r="4"/>
           </g>
           <g class="graph-node">
+            <line x1="150" y1="175" x2="55" y2="260"/>
+            <circle cx="55" cy="260" r="9"/>
+            <text x="55" y="287" text-anchor="middle">Homelabbing</text>
+          </g>
+          <g class="graph-node">
+            <line x1="150" y1="175" x2="252" y2="238"/>
+            <circle cx="252" cy="238" r="9"/>
+            <text x="252" y="261" text-anchor="middle">Bouldering</text>
+          </g>
+          <g class="graph-node">
             <line x1="150" y1="175" x2="400" y2="140"/>
             <line class="edge-filler" x1="400" y1="140" x2="330" y2="230"/>
             <circle cx="400" cy="140" r="10"/>
@@ -300,7 +317,7 @@
             </div>
             <div class="carousel-slide">
               <img src="about/5040_squirrel.jpg" alt="squirrel">
-              <span class="photo-tag">trail companion</span>
+              <span class="photo-tag">Cobalt River Trail</span>
             </div>
           </div>
           <div class="carousel-dots">
@@ -330,9 +347,8 @@
   if(!body) return;
   const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
   const session = [
-    { cmd:'whoami', out:['daniel benjamin — mechanical / mechatronics engineer'] },
-    { cmd:'cat profile.txt', out:['<span class="k">role</span>     <span class="val">Chassis Lead</span>, UBC Formula Electric','<span class="k">program</span>  B.A.Sc. Mechanical (BMMD option)','<span class="k">school</span>   University of British Columbia','<span class="k">focus</span>    FSAE, robotics, automation'] },
-    { cmd:'./status --now', out:['<span class="ok">●</span> open to co-op &amp; collaboration ....... <span class="ok">available</span>'] },
+    { cmd:'whoami', out:['<span class="k">role</span>     <span class="val">Chassis Lead</span>, UBC Formula Electric','<span class="k">program</span>  B.A.Sc. Mechanical (BMMD option)','<span class="k">school</span>   University of British Columbia','<span class="k">focus</span>    FSAE, robotics, automation'] },
+    { cmd:'./status --now', out:['<span class="ok">●</span> open to co-op ....... <span class="ok">available starting May 2027</span>'] },
   ];
 
   const prompt = '<span class="term-prompt">daniel@portfolio</span>:<span class="term-path">~</span>$ ';

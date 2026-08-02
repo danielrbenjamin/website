@@ -55,6 +55,11 @@
   font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
 }
 .figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+.figure img{display:block;width:100%;height:auto;border:1px solid var(--line-bright);border-radius:4px;background:var(--panel)}
+.figure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:680px;margin:8px 0 32px}
+.figure-grid .figure{margin:0}
+.figure-grid.results{grid-template-columns:1fr}
+@media(max-width:620px){.figure-grid{grid-template-columns:1fr}}
 
 .note{
   margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
@@ -66,6 +71,7 @@
   margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
   background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
 }
+.hero-shot img{display:block;width:100%;height:auto}
 
 /* ── embedded hand viewer ── */
 .cad-viewer{
@@ -81,19 +87,12 @@
   pointer-events:none;
 }
 .cad-viewer .cv-note b{color:var(--amber)}
-.cad-viewer .cv-note .blink{display:inline-block;width:7px;height:12px;background:var(--green);margin-left:3px;vertical-align:-1px;animation:cvblink 1.1s step-end infinite}
-@keyframes cvblink{50%{opacity:0}}
+.cad-viewer .cv-note .blink{display:inline-block;width:7px;height:12px;background:var(--green);margin-left:3px;vertical-align:-1px}
 .cad-viewer .cv-hint{
   position:absolute;bottom:10px;right:12px;font-family:var(--mono);font-size:10.5px;
   letter-spacing:.06em;color:var(--ink-faint);background:rgba(12,14,15,.55);
   padding:4px 8px;border-radius:2px;pointer-events:none;transition:opacity .4s;
 }
-.cad-viewer .cv-readout{
-  position:absolute;top:10px;left:12px;font-family:var(--mono);font-size:10.5px;
-  letter-spacing:.04em;color:var(--ink-dim);background:rgba(12,14,15,.55);
-  padding:4px 8px;border-radius:2px;pointer-events:none;
-}
-.cad-viewer .cv-readout .v{color:var(--green)}
 </style>
 </head>
 <body>
@@ -104,12 +103,15 @@
 
   <section class="page-head" style="border-top:none">
     <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; MECH-002</div>
-    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">Personal Project · Soft Robotics</div>
+    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">UBC MEMS Lab · Soft Robotics</div>
     <h2 class="sec-h reveal">MEMS Soft-Actuated Hand</h2>
-    <p class="sec-sub reveal" style="margin-bottom:18px">A soft-robotic hand driven by pneumatic actuators, modeled with fully articulated fingers — proximal, middle, and distal phalanges on each digit, hinged and driven like the physical hardware.</p>
+    <p class="sec-sub reveal" style="margin-bottom:18px">A tendon-driven prosthetic hand designed to demonstrate the lab's soft pneumatic robotic actuators.</p>
     <div class="chips reveal" style="margin-bottom:28px">
       <span class="chip">SolidWorks</span><span class="chip">Soft Robotics</span><span class="chip">Pneumatic Actuation</span><span class="chip">Three.js</span>
     </div>
+    <figure class="hero-shot reveal">
+      <img src="mems-2.jpg" alt="Final tendon-driven prosthetic hand grasping an object while mounted to a Kinova robotic arm">
+    </figure>
   </section>
 
   <section style="border-top:none;padding-top:0">
@@ -118,50 +120,88 @@
       <aside class="project-toc reveal">
         <div class="toc-label">On this page</div>
         <ul class="toc-list">
-          <li><a href="#problem">Problem</a></li>
-          <li><a href="#model">Model &amp; Kinematics</a></li>
-          <li><a href="#interactive">Live Model</a></li>
-          <li><a href="#actuation">Pneumatic Actuation</a></li>
+          <li><a href="#problem">Opportunity</a></li>
+          <li><a href="#model">Research &amp; Design</a></li>
+          <li><a href="#interactive">CAD Model</a></li>
+          <li><a href="#actuation">Return Mechanism</a></li>
           <li><a href="#results">Results</a></li>
         </ul>
       </aside>
 
-      <div class="project-body reveal">
+    <div class="project-body">
+      <h2 class="project-summary-title">Project Summary</h2>
+      <div class="project-summary reveal" aria-label="Project summary">
+        <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Researched tendon-driven prosthetics and iterated the 3D-printed mechanism.</li><li>Tuned a custom silicone return system around the actuators' force limits.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>A human-shaped robotic hand with <b>five wrist-mounted soft pneumatic actuators</b>.</li><li>Tendon-driven fingers and a custom Kinova arm adapter.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">Results</span><ul><li>Demonstrated a natural open-hand posture and a grasp around a large object.</li><li>Kept the pneumatic lines clear of the working surface.</li></ul></div>
+      </div>
 
-        <h2 id="problem">Problem</h2>
-        <p>Most rigid robotic grippers are precise but unforgiving — they need exact part geometry and fail badly on anything unexpected. A soft, pneumatically-actuated hand trades some of that precision for compliance: it can wrap around irregular objects and tolerate positioning error, which makes it a better fit for gripping tasks where the object isn't perfectly known ahead of time.</p>
-        <p>The goal here was to model that kind of hand properly in CAD — not as a simplified stand-in, but with each finger's real joint structure — so the mechanism could be reasoned about and iterated on before committing to physical fabrication.</p>
+        <h2 id="problem">Opportunity</h2>
+        <p>My interest in prosthetics and robotics led me to join the UBC MEMS Lab, where I was tasked with developing a physical demonstration for the soft pneumatic robotic actuators the lab was designing. The goal was to place the actuators in an application people could immediately understand: a robotic hand able to grasp everyday objects.</p>
 
-        <h2 id="model">Model &amp; Kinematics</h2>
-        <p>Each of the five digits is modeled with a full three-joint chain: proximal, middle, and distal phalanges, hinged at pins rather than simplified into a single rigid curl. That matters because a real soft-actuated finger doesn't bend uniformly — the knuckle joint typically leads the curl, with the middle and distal joints following at different rates as the pneumatic chamber pressurizes.</p>
-        <ul>
-          <li><b>Knuckle joint</b> — carries the whole finger, bends first and most</li>
-          <li><b>Middle joint</b> — carries the middle and distal phalanges together</li>
-          <li><b>Distal joint</b> — carries just the fingertip segment, bends last and least</li>
-        </ul>
-        <p>Modeling it this way in SolidWorks meant the assembly could be driven exactly the way the physical joints move, rather than approximated.</p>
+        <h2 id="model">Research &amp; Design</h2>
+        <p>The actuators could not drive the fingers directly, so I began with an extensive review of existing tendon-driven prosthetic-hand designs. I then developed my own mechanism around the actuators' geometry and force limitations, using tendons to translate each actuator's contraction into finger flexion.</p>
+        <p>After many 3D-printed iterations, I settled on a natural hand shape with individually articulated fingers. The hand rests in a naturally open position, the actuators are housed in the wrist, and the pneumatic lines exit from the back of the hand so they stay clear of the palm and do not interfere with grasping.</p>
 
-        <h2 id="interactive">Live Model</h2>
-        <p>The model below is the actual SolidWorks assembly, exported and running live in the browser. It grips and releases in a continuous loop, each finger curling knuckle-first the way the physical joints are designed to move. Drag to orbit and inspect it from any angle.</p>
+        <div class="figure-grid reveal">
+          <figure class="figure">
+            <img src="exposed-actuators.jpg" alt="Prosthetic hand prototype with the wrist cover removed, exposing five soft pneumatic actuators and their tendons" loading="lazy">
+            <figcaption>The wrist houses five soft pneumatic actuators, each connected to a finger by a tendon.</figcaption>
+          </figure>
+          <figure class="figure">
+            <img src="pneumatic-valves.jpg" alt="Back of the prosthetic hand showing pneumatic lines and quick-connect fittings" loading="lazy">
+            <figcaption>Pneumatic lines route out the back of the hand, away from the grasping surface.</figcaption>
+          </figure>
+        </div>
+
+        <figure class="figure reveal">
+          <img src="kinova_adapter.jpg" alt="3D-printed adapter mounting the prosthetic hand to a Kinova robotic arm" loading="lazy">
+          <figcaption>A custom 3D-printed adapter connected the hand to a Kinova robotic arm for the final demonstration.</figcaption>
+        </figure>
+
+        <h2 id="interactive">CAD Model</h2>
+        <p>The model below is the SolidWorks assembly used to develop the mechanism and package the hand, tendons, actuators, and wrist enclosure. Drag to inspect the static model from any angle.</p>
 
         <figure class="figure reveal">
           <div class="cad-viewer" id="cad-viewer">
             <canvas id="cad-cv"></canvas>
-            <div class="cv-readout" id="cv-readout">state: <span class="v" id="r-state">open</span></div>
             <div class="cv-note" id="cad-note">loading hand model<span class="blink"></span></div>
             <div class="cv-hint" id="cad-hint">drag to orbit</div>
           </div>
-          <figcaption>Live SolidWorks export — the hand grips and releases on a loop; drag to orbit at any point in the cycle.</figcaption>
+          <figcaption>SolidWorks assembly — drag to orbit and inspect the design.</figcaption>
         </figure>
 
-        <h2 id="actuation">Pneumatic Actuation</h2>
-        <p>The physical hand is driven by pneumatic actuators rather than motors or tendons — pressurizing a chamber embedded along each finger's underside causes it to curl, and releasing pressure lets it return to its open, relaxed shape. That's the same soft-robotics principle behind most PneuNet-style grippers: no rigid drivetrain inside the finger itself, just a compliant structure that responds directly to air pressure.</p>
+        <h2 id="actuation">Return Mechanism</h2>
+        <p>The prototype actuators were powerful enough to pull the tendons, but not strong enough to overcome the commercial rubber bands I initially used to hold the hand open and return it to its starting position. The return force had to be reduced without losing consistent finger extension.</p>
+        <p>I designed and 3D printed a mold, then cast custom silicone bands with thinner, controlled cross-sections. Iterating the bands alongside the printed hand gave the mechanism a light enough return force for the actuators while still reopening the fingers after each grasp.</p>
+
+        <div class="figure-grid reveal">
+          <figure class="figure">
+            <img src="rubber_band_mold.jpg" alt="3D-printed mold for casting custom silicone return bands" loading="lazy">
+            <figcaption>The 3D-printed mold used to control the custom bands' geometry and stiffness.</figcaption>
+          </figure>
+          <figure class="figure">
+            <img src="rubber_band.jpg" alt="Custom clear silicone return bands installed across a finger joint" loading="lazy">
+            <figcaption>Custom-molded silicone bands reopen the joints without overpowering the actuators.</figcaption>
+          </figure>
+        </div>
 
         <h2 id="results">Results</h2>
-        <p>The finished CAD model captures the full articulated kinematics of a five-finger soft-actuated hand, validated by driving it through a complete grip cycle entirely in software before any physical actuation was involved. That's the same model rendered live above.</p>
+        <p>The final prototype packaged five soft pneumatic actuators into the wrist of a human-shaped, tendon-driven hand. Mounted to the Kinova arm, it successfully demonstrated both an open-hand posture and a grasp around a large object while keeping its pneumatic hardware clear of the working surface.</p>
 
-        <div class="note reveal">
-          <b>Note:</b> physical build photos and the actual pneumatic actuation demo are still to be added — this page currently documents the CAD and kinematic modeling side of the project.
+        <div class="figure-grid results reveal">
+          <figure class="figure">
+            <img src="mems-1.jpg" alt="Final prosthetic hand mounted to a Kinova robotic arm in an open position" loading="lazy">
+            <figcaption>Final assembly mounted to the Kinova arm in its naturally open position.</figcaption>
+          </figure>
+          <figure class="figure">
+            <img src="mems-2.jpg" alt="Final prosthetic hand beginning to grasp a large black object" loading="lazy">
+            <figcaption>The tendon-driven fingers closing around a large test object.</figcaption>
+          </figure>
+          <figure class="figure">
+            <img src="mems-3.jpg" alt="Final prosthetic hand holding a large black object" loading="lazy">
+            <figcaption>The completed pneumatic hand maintaining its grasp.</figcaption>
+          </figure>
         </div>
 
         <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
@@ -207,16 +247,12 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
-const MODEL_URL = '../../hand.glb';
-const CURL_AXIS = new THREE.Vector3(1, 0, 0);
-const MAX_CURL = 0.2;
-const CURL_PERIOD = 5;
+const MODEL_URL = './hand.glb';
 const AUTO_SPIN = 0.1;
 
 const canvas = document.getElementById('cad-cv');
 const noteEl = document.getElementById('cad-note');
 const hintEl = document.getElementById('cad-hint');
-const rState = document.getElementById('r-state');
 const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
@@ -230,8 +266,8 @@ const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.enablePan = false;
-controls.minDistance = 0.15;
-controls.maxDistance = 3;
+controls.enableZoom = true;
+controls.zoomSpeed = 0.7;
 controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE };
 
 scene.add(new THREE.HemisphereLight(0xcfe8ff, 0x202428, 1.0));
@@ -239,8 +275,7 @@ const key = new THREE.DirectionalLight(0xffffff, 2.3); key.position.set(2,3,2); 
 const rim = new THREE.DirectionalLight(0xffb454, 0.7); rim.position.set(-3,1,-2); scene.add(rim);
 const fill= new THREE.DirectionalLight(0x5ee6a0, 0.25); fill.position.set(0,-2,3); scene.add(fill);
 
-let model = null, spinning = true, t = 0, modelRadius = 0.1;
-const fingers = [];
+let model = null, spinning = true, modelRadius = 0.1;
 
 const draco = new DRACOLoader();
 draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/');
@@ -257,95 +292,15 @@ loader.load(MODEL_URL, (gltf) => {
   model.position.sub(center);
   scene.add(model);
 
-  const groups = [];
-  const proxPins = [];
-  model.traverse(o => {
-    if(!o.isMesh && /^Thumb(_\d+)?$/.test(o.name) && o.children.length >= 4) groups.push(o);
-    if(o.isMesh && /Proximal_Pin/i.test(o.name)) proxPins.push(o);
-  });
-
-  model.updateMatrixWorld(true);
-  const _box = new THREE.Box3();
-  const worldCenterOf = (obj) => { _box.setFromObject(obj); return _box.getCenter(new THREE.Vector3()); };
-
-  function makePivot(parent, worldPoint, nodes, name){
-    const pivot = new THREE.Object3D();
-    pivot.name = name;
-    parent.updateMatrixWorld(true);
-    pivot.position.copy(parent.worldToLocal(worldPoint.clone()));
-    parent.add(pivot);
-    pivot.updateMatrixWorld(true);
-    const invPivot = new THREE.Matrix4().copy(pivot.matrixWorld).invert();
-    for(const n of nodes){
-      const wp = new THREE.Vector3(), wq = new THREE.Quaternion(), ws = new THREE.Vector3();
-      n.getWorldPosition(wp); n.getWorldQuaternion(wq); n.getWorldScale(ws);
-      pivot.add(n);
-      const m = new THREE.Matrix4().compose(wp,wq,ws).premultiply(invPivot);
-      m.decompose(n.position, n.quaternion, n.scale);
-    }
-    pivot.userData.rest = pivot.quaternion.clone();
-    return pivot;
-  }
-
-  for(const g of groups){
-    const parent = g.parent;
-    const find = re => g.children.find(c => re.test(c.name));
-    const proximal = find(/Proximal_Phalanx/i);
-    const middle   = find(/Middle_Phalanx/i);
-    const distal   = find(/Distal_Phalanx/i);
-    const fingertip= find(/Fingertip/i);
-    const middlePin= find(/Middle_Pin/i);
-    const distalPin= find(/Distal_Pin/i);
-
-    if(!proximal || !middle || !distal){
-      _box.setFromObject(g);
-      const knuckle = new THREE.Vector3((_box.min.x+_box.max.x)/2, _box.min.y, (_box.min.z+_box.max.z)/2);
-      const kp = makePivot(parent, knuckle, [g], g.name+'__knuckle');
-      fingers.push({ joints:[{ pivot:kp, w:1 }] });
-      continue;
-    }
-
-    const pDistal = distalPin ? worldCenterOf(distalPin) : worldCenterOf(distal);
-    const pMiddle = middlePin ? worldCenterOf(middlePin) : worldCenterOf(middle);
-
-    const proxWorld = worldCenterOf(proximal);
-    let pKnuckle;
-    if(proxPins.length){
-      let best = null, bestD = Infinity;
-      for(const pin of proxPins){
-        const pc = worldCenterOf(pin);
-        const d = Math.hypot(pc.y-proxWorld.y, pc.z-proxWorld.z);
-        if(d < bestD){ bestD = d; best = pc; }
-      }
-      pKnuckle = new THREE.Vector3(proxWorld.x, best.y, best.z);
-    } else {
-      const pbox = new THREE.Box3().setFromObject(proximal);
-      pKnuckle = new THREE.Vector3((pbox.min.x+pbox.max.x)/2, pbox.min.y, (pbox.min.z+pbox.max.z)/2);
-    }
-
-    const distalNodes = [distal]; if(fingertip) distalNodes.push(fingertip); if(distalPin) distalNodes.push(distalPin);
-    const distalPivot = makePivot(g, pDistal, distalNodes, g.name+'__distal');
-
-    const middleNodes = [middle, distalPivot]; if(middlePin) middleNodes.push(middlePin);
-    const middlePivot = makePivot(g, pMiddle, middleNodes, g.name+'__middle');
-
-    const knucklePivot = makePivot(parent, pKnuckle, [g], g.name+'__knuckle');
-
-    fingers.push({ joints:[
-      { pivot:knucklePivot, w:1.00 },
-      { pivot:middlePivot,  w:0.85 },
-      { pivot:distalPivot,  w:0.70 },
-    ]});
-  }
-
   noteEl.style.display = 'none';
 
-  const dist = modelRadius / Math.tan((camera.fov*Math.PI/180)/2) * 2.3;
-  camera.position.set(dist*0.15, dist*0.05, dist*0.98);
-  controls.target.set(0, modelRadius*0.15, 0);
+  const dist = modelRadius / Math.tan((camera.fov*Math.PI/180)/2) * 0.8;
+  camera.position.set(dist*0.85, dist*0.5, dist*0.85);
+  controls.target.set(0, 0, 0);
+  controls.minDistance = modelRadius * 0.35;
+  controls.maxDistance = modelRadius * 4;
   controls.update();
 
-  applyCurl(0);
 }, (xhr) => {
   if (xhr.total) noteEl.innerHTML = `loading hand model — ${Math.round(xhr.loaded/xhr.total*100)}%`;
 }, (err) => {
@@ -353,19 +308,8 @@ loader.load(MODEL_URL, (gltf) => {
   noteEl.innerHTML = `couldn't load <b>${MODEL_URL}</b>`;
 });
 
-const q = new THREE.Quaternion();
-function applyCurl(c){
-  const eased = c*c*(3-2*c);
-  for(const f of fingers){
-    for(const j of f.joints){
-      q.setFromAxisAngle(CURL_AXIS, eased*MAX_CURL*j.w);
-      j.pivot.quaternion.copy(j.pivot.userData.rest).multiply(q);
-    }
-  }
-  rState.textContent = c<0.04 ? 'open' : c>0.96 ? 'fist' : (c<0.5 ? 'closing' : 'opening');
-}
-
 controls.addEventListener('start', () => { spinning = false; hintEl.style.opacity = '0'; });
+controls.addEventListener('end', () => { spinning = true; });
 
 function resize(){
   const w = canvas.clientWidth, h = canvas.clientHeight;
@@ -379,13 +323,7 @@ let last = performance.now();
 function loop(now){
   const dt = (now-last)/1000; last = now;
   resize();
-  if(fingers.length && !reduce){
-    t += dt;
-    const phase = (t % CURL_PERIOD) / CURL_PERIOD;
-    const c = phase < 0.5 ? phase*2 : (1-phase)*2;
-    applyCurl(c);
-  }
-  if (model && spinning && AUTO_SPIN && !reduce) model.rotation.y += AUTO_SPIN*dt;
+  if(model && spinning && !reduce) model.rotation.y += AUTO_SPIN*dt;
   controls.update();
   renderer.render(scene, camera);
   requestAnimationFrame(loop);

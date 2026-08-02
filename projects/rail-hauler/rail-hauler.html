@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MECH 223 Rail Hauler — Daniel Benjamin</title>
+<title>MECH 223 Rail Speeder &amp; Hauler — Daniel Benjamin</title>
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png">
 <link rel="apple-touch-icon" href="../../favicon-180.png">
@@ -91,6 +91,13 @@
   letter-spacing:.06em;color:var(--ink-faint);background:rgba(12,14,15,.55);
   padding:4px 8px;border-radius:2px;pointer-events:none;transition:opacity .4s;
 }
+
+/* ── inline photos & video ── */
+.figure img,.figure video{
+  display:block;width:100%;border-radius:4px;border:1px solid var(--line);
+  background:var(--panel);
+}
+.figure video{background:#000}
 </style>
 </head>
 <body>
@@ -100,15 +107,15 @@
 <main class="wrap">
 
   <section class="page-head" style="border-top:none">
-    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; MECH-004</div>
+    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; MECH-005</div>
     <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">Course Project · Jan – Apr 2025</div>
-    <h2 class="sec-h reveal">MECH 223 Rail Hauler</h2>
-    <p class="sec-sub reveal" style="margin-bottom:18px">A load-carrying rail vehicle, built by a team of five in one term — and the version-control system I set up so five people could work on the same assembly without wrecking it.</p>
+    <h2 class="sec-h reveal">MECH 223 Rail Speeder &amp; Hauler</h2>
+    <p class="sec-sub reveal" style="margin-bottom:18px">Two rail vehicles, one term: a speeder that didn't finish its track, and the hauler that redeemed it, plus the documentation system I set up so a five-person team could collaborate without losing work.</p>
     <div class="chips reveal" style="margin-bottom:28px">
       <span class="chip">SolidWorks</span><span class="chip">Machining</span><span class="chip">Laser Cutting</span><span class="chip">3D Printing</span><span class="chip">SVN</span>
     </div>
     <div class="hero-shot reveal">
-      <img src="rail-hauler-presentation.png" alt="MECH 223 Rail Hauler — final vehicle on track">
+      <img src="rail-hauler-presentation.png" alt="MECH 223 Rail Hauler, final vehicle on track">
     </div>
   </section>
 
@@ -118,25 +125,89 @@
       <aside class="project-toc reveal">
         <div class="toc-label">On this page</div>
         <ul class="toc-list">
-          <li><a href="#problem">Problem</a></li>
-          <li><a href="#concept">Concept &amp; Design</a></li>
-          <li><a href="#fabrication">CAD &amp; Fabrication</a></li>
-          <li><a href="#version-control">Keeping the CAD Sane</a></li>
-          <li><a href="#assembly">Assembly &amp; Testing</a></li>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#speeder">Speeder: Process</a></li>
+          <li><a href="#speeder-svn">Speeder: Version Control</a></li>
+          <li><a href="#speeder-fixture">Speeder: Track Fixture</a></li>
+          <li><a href="#speeder-build">Speeder: Build &amp; Result</a></li>
+          <li><a href="#hauler">Hauler: New Design</a></li>
+          <li><a href="#hauler-gearbox">Hauler: Gearbox &amp; Drivetrain</a></li>
           <li><a href="#results">Results</a></li>
           <li><a href="#links">Links</a></li>
         </ul>
       </aside>
 
-      <div class="project-body reveal">
+    <div class="project-body">
+      <h2 class="project-summary-title">Project Summary</h2>
+      <div class="project-summary reveal" aria-label="Project summary">
+        <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Coordinated a five-person design-build team and introduced SVN for CAD locking.</li><li>Built a representative track fixture and iterated the drivetrain from failed prototypes.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>A speed-focused rail speeder followed by a payload hauler.</li><li>A two-speed acrylic gearbox with an offset bearing layout.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">Results</span><ul><li>The hauler carried its payload reliably and on schedule.</li><li>Version control preserved the exact part revisions used in the competition build.</li></ul></div>
+      </div>
 
-        <h2 id="problem">Problem</h2>
-        <p>MECH 223 is UBC Mechanical Engineering's second-year design-build course. Teams take a vehicle concept from a blank assembly to a working physical prototype in a single term, on a shared budget and a hard deadline. Our brief: a rail-bound hauler — a vehicle that rides a fixed track and carries a payload from one end to the other, judged on how reliably it could do that, lap after lap.</p>
-        <p>The engineering problem wasn't any one part. It was that five people needed to design interdependent pieces — chassis, drivetrain, the wheel-to-rail interface, the payload mount — at the same time, in the same CAD assembly, without quietly breaking each other's work.</p>
+        <h2 id="overview">Overview</h2>
+        <p>MECH 223 is UBC Mechanical Engineering's second-year design-build course. Working in teams, students take a concept to a fully functional prototype within a single academic term, on a fixed budget and a hard deadline. The course ran as two projects. The first was to design a rail-bound speeder to complete a track in the shortest possible time. The second, revealed only after the first project concluded, was to design a rail-bound hauler that could repeatedly carry a payload across the track as reliably as possible.</p>
+        <p>The challenge went beyond the technical design. We had to balance an ambitious build schedule against a full course load while coordinating a five-person team through design reviews, manufacturing, testing, and iteration.</p>
 
-        <h2 id="concept">Concept &amp; Design</h2>
-        <p>We started from layout sketches and worked out how load, drivetrain, and structure would share the same small footprint. The vehicle had to stay inside the track's clearance envelope, keep its payload from shifting in transit, and carry enough of its mass low and centered that it wouldn't ride up off the rail under power. Those three constraints fought each other more than any single one was hard on its own, and most of the early design cycles were spent trading off between them rather than solving any one in isolation.</p>
-        <p>We iterated the layout in CAD before committing to fabrication drawings — cheaper to move a mounting boss around on screen than to remachine it.</p>
+        <h2 id="speeder">Project 1: Rail Speeder</h2>
+        <p>We started by following the standard engineering design process: broke the project brief down into a clear set of requirements and evaluation criteria, built a Gantt chart against the deliverable dates, and split into individual research before regrouping as a team to sketch concepts. We developed those sketches into a final design with a Pugh chart and a weighted decision matrix.</p>
+        <p>Once the concept was set, we split the work. I was wholly in charge of the test railway fixture we'd use to validate the car before competition, the aesthetic frame, the project documentation setup, and I also helped a teammate with the drivetrain manufacturing.</p>
+
+        <h2 id="speeder-svn">Version Control</h2>
+        <p>I set up a logical folder hierarchy in a shared Google Drive for documentation, which worked well for reports but broke down for CAD, since multiple people were working in the same assembly and we needed real version control to avoid overwriting each other's work, which Drive couldn't give us.</p>
+        <p>After looking at a few options, including GitHub and Onshape's built-in version control, I settled on a self-hosted VisualSVN server, with a folder per subassembly and a check-out/check-in workflow so two people couldn't edit the same file at once. I wrote a guide so the rest of the team could use it without first learning SVN.</p>
+
+        <figure class="figure reveal">
+          <img src="SVN-guide.png" alt="SVN workflow guide written for the team, covering check-out/check-in procedure">
+          <figcaption>The simple guide I wrote so the team as well as the instructor/TA could use the SVN server without prior version-control experience.</figcaption>
+        </figure>
+
+        <p>This was the least visible part of the project and the one I'd point to first. It meant every part had a version history, nobody's local copy of the assembly could silently drift from everyone else's, and we lost zero work to file conflicts for the rest of the term. On a five-person team sharing one CAD tree under a deadline, that's not the default outcome.</p>
+
+        <h2 id="speeder-fixture">Track Fixture</h2>
+        <p>To test the car before competition, I modeled the track from the one sample rail section we'd been given, including a curve built to the worst-case radius allowed under the rules' specified range. I took careful measurements off the sample rail so the fixture would match the real track closely enough that a good run on the bench meant a good run at competition.</p>
+
+        <figure class="figure reveal">
+          <img src="train-tracks.jpg" alt="Test railway fixture modeled from the competition's sample rail section">
+          <figcaption>Test track fixture, built to the sample rail and worst-case allowable curve.</figcaption>
+        </figure>
+
+        <h2 id="speeder-build">Build &amp; Result</h2>
+        <p>I helped manufacture the drivetrain and chassis, where we prototyped both spur-gear and worm-gear drivetrains before settling on one. Once the drivetrain's rough envelope was locked in, I modeled an aesthetic frame around it, a Lightning McQueen tribute, in SOLIDWORKS, ported the geometry to AutoCAD as DXFs, and laser cut it from cardboard to keep our sustainable-materials score up.</p>
+
+        <figure class="figure reveal">
+          <img src="lightning-mcqueen-chassis.png" alt="Laser-cut cardboard aesthetic frame modeled after Lightning McQueen">
+          <figcaption>Aesthetic frame: modeled in SolidWorks, ported to AutoCAD, and laser cut from cardboard.</figcaption>
+        </figure>
+
+        <p>Even with the planning, drivetrain issues in each of our prototypes forced us to rush final assembly, and the car wasn't able to complete the track at competition. It was a hard lesson in testing and iterating early rather than late, and in sticking to a plan while still being flexible. A well laid out plan is useless if you can't adapt when necessary. We carried both lessons straight into the second project.</p>
+
+        <figure class="figure reveal">
+          <img src="rail-speeder.png" alt="Completed rail speeder vehicle">
+          <figcaption>The finished speeder. It didn't complete the track at competition, but set up everything that followed.</figcaption>
+        </figure>
+
+        <h2 id="hauler">Project 2: Rail Hauler</h2>
+        <p>For the second project we were motivated to redeem ourselves on the track. We started by analyzing the new brief and reflecting on what had gone wrong the first time. We built another Gantt chart, but this time stayed adaptable instead of locking ourselves into a schedule of small tasks that could tie us up.</p>
+        <p>Our first drivetrain design didn't have the torque to move a loaded hauler, so we iterated a new one from scratch. I personally took on the chassis and wheels, a teammate took on the drivetrain, and the rest of the team focused on documentation and the written deliverables, letting each of us work from our strengths rather than splitting everything evenly and not having clear accountability.</p>
+
+        <h2 id="hauler-gearbox">Gearbox &amp; Drivetrain</h2>
+        <p>The failure that hurt us most in the first project was gears slipping on the axle. For the hauler, we switched from a round shaft to a square one. That fixed the slipping but broke the bearing fit, since a round bearing bore doesn't take a square shaft. I designed and 3D printed custom adapters to seat the square shaft in standard round bearings.</p>
+        <p>The gears themselves took three tries. PLA gears, printed on the printers we had access to, were too weak and didn't mesh cleanly. Resin-printed gears were more precise but too fragile under repeated load. Building on what I learned from the first project, I ended up laser cutting the gears as well as stronger bearing adapters from acrylic instead. They were strong enough, and precise enough at small scale, to fit inside a custom shifting gearbox with a fast gear for the speed round and a slower, higher-torque gear for hauling cargo.</p>
+
+        <figure class="figure reveal">
+          <img src="lasercut-gears.png" alt="Lasercut acrylic gears and bearing adapters for the hauler's gearbox">
+          <figcaption>The lasercut gears and bearing adapters for the hauler's gearbox.</figcaption>
+        </figure>
+
+        <p>That gearbox needed two sets of bearings mounted closer together than they'd fit side by side. Rather than spending money on smaller bearings, I offset them instead, staggering the pairs so both fit within the available width without interfering with each other.</p>
+
+        <figure class="figure reveal">
+          <img src="offset-bearings.png" alt="Offset bearing arrangement solving the gearbox's side-by-side clearance problem">
+          <figcaption>Offset bearing pairs: the fix for a gearbox that needed more width than the axle spacing allowed.</figcaption>
+        </figure>
+
+        <p>Once the gearbox prototype was solidified, I folded it into the full CAD assembly.</p>
 
         <figure class="figure reveal">
           <div class="cad-viewer" id="cad-viewer">
@@ -144,41 +215,18 @@
             <div class="cv-note" id="cad-note">loading full assembly<span class="blink"></span></div>
             <div class="cv-hint" id="cad-hint">drag to orbit</div>
           </div>
-          <figcaption>Full assembly, live from SolidWorks export — drag to orbit the chassis, drivetrain, and wheel trucks.</figcaption>
-        </figure>
-
-        <h2 id="fabrication">CAD &amp; Fabrication</h2>
-        <p>I modeled the full mechanical assembly in SolidWorks — chassis, wheel trucks, drivetrain mounts, payload bed — and produced the fabrication drawings the team machined and cut from. We split manufacturing across three processes, matched to what each part actually needed rather than whatever was easiest to draw:</p>
-        <ul>
-          <li><b>Machining</b> for load-bearing metal parts — axles, mounts, anything needing a tight tolerance or real strength</li>
-          <li><b>Laser cutting</b> for flat structural panels, where repeatability and turnaround mattered more than complex geometry</li>
-          <li><b>3D printing</b> for low-load brackets and the wheel-to-rail interface fixtures, where geometry was the priority and load was not</li>
-        </ul>
-        <p>That split kept the schedule realistic — we weren't waiting on the machine shop for parts that a printer could turn around overnight, and we weren't trusting a printed part with a load it wasn't suited for.</p>
-
-        <figure class="figure reveal">
-          <div class="shot">fabrication drawing — payload mount detail (placeholder)</div>
-          <figcaption>Dimensioned drawing for the payload mount, toleranced for the machines we had access to.</figcaption>
-        </figure>
-
-        <h2 id="version-control">Keeping the CAD Sane</h2>
-        <p>Five people editing the same SolidWorks assembly is a merge-conflict problem, except SolidWorks doesn't have merge conflicts — it has silently broken references and someone's afternoon of work overwritten by a file save. Before we'd cut a single part, I set up a self-hosted SVN server to host the team's CAD, with a folder structure per subassembly and a check-out/check-in workflow so two people couldn't edit the same file at once.</p>
-        <p>It's the least visible part of this project and the part I'd point to first. It meant every part had a version history, nobody's local copy of the assembly could silently drift from everyone else's, and we lost zero work to file conflicts for the rest of the term — which, on a five-person team sharing one CAD tree under a deadline, is not the default outcome.</p>
-
-        <h2 id="assembly">Assembly &amp; Testing</h2>
-        <p>Once parts came back from machining, laser cutting, and printing, we brought them together on the bench — checking fits, adjusting anything that didn't line up with the drawing, and wiring up the drivetrain. From there it was track runs: load the payload, run it end to end, see what shifted, what dragged, what came loose, and fix it before the next run.</p>
-
-        <figure class="figure reveal">
-          <div class="shot">physical build — assembled vehicle on track (placeholder)</div>
-          <figcaption>The assembled hauler on the test track, mid design–build–test cycle.</figcaption>
+          <figcaption>Full hauler assembly, live from SolidWorks export. Drag to orbit the chassis, gearbox, and wheel trucks.</figcaption>
         </figure>
 
         <h2 id="results">Results</h2>
-        <p>The vehicle carried its payload across the track reliably, on schedule, having gone through a full design–build–test cycle as a team. The version-control setup outlived its original purpose too — it's the reason we could tell, after the fact, exactly which revision of which part went into the vehicle that ran.</p>
+        <p>The hauler carried its payload across the track reliably and on schedule, on the strength of a full design-build-test cycle instead of a rushed one. The version-control setup outlived its original purpose, too. It's the reason we could tell, after the fact, exactly which revision of which part went into the vehicle that ran.</p>
 
-        <div class="note reveal">
-          <b>Note:</b> the fabrication-drawing and physical-build figures are still placeholders — swap each for the real drawing or photo, and drop in specifics (weight targets, track dimensions, what actually broke during testing) once you've got them handy.
-        </div>
+        <figure class="figure reveal">
+          <video controls preload="metadata" poster="thumbnail.png">
+            <source src="https://website-bucket.danielrbenjamin.com/rail-hauler-competition.mp4" type="video/mp4">
+          </video>
+          <figcaption>The hauler running a loaded lap on the competition track.</figcaption>
+        </figure>
 
         <h2 id="links">Links</h2>
         <div class="cta-row reveal">
@@ -284,14 +332,15 @@ loader.load(MODEL_URL, (gltf) => {
 
   noteEl.style.display = 'none';
 }, (xhr) => {
-  if (xhr.total) noteEl.innerHTML = `loading full assembly — ${Math.round(xhr.loaded/xhr.total*100)}%`;
+  if (xhr.total) noteEl.innerHTML = `loading full assembly, ${Math.round(xhr.loaded/xhr.total*100)}%`;
 }, (err) => {
   console.error(err);
   noteEl.innerHTML = `couldn't load <b>${MODEL_URL}</b><br>place the GLB next to this page`;
 });
 
-// pause auto-spin and fade the hint once the visitor has taken control
+// Pause auto-spin while orbiting, then resume when the visitor releases it.
 controls.addEventListener('start', () => { spinning = false; hintEl.style.opacity = '0'; });
+controls.addEventListener('end', () => { spinning = true; });
 
 function resize(){
   const w = canvas.clientWidth, h = canvas.clientHeight;

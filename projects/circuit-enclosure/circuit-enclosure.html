@@ -3,10 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Circuit Board Enclosure Design — Daniel Benjamin</title>
+<title>Vehicle Controller Enclosure &amp; IPX5 Test Rig — Daniel Benjamin</title>
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png">
-<link rel="apple-touch-icon" href="../../favicon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -16,152 +14,186 @@
 <script src="../../site-footer.js" defer></script>
 <script src="../../site-contact.js" defer></script>
 <script src="../../site-console.js" defer></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <style>
 .project-layout{display:grid;grid-template-columns:190px 1fr;gap:52px;align-items:start}
 @media(max-width:860px){.project-layout{grid-template-columns:1fr}}
-
-.project-toc{position:sticky;top:36px}
-@media(max-width:860px){.project-toc{position:static;margin-bottom:36px}}
-.toc-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
-.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
-.toc-list a{display:block;padding:7px 0 7px 14px;border-left:2px solid var(--line);font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);transition:color .15s,border-color .15s}
-.toc-list a:hover{color:var(--ink-dim)}
-.toc-list a.active{color:var(--amber);border-left-color:var(--amber)}
-@media(max-width:860px){
-  .toc-list{flex-direction:row;flex-wrap:wrap;gap:8px}
-  .toc-list a{border-left:none;border:1px solid var(--line);border-radius:2px;padding:6px 11px}
-  .toc-list a.active{border-color:var(--amber);background:rgba(255,180,84,.06)}
-}
-
-.project-body h2{font-size:1.42rem;font-weight:600;letter-spacing:-.01em;margin:56px 0 16px;scroll-margin-top:28px}
-.project-body h2:first-child{margin-top:0}
-.project-body p{color:var(--ink-dim);font-size:1.02rem;line-height:1.72;margin-bottom:16px;max-width:680px}
-.project-body ul{margin:0 0 20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;max-width:680px}
-.project-body li{color:var(--ink-dim);font-size:.98rem;line-height:1.6;padding-left:18px;position:relative}
-.project-body li::before{content:"▸";position:absolute;left:0;color:var(--ink-faint);font-size:.85em;top:2px}
-.project-body b{color:var(--ink);font-weight:500}
-
-.figure{margin:8px 0 32px;max-width:680px}
-.figure .shot{
-  border:1px dashed var(--line-bright);border-radius:4px;background:var(--panel);
-  aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
-}
-.figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
-
-.note{
-  margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
-  font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.7;max-width:680px;
-}
-.note b{color:var(--amber)}
-
-.hero-shot{
-  margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
-  background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
-}
+.project-toc{position:sticky;top:36px}.toc-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}.toc-list a{display:block;padding:7px 0 7px 14px;border-left:2px solid var(--line);font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);transition:.15s}.toc-list a:hover{color:var(--ink-dim)}.toc-list a.active{color:var(--amber);border-left-color:var(--amber)}
+@media(max-width:860px){.project-toc{position:static;margin-bottom:36px}.toc-list{flex-direction:row;flex-wrap:wrap;gap:8px}.toc-list a{border-left:none;border:1px solid var(--line);border-radius:2px;padding:6px 11px}.toc-list a.active{border-color:var(--amber);background:rgba(255,180,84,.06)}}
+.project-body h2{font-size:1.42rem;font-weight:600;letter-spacing:-.01em;margin:56px 0 16px;scroll-margin-top:28px}.project-body h2:first-child{margin-top:0}.project-body p{color:var(--ink-dim);font-size:1.02rem;line-height:1.72;margin-bottom:16px;max-width:680px}.project-body b{color:var(--ink);font-weight:500}
+.figure{margin:8px 0 32px;max-width:680px}.figure img{display:block;width:100%;border-radius:4px;border:1px solid var(--line);background:var(--panel)}.figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+.hero-shot{margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35)}.hero-shot img{display:block;width:100%;max-height:520px;object-fit:cover}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:680px;margin:24px 0 34px}.stat{padding:17px;border:1px solid var(--line);border-radius:4px;background:var(--panel)}.stat strong{display:block;color:var(--amber);font:600 1.25rem var(--mono);margin-bottom:4px}.stat span{color:var(--ink-faint);font:11px/1.4 var(--mono);text-transform:uppercase;letter-spacing:.08em}@media(max-width:560px){.stat-row{grid-template-columns:1fr}}
+.cad-viewer{position:relative;margin:8px 0 0;max-width:680px;border:1px solid var(--line-bright);border-radius:4px;overflow:hidden;aspect-ratio:16/10;background:var(--panel)}.cad-viewer canvas{display:block;width:100%;height:100%;cursor:grab}.cad-viewer canvas:active{cursor:grabbing}.cv-note{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:12px var(--mono);color:var(--ink-dim);text-align:center;padding:20px;pointer-events:none}.cv-note b{color:var(--amber)}.cv-hint{position:absolute;bottom:10px;right:12px;font:10.5px var(--mono);letter-spacing:.06em;color:var(--ink-faint);background:rgba(12,14,15,.7);padding:4px 8px;border-radius:2px;pointer-events:none}.blink{display:inline-block;width:7px;height:12px;background:var(--green);margin-left:3px;animation:blink 1.1s step-end infinite}@keyframes blink{50%{opacity:0}}
 </style>
 </head>
 <body>
-
 <div data-site-header></div>
-
 <main class="wrap">
-
-  <section class="page-head" style="border-top:none">
-    <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; MECH-003</div>
-    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">UBC Formula Electric · Electrical/Chassis Interface</div>
-    <h2 class="sec-h reveal">Circuit Board Enclosure Design</h2>
-    <p class="sec-sub reveal" style="margin-bottom:18px">Waterproof electrical enclosures and mounting systems for the car's onboard electronics, rated to IPX5 and designed to survive a season of vibration, heat, and the occasional hose-down.</p>
-    <div class="chips reveal" style="margin-bottom:28px">
-      <span class="chip">SolidWorks</span><span class="chip">IPX5</span><span class="chip">Sheet Metal</span>
-    </div>
-    <div class="hero-shot reveal">
-      <div class="figure" style="margin:0">
-        <div class="shot" style="aspect-ratio:21/9">enclosure render — vehicle controller housing, mounted (placeholder)</div>
+<section class="page-head" style="border-top:none">
+  <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; MECH-003</div>
+  <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">UBC Formula Electric · Enclosures Lead · Second Year</div>
+  <h2 class="sec-h reveal">Vehicle Controller Enclosure &amp; IPX5 Test Rig</h2>
+  <p class="sec-sub reveal" style="margin-bottom:18px">I led enclosure design for the team, redesigned the Vehicle Controller around a severe packaging conflict, and built a standards-compliant water-ingress test setup for roughly one-tenth the cost of a commercial nozzle.</p>
+  <div class="chips reveal" style="margin-bottom:28px"><span class="chip">SolidWorks</span><span class="chip">Packaging</span><span class="chip">IPX5</span><span class="chip">3D Printing</span></div>
+  <div class="hero-shot reveal"><img src="vc.png" alt="Vehicle Controller enclosure installed in the Formula Electric vehicle"></div>
+</section>
+<section style="border-top:none;padding-top:0"><div class="project-layout">
+<aside class="project-toc reveal"><div class="toc-label">On this page</div><ul class="toc-list">
+  <li><a href="#role">My Role</a></li><li><a href="#packaging">Packaging Problem</a></li><li><a href="#enclosure">Enclosure Design</a></li><li><a href="#testing">IPX5 Test Setup</a></li><li><a href="#outcome">Outcome</a></li>
+</ul></aside>
+    <div class="project-body">
+      <h2 class="project-summary-title">Project Summary</h2>
+      <div class="project-summary reveal" aria-label="Project summary">
+        <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Stacked two circuit boards to use available vertical space.</li><li>Designed a sliding enclosure and derived a test nozzle from IEC 60529 geometry.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>A serviceable <b>three-part Vehicle Controller enclosure</b>.</li><li>An in-house IPX5 water-ingress test setup.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">Results</span><ul><li>Resolved the packaging conflict between the controller and inverter.</li><li>Reduced test-equipment cost from <b>$500–$1,000</b> commercially to about <b>$50</b>—an <b>at least 90% reduction</b>.</li></ul></div>
       </div>
-    </div>
-  </section>
+  <h2 id="role">Enclosures Lead</h2>
+  <p>In my second year on UBC Formula Electric, I was in charge of the team's electrical enclosures. Alongside coordinating that work, I personally designed the enclosure for the <b>Vehicle Controller (VC)</b> and developed the setup used to test our enclosures for water ingress.</p>
+  <p>The work connected electrical packaging, mechanical design, manufacturing, serviceability, and validation. The tight vehicle envelope meant the enclosure could not be designed around the board in isolation; the controller, inverter, and nearby systems all had to fit together.</p>
 
-  <section style="border-top:none;padding-top:0">
-    <div class="project-layout">
+  <h2 id="packaging">A Packaging Conflict</h2>
+  <p>The original Vehicle Controller circuit board and planned inverter enclosure both competed for the same limited horizontal space. Keeping the VC as one large board would have forced a compromise elsewhere in the vehicle.</p>
+  <p>I proposed splitting the VC into <b>two circuit boards</b>. Stacking them allowed us to use otherwise empty vertical space instead of the horizontal area needed by the inverter enclosure. This changed the enclosure from a passive box around a fixed design into part of the system-level packaging solution.</p>
+  <figure class="figure reveal"><img src="dual-circuit-board.png" alt="Split Vehicle Controller circuit boards arranged vertically inside the available vehicle envelope"><figcaption>The two-board VC arrangement used vertical volume that was available while preserving scarce horizontal space for the inverter enclosure.</figcaption></figure>
 
-      <aside class="project-toc reveal">
-        <div class="toc-label">On this page</div>
-        <ul class="toc-list">
-          <li><a href="#problem">Problem</a></li>
-          <li><a href="#requirements">Design Requirements</a></li>
-          <li><a href="#vc-enclosure">Vehicle Controller Enclosure</a></li>
-          <li><a href="#mounting">Mounting Systems</a></li>
-          <li><a href="#results">Results</a></li>
-        </ul>
-      </aside>
+  <h2 id="enclosure">A Serviceable Three-Part Enclosure</h2>
+  <p>With the stacked layout established, I designed a <b>three-part enclosure that slides together</b>. The construction packages both boards compactly while allowing the assembly to be opened and the boards removed without dismantling the surrounding vehicle systems. That service access mattered for troubleshooting and repair during testing and competition.</p>
+  <figure class="figure reveal"><div class="cad-viewer" id="cad-viewer"><canvas id="cad-cv"></canvas><div class="cv-note" id="cad-note">loading VC enclosure<span class="blink"></span></div><div class="cv-hint" id="cad-hint">drag to orbit · scroll to zoom</div></div><figcaption>Interactive Vehicle Controller enclosure model. Drag to inspect the three-part sliding construction and internal packaging.</figcaption></figure>
 
-      <div class="project-body reveal">
+  <h2 id="testing">Building the IPX5 Test Setup</h2>
+  <p>Designing a sealed enclosure was only half the job; we also needed a practical way to validate it. Commercial IPX5 test nozzles cost approximately <b>$500–$1,000</b>, which was out of the question on our limited student-team budget.</p>
+  <figure class="figure reveal"><img src="commercial-options.png" alt="Commercial IPX5 nozzle options priced between approximately 500 and 1000 dollars"><figcaption>Commercial IPX5 test equipment met the need, but not the team's budget.</figcaption></figure>
+  <p>I consulted <b>IEC 60529</b>, extracted the required nozzle geometry and test parameters, and designed a lower-cost equivalent around readily available components.</p>
+  <figure class="figure reveal"><img src="IEC-60529-ipx5-nozzle-spec.png" alt="IEC 60529 specification details used to design the IPX5 water jet nozzle"><figcaption>The IEC 60529 nozzle specification provided the geometry and operating requirements for a valid IPX5 test.</figcaption></figure>
+  <p>The finished assembly combined parts from Amazon and McMaster-Carr with a custom 3D-printed adapter for a standard garden hose. It met the applicable IP test geometry while bringing the total cost to approximately <b>$50</b>.</p>
+  <figure class="figure reveal"><div class="cad-viewer" id="nozzle-viewer"><canvas id="nozzle-cv"></canvas><div class="cv-note" id="nozzle-note">loading IPX5 nozzle<span class="blink"></span></div><div class="cv-hint" id="nozzle-hint">drag to orbit · scroll to zoom</div></div><figcaption>Interactive model of the custom IPX5 nozzle. Drag to inspect the nozzle geometry and garden-hose adapter.</figcaption></figure>
+  <figure class="figure reveal"><img src="DIY-assembly.png" alt="DIY IPX5 nozzle assembly made from purchased hardware and a custom 3D-printed garden hose adapter"><figcaption>The completed low-cost nozzle assembly: off-the-shelf hardware plus a custom 3D-printed garden-hose adapter.</figcaption></figure>
+  <div class="stat-row reveal"><div class="stat"><strong>$500–$1,000</strong><span>commercial nozzle</span></div><div class="stat"><strong>≈ $50</strong><span>custom test setup</span></div><div class="stat"><strong>90%+</strong><span>cost reduction</span></div></div>
 
-        <h2 id="problem">Problem</h2>
-        <p>A formula car's onboard electronics live in one of the worst environments you could design for: constant vibration, thermal cycling from the powertrain, exposure to rain and track debris, and almost no spare volume in the chassis to fit them. Every enclosure has to protect its board without stealing space or weight the rest of the car needs.</p>
-        <p>Off-the-shelf enclosures generally solve one of those problems, not all of them at once — they're either sealed and bulky, or compact and unsealed. Custom-designed housings, sized and rated to the specific board and mounting location, were the only way to hit every constraint at the same time.</p>
-
-        <h2 id="requirements">Design Requirements</h2>
-        <ul>
-          <li><b>IPX5 water ingress rating</b> — sealed against low-pressure water jets from any direction, since enclosures sit exposed near wheels and splash zones</li>
-          <li><b>Vibration tolerance</b> — mounting had to hold a rigid board fixture through sustained road-course vibration without fatiguing fasteners loose</li>
-          <li><b>Thermal clearance</b> — enough internal volume and venting geometry to keep board temperatures in range next to a powertrain that runs hot</li>
-          <li><b>Chassis-envelope fit</b> — every enclosure had to fit the specific mounting location it was assigned, not a generic one</li>
-        </ul>
-
-        <h2 id="vc-enclosure">Vehicle Controller Enclosure</h2>
-        <p>I led the Vehicle Controller enclosure design end to end — from board dimensions and connector clearances through to the sealed housing and its mount. The VC is one of the car's most safety-critical boards, so the enclosure design went through the same design-review process as structural chassis parts: dimensioned drawings, a defined seal strategy, and a mounting scheme that survives vibration without transmitting it straight into the board.</p>
-
-        <figure class="figure reveal">
-          <div class="shot">fabrication drawing — VC enclosure, sealed lid detail (placeholder)</div>
-          <figcaption>Vehicle Controller enclosure, dimensioned for sheet-metal fabrication with a gasketed lid seal.</figcaption>
-        </figure>
-
-        <h2 id="mounting">Mounting Systems</h2>
-        <p>Beyond the enclosures themselves, I designed the mounting hardware that ties each box to the chassis — brackets sized for the vibration environment at their specific location, rather than a single generic mount reused everywhere. That meant treating each enclosure's mount as its own small design problem: what's the local chassis geometry, what's the expected vibration mode, and what's the lightest bracket that survives it.</p>
-
-        <h2 id="results">Results</h2>
-        <p>The enclosures shipped on the car and held their seal and mounting integrity through the season — no water ingress failures and no board losses from vibration-related mounting fatigue. Each enclosure's design is also handed down as a template for other subteams, since the same IPX5-and-vibration problem shows up anywhere electronics live on the vehicle.</p>
-
-        <div class="note reveal">
-          <b>Note:</b> the enclosure render and fabrication drawing above are still placeholders — swap in the actual VC housing render and dimensioned drawing once available.
-        </div>
-
-        <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
-
-      </div>
-    </div>
-  </section>
-
-  <div data-site-contact></div>
-
+  <h2 id="outcome">Outcome</h2>
+  <p>The result was a compact, serviceable Vehicle Controller enclosure that resolved a vehicle-level packaging conflict, plus an affordable test setup the team could use to validate water-ingress protection in-house. More importantly, both solutions came from treating constraints as design inputs: use vertical space when horizontal space disappears, and build the required test capability when buying it is not viable.</p>
+  <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
+</div></div></section>
+<div data-site-contact></div>
 </main>
-
 <div data-site-footer></div>
-
 <script>
-const io=new IntersectionObserver((es)=>{
-  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
-},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -30px 0px'});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+(()=>{const links=document.querySelectorAll('.toc-list a'),heads=document.querySelectorAll('.project-body h2[id]'),byId={};links.forEach(a=>byId[a.hash.slice(1)]=a);const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.remove('active'));byId[e.target.id]?.classList.add('active')}}),{rootMargin:'-15% 0px -70% 0px'});heads.forEach(h=>obs.observe(h))})();
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
-(function(){
-  const links = document.querySelectorAll('.toc-list a');
-  const headings = document.querySelectorAll('.project-body h2[id]');
-  if(!links.length || !headings.length) return;
-  const byId = {};
-  links.forEach(a => byId[a.getAttribute('href').slice(1)] = a);
+function createViewer({ canvasId, noteId, hintId, modelUrl, label }) {
+  const AUTO_SPIN = 0.12;
+  const canvas = document.getElementById(canvasId);
+  const noteEl = document.getElementById(noteId);
+  const hintEl = document.getElementById(hintId);
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-  const tocIO = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const link = byId[entry.target.id];
-      if(!link) return;
-      if(entry.isIntersecting) links.forEach(a => a.classList.remove('active')), link.classList.add('active');
-    });
-  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
-  headings.forEach(h => tocIO.observe(h));
-})();
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 5000);
+  const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.enablePan = false;
+  controls.enableZoom = true;
+  controls.zoomSpeed = 0.7;
+  controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE };
+
+  scene.add(new THREE.HemisphereLight(0xcfe8ff, 0x202428, 0.9));
+  const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(3,5,2); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xffb454, 0.8); rim.position.set(-4,2,-3); scene.add(rim);
+  const fill = new THREE.DirectionalLight(0x5ee6a0, 0.25); fill.position.set(0,-3,4); scene.add(fill);
+
+  let modelGroup = null;
+  let modelRadius = 1;
+  let spinning = true;
+
+  const draco = new DRACOLoader();
+  draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/');
+  const loader = new GLTFLoader();
+  loader.setDRACOLoader(draco);
+
+  loader.load(modelUrl, (gltf) => {
+    modelGroup = gltf.scene;
+    const box = new THREE.Box3().setFromObject(modelGroup);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    modelRadius = Math.max(size.x, size.y, size.z) * 0.5 || 1;
+    modelGroup.position.sub(center);
+    modelGroup.rotation.y = Math.PI / 3;
+    scene.add(modelGroup);
+
+    const dist = modelRadius / Math.tan((camera.fov*Math.PI/180)/2) * 0.8;
+    camera.position.set(dist*0.85, dist*0.5, dist*0.85);
+    controls.target.set(0,0,0);
+    controls.minDistance = modelRadius * 0.35;
+    controls.maxDistance = modelRadius * 4;
+    controls.update();
+    noteEl.style.display = 'none';
+  }, (xhr) => {
+    if (xhr.total) noteEl.innerHTML = `loading ${label}, ${Math.round(xhr.loaded/xhr.total*100)}%`;
+  }, (err) => {
+    console.error(`Failed to load ${modelUrl}`, err);
+    noteEl.innerHTML = `couldn't load <b>${modelUrl}</b><br>place the GLB next to this page`;
+  });
+
+  controls.addEventListener('start', () => { spinning = false; hintEl.style.opacity = '0'; });
+  controls.addEventListener('end', () => { spinning = true; });
+
+  function resize() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (canvas.width !== w || canvas.height !== h) {
+      renderer.setSize(w, h, false);
+      camera.aspect = w/h;
+      camera.updateProjectionMatrix();
+    }
+  }
+
+  let last = performance.now();
+  function loop(now) {
+    const dt = (now-last)/1000; last = now;
+    resize();
+    if (modelGroup && spinning && AUTO_SPIN && !reduce) modelGroup.rotation.y += AUTO_SPIN*dt;
+    controls.update();
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+}
+const viewerConfigs = [
+  { viewerId:'cad-viewer', canvasId:'cad-cv', noteId:'cad-note', hintId:'cad-hint', modelUrl:'VC.glb', label:'VC enclosure' },
+  { viewerId:'nozzle-viewer', canvasId:'nozzle-cv', noteId:'nozzle-note', hintId:'nozzle-hint', modelUrl:'ipx5_nozzle.glb', label:'IPX5 nozzle' }
+];
+
+// This page contains two large interactive models. Creating both WebGL renderers
+// and parsing both GLBs at once can starve or lose the second WebGL context.
+// Initialize each viewer only when the visitor reaches it.
+const pendingViewers = new Map(viewerConfigs.map(config => [
+  document.getElementById(config.viewerId), config
+]));
+const viewerObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const config = pendingViewers.get(entry.target);
+    if (!config) return;
+    pendingViewers.delete(entry.target);
+    observer.unobserve(entry.target);
+    createViewer(config);
+  });
+}, { rootMargin:'200px 0px', threshold:0.01 });
+pendingViewers.forEach((config, element) => viewerObserver.observe(element));
 </script>
 </body>
 </html>

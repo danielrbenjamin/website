@@ -42,6 +42,7 @@
 .project-body b{color:var(--ink);font-weight:500}
 
 .figure{margin:8px 0 32px;max-width:680px}
+.figure img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:5px;background:var(--panel)}
 .figure .shot{
   border:1px dashed var(--line-bright);border-radius:4px;background:var(--panel);
   aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
@@ -55,10 +56,12 @@
 }
 .note b{color:var(--amber)}
 
-.hero-shot{
-  margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
-  background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
+.equation{
+  margin:10px 0 18px;padding:14px 16px;border-left:2px solid var(--amber);background:var(--panel);
+  font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);line-height:1.7;max-width:680px;
+  overflow-x:auto;white-space:nowrap;
 }
+.project-body code{font-family:var(--mono);font-size:.88em;color:var(--green)}
 
 /* ── pipeline stage diagram ── */
 .pipeline{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:8px 0 32px;max-width:680px}
@@ -86,11 +89,6 @@
     <div class="chips reveal" style="margin-bottom:28px">
       <span class="chip">Python</span><span class="chip">NumPy</span><span class="chip">Pacejka MF5.2</span><span class="chip">ANSYS</span>
     </div>
-    <div class="hero-shot reveal">
-      <div class="figure" style="margin:0">
-        <div class="shot" style="aspect-ratio:21/9">tire force curves + load case output plot (placeholder)</div>
-      </div>
-    </div>
   </section>
 
   <section style="border-top:none;padding-top:0">
@@ -103,16 +101,22 @@
           <li><a href="#pipeline">Pipeline Overview</a></li>
           <li><a href="#tire-model">Tire Model</a></li>
           <li><a href="#load-cases">Design Load Cases</a></li>
+          <li><a href="#upright-statics">Upright Statics</a></li>
           <li><a href="#fea-export">ANSYS FEA Export</a></li>
           <li><a href="#results">Results</a></li>
-          <li><a href="#links">Links</a></li>
         </ul>
       </aside>
 
-      <div class="project-body reveal">
+    <div class="project-body">
+      <h2 class="project-summary-title">Project Summary</h2>
+      <div class="project-summary reveal" aria-label="Project summary">
+        <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Rebuilt the legacy MATLAB workflow in Python.</li><li>Combined a Pacejka MF5.2 tire model, equilibrium sweeps, upright statics, validation, and direct ANSYS export.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>A reproducible vehicle-load analysis pipeline.</li><li><b>Eight documented design load cases</b> for chassis and suspension FEA.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">Results</span><ul><li>Replaced an error-prone afternoon of manual recalculation and data entry with a parameter change and rerun.</li><li>Produces versioned CSV inputs keyed directly to ANSYS.</li></ul></div>
+      </div>
 
         <h2 id="problem">Problem</h2>
-        <p>Every structural decision on the car — chassis tube sizing, upright geometry, suspension mounting — ultimately traces back to a set of design loads. For years those loads came out of a tangle of legacy MATLAB scripts: hard to audit, harder to hand off, and slow to rerun whenever a vehicle parameter changed. Getting a fresh set of load cases after a suspension geometry change was a manual, error-prone afternoon.</p>
+        <p>Every structural decision on the car — chassis tube sizing, upright geometry, suspension mounting — ultimately traces back to a set of design loads. For years those loads came out of a set of legacy MATLAB scripts: hard to audit, harder to hand off, and slow to rerun whenever a vehicle parameter changed. Getting a fresh set of load cases after a suspension geometry change was a manual, error-prone afternoon.</p>
         <p>The team needed a single, reproducible workflow: feed in vehicle parameters, get out a documented, versioned set of load cases that the chassis and suspension teams could build FEA around with confidence.</p>
 
         <h2 id="pipeline">Pipeline Overview</h2>
@@ -129,32 +133,59 @@
         </div>
 
         <h2 id="tire-model">Tire Model</h2>
-        <p>At the core of the pipeline is a Pacejka MF5.2 tire model, which generates realistic lateral and longitudinal force curves from the tire's characterization data rather than relying on simplified linear approximations. That accuracy matters most at the limit — cornering and combined-load cases are exactly where a crude tire model diverges furthest from reality, and those are the cases that size the most highly loaded parts.</p>
+        <p>I implemented the Pacejka MF5.2 “Magic Formula” using coefficients fitted to physical tire-test data. It is an empirical model: instead of trying to derive tire behaviour from the mechanics of the rubber and carcass, it uses nonlinear equations that reproduce the measured relationship between load, slip, camber, and force.</p>
+        <p>For a given vertical load and camber angle, the model returns lateral force and self-aligning moment as functions of slip angle. A similar equation returns longitudinal force from slip ratio. This was important near the limit of the tire, where force no longer increases linearly with slip and a simple cornering-stiffness approximation would overpredict the available grip.</p>
 
         <h2 id="load-cases">Design Load Cases</h2>
-        <p>From the tire model's output, the pipeline assembles eight distinct design load cases — braking, cornering, combined braking-and-cornering, bump, and their variations — each representing a scenario the suspension and chassis structure has to survive. Torsional stiffness analysis, based on the Deakin et al. approach, ties these load cases back to the chassis's structural targets so front and rear stiffness stay matched to what the suspension geometry was designed around.</p>
+        <p>The first step was finding the largest wheel-centre loads the suspension would experience during cornering, braking, and acceleration. For cornering, I used a large-radius turn in the lateral simulation. At a given lateral acceleration, a larger radius requires a higher vehicle speed, which increases aerodynamic downforce and changes the vertical load available at each tire. The simulation accounts for this alongside lateral load transfer, roll-induced camber change, and the nonlinear tire response.</p>
+        <p>At each trial lateral acceleration, the program calculates the load on all four tires and uses the Pacejka model to find the forces they can produce. Vehicle sideslip and steering angle are then adjusted until the front and rear tire forces satisfy lateral equilibrium. The process continues until that equilibrium can no longer be reached within the steering and sideslip limits, giving the maximum cornering condition.</p>
+        <div class="equation reveal">ΣF<sub>y</sub> = ma<sub>y</sub></div>
+        <p>Braking and acceleration are handled with separate longitudinal simulations. These include longitudinal load transfer, aerodynamic drag and downforce, suspension movement, anti-dive or anti-squat geometry, and the longitudinal tire model. The acceleration case also checks the available motor torque and the car's 80 kW power limit. Together, these simulations produce the forces and moments acting at the wheel centre for the main design cases.</p>
+
+        <figure class="figure reveal">
+          <img src="figures/fig_cornering_sweep.svg" alt="Outside and inside front tire loads across the lateral-acceleration sweep">
+          <figcaption>As lateral acceleration increases, load transfers from the inside tire to the outside tire. The simulation stops at the final state that satisfies axle force equilibrium within 0.5 N.</figcaption>
+        </figure>
+
+        <figure class="figure reveal">
+          <img src="figures/fig_longitudinal_sweep.svg" alt="Acceleration, braking, and front tire load across vehicle speed">
+          <figcaption>The longitudinal sweeps show where acceleration changes from traction-limited to power-limited and how speed-dependent aero changes the available normal load.</figcaption>
+        </figure>
+
+        <p>Four additional cases provide conservative structural envelopes: combined lateral and longitudinal loading, full lateral load transfer, full braking load transfer, and a 3g bump. These are analytical design bounds rather than maneuvers predicted by the pure-slip tire simulations.</p>
+
+        <h2 id="upright-statics">Upright Statics</h2>
+        <p>With the wheel-centre loads known, I could calculate how they travel through the upright and into the suspension members. I treated the upright as a rigid body in static equilibrium and used the suspension hard points from CAD to define the position and direction of each reaction force.</p>
+
+        <div class="equation reveal">ΣF = 0 &nbsp;&nbsp;&nbsp;&nbsp; ΣM<sub>wheel centre</sub> = 0</div>
+
+        <p>In the current model, the combined upper-control-arm and pushrod load path is represented by an upper reaction with three unknown components. The lower pickup point also has three force components, but its resultant must remain in the plane formed by the two lower-control-arm links. The toe link is a two-force member: its direction is fixed by the CAD geometry, so only the magnitude of its axial force is unknown.</p>
+
+        <p>This leaves seven unknowns. Force equilibrium supplies three equations and moment equilibrium about the wheel centre supplies another three. The final equation constrains the lower joint reaction to the control-arm plane. If <code>n<sub>LCA</sub></code> is the normal to that plane, the constraint is:</p>
+
+        <div class="equation reveal">n<sub>LCA</sub> · F<sub>LCA</sub> = 0</div>
+
+        <p>I assembled the seven equations into a matrix using the applied wheel-centre loads, member directions, and moment arms calculated from the hard points:</p>
+
+        <div class="equation reveal">geometry matrix × unknown joint forces = applied wheel load &nbsp;&nbsp;→&nbsp;&nbsp; Ax = −b</div>
+
+        <p>Solving this system gives the reactions at the upper joint, lower joint, and toe link. The pipeline then resolves those reactions along the axes of the individual control-arm rods and pushrod, converting one wheel-centre load into the forces acting at each chassis pickup point. As a check, the reconstructed pickup-point forces must sum back to the original wheel load before the results are exported for structural analysis.</p>
+
+        <figure class="figure reveal">
+          <img src="figures/fig_member_forces.svg" alt="Front and rear suspension member force magnitudes across all eight load cases">
+          <figcaption>Comparing the solved member forces makes the governing case visible instead of reporting only a single maximum value.</figcaption>
+        </figure>
 
         <h2 id="fea-export">ANSYS FEA Export</h2>
         <p>Every load case is exported as a clean CSV, keyed directly to the ANSYS chassis FEA setup, so there's no manual re-entry step between "the pipeline computed this load" and "ANSYS is running against it." That link is also where most of the legacy MATLAB workflow's error surface used to live — a mistyped or stale value carried from a spreadsheet into FEA without anyone noticing.</p>
 
         <figure class="figure reveal">
-          <div class="shot">sample load-case CSV export, keyed to FEA node sets (placeholder)</div>
-          <figcaption>One of eight design load cases, exported and ready to drop into the ANSYS chassis FEA model.</figcaption>
+          <img src="figures/fig_inboard_magnitudes_front.svg" alt="Front chassis pickup-point force magnitudes across the eight load cases">
+          <figcaption>Each upright reaction is resolved into the six chassis-side forces written to the ANSYS load-case files.</figcaption>
         </figure>
 
         <h2 id="results">Results</h2>
         <p>What used to be a manual, error-prone afternoon of MATLAB scripts is now a parameter change and a re-run. Every downstream structural decision — chassis tube sizing, upright geometry, suspension hardpoint loads — traces back to a documented, versioned load case instead of a spreadsheet nobody fully trusted.</p>
-
-        <div class="note reveal">
-          <b>Note:</b> the hero plot, load-case CSV figure, and any code snippets are still placeholders — swap in real tire-curve plots and sample output once you're ready to publish them.
-        </div>
-
-        <h2 id="links">Links</h2>
-        <div class="cta-row reveal">
-          <a href="../../projects.html" class="btn">← All projects</a>
-        </div>
-
-        <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
 
       </div>
     </div>

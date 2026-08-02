@@ -47,6 +47,7 @@
   aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
   font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
 }
+.figure img{display:block;width:100%;height:auto;border:1px solid var(--line-bright);border-radius:5px;background:var(--panel)}
 .figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
 
 .note{
@@ -80,11 +81,11 @@
 
   <section class="page-head" style="border-top:none">
     <div class="eyebrow reveal"><a href="../../projects.html" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; SWE-001</div>
-    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">Personal Infrastructure · Ongoing</div>
+    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">Team Infrastructure · Ongoing</div>
     <h2 class="sec-h reveal">DanBot: 3D Printing Command Center</h2>
-    <p class="sec-sub reveal" style="margin-bottom:18px">A Slack bot with Model Context Protocol (MCP) server integration for 3D printer monitoring and homelab server status tracking — so checking on a print doesn't mean walking downstairs.</p>
+    <p class="sec-sub reveal" style="margin-bottom:18px">A reservation, remote-printing, and monitoring system built around UBC Formula Electric's shared 3D printer — so team members know when it is available before making a trip to the bay.</p>
     <div class="chips reveal" style="margin-bottom:28px">
-      <span class="chip">Slack API</span><span class="chip">MCP</span><span class="chip">Python</span><span class="chip">Klipper</span><span class="chip">Docker</span><span class="chip">Networking</span>
+      <span class="chip">Slack API</span><span class="chip">Moonraker</span><span class="chip">Klipper</span><span class="chip">Cloudflare</span><span class="chip">MCP Clients</span><span class="chip">Docker</span>
     </div>
   </section>
 
@@ -95,42 +96,61 @@
         <div class="toc-label">On this page</div>
         <ul class="toc-list">
           <li><a href="#problem">Problem</a></li>
+          <li><a href="#reservation">Reservation System</a></li>
           <li><a href="#architecture">Architecture</a></li>
-          <li><a href="#printer">Printer Monitoring</a></li>
-          <li><a href="#infra">Server &amp; Deployment</a></li>
+          <li><a href="#printer">Monitoring &amp; Alerts</a></li>
           <li><a href="#results">Results</a></li>
         </ul>
       </aside>
 
-      <div class="project-body reveal">
+    <div class="project-body">
+      <h2 class="project-summary-title">Project Summary</h2>
+      <div class="project-summary reveal" aria-label="Project summary">
+        <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Combined Slack authentication and reservation logic with Moonraker/Klipper control.</li><li>Used Cloudflare tunnelling and service alerts around the team's existing workflow.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>A web portal and Slack bot for the team's shared 3D printer.</li><li>Reservation, monitoring, and remote print-start controls.</li></ul></div>
+        <div class="project-summary-item"><span class="project-summary-label">Results</span><ul><li>Members can confirm availability, reserve time, watch the printer, and start prepared files remotely.</li><li>Slack alerts reduce unnecessary trips to the bay.</li></ul></div>
+      </div>
 
         <h2 id="problem">Problem</h2>
-        <p>Running a 3D printer and a small home server means a constant stream of small questions — is the print still going, did it fail overnight, is the server actually up. None of those questions are worth opening a dashboard for individually, but they're also exactly the kind of thing you want answered without leaving whatever chat window you're already in.</p>
-        <p>DanBot exists to answer those questions inside Slack, where I already spend the day, instead of a purpose-built dashboard I'd have to remember to check.</p>
+        <p>Starting a team print used to require a trip to the bay, often in the evening, just to reach the printer in person. There was no reservation system and no reliable way to check availability remotely. Someone could make the trip expecting to begin a job, only to find that another member had already started a ten-hour print.</p>
+        <p>The wasted trips and uncertainty were the real problem. Using Python, I developed DanBot: a custom web portal and Slack bot around our team's workflow: reserve the shared machine, see what it is doing, and start a prepared print remotely instead of treating access as first-come, first-served guesswork. It runs locally on a desktop in the bay, and a Cloudflare Tunnel exposes the web service securely while the application continues to communicate securely with the printer over the local network.</p>
+
+        <h2 id="reservation">Reservation System</h2>
+        <p>The reservation layer is the part I had not found in the existing printer-management tools I evaluated. Team members sign in through Slack, book a time slot, and own that reservation. A print must begin within the reservation window or the slot is released, while an override mode gives administrators a way to handle exceptions.</p>
+
+        <figure class="figure reveal">
+          <img src="danbot_website.png" alt="UBC Formula Electric 3D Print Management System showing reservation rules, account login, and a shared calendar">
+          <figcaption>One shared queue replaces uncertain trips to the bay. Slack identity ties reservations and print actions to an actual team member.</figcaption>
+        </figure>
 
         <h2 id="architecture">Architecture</h2>
-        <p>DanBot is a Python Slack bot paired with a Model Context Protocol (MCP) server, which exposes printer and server state as tools an LLM-driven chat interface can call directly. That MCP layer is the piece that makes the bot more than a fixed set of slash commands — instead of hardcoding every question I might want to ask, the MCP server exposes the underlying capabilities, and the model composes them into an answer.</p>
+        <p>DanBot calls existing MCP servers where they are useful: UptimeRobot for the ANSYS and SVN servers, and OctoEverywhere for printer status. The web portal is separate from that MCP path and connects directly to Klipper through Moonraker for live state, the webcam feed, and print control.</p>
 
         <div class="arch reveal">
-          <div class="node"><div class="k">Slack</div><div class="v">chat interface — commands and natural-language questions</div></div>
+          <div class="node"><div class="k">Team</div><div class="v">Slack app and reservation web portal</div></div>
           <div class="sep">↔</div>
-          <div class="node"><div class="k">MCP server</div><div class="v">exposes printer &amp; server tools to the model</div></div>
+          <div class="node"><div class="k">DanBot</div><div class="v">reservation logic, MCP clients, and Cloudflare Worker alerts</div></div>
           <div class="sep">↔</div>
-          <div class="node"><div class="k">Klipper API</div><div class="v">printer state — progress, temps, errors</div></div>
+          <div class="node"><div class="k">Services</div><div class="v">Moonraker locally; OctoEverywhere and UptimeRobot externally</div></div>
         </div>
+
+        <figure class="figure reveal">
+          <img src="danbot_slack_app.png" alt="Danbot custom Slack application installed for the UBC Formula Electric workspace">
+          <figcaption>DanBot is a custom app for the UBC Formula Electric Slack workspace, keeping access inside the team's existing communication channel.</figcaption>
+        </figure>
 
         <h2 id="printer">Printer Monitoring</h2>
-        <p>The printer runs Klipper firmware, which exposes a structured API for job progress, nozzle and bed temperatures, and error states. DanBot polls that API and surfaces it through Slack — a running print's status, an alert if something's gone wrong, or a quick temperature check, all without needing to be in the same room as the printer.</p>
+        <p>The custom dashboard uses the Klipper/Moonraker API directly to show printer status and a live camera feed, and it can upload and start a prepared G-code or 3MF file during the user's active reservation. This is the local, purpose-built core of the system rather than a view assembled through MCP.</p>
+        <p>For notifications, I leveraged OctoEverywhere's existing event handling instead of rebuilding a solved problem immediately. OctoEverywhere sends print events to a Cloudflare Worker, which forwards them into the team's Slack channel. </p>
 
-        <h2 id="infra">Server &amp; Deployment</h2>
-        <p>The bot itself runs in Docker on a home server, alongside status checks for the other services running there — the kind of small homelab networking work that's invisible when it's working and very visible the moment it isn't. DanBot reports on that infrastructure too, so the same chat window that tells me a print finished also tells me if the machine hosting it is under load.</p>
+        <figure class="figure reveal">
+          <img src="danbot_webportal.png" alt="DanBot web portal showing the printer webcam and upload and print controls">
+          <figcaption>The portal combines the live Moonraker-backed webcam with reservation-gated remote printing.</figcaption>
+        </figure>
 
         <h2 id="results">Results</h2>
-        <p>DanBot turned "walk over and look at the printer" into "ask Slack," and turned "did the server survive last night" into the same thing. It's a small tool, but it's the kind that gets used every single day rather than the kind that gets built once and forgotten.</p>
-
-        <div class="note reveal">
-          <b>Note:</b> screenshots of the bot in action and a short architecture diagram are still to be added.
-        </div>
+        <p>DanBot turns printer access from a physical guessing game into a coordinated team workflow. Members can check the queue and printer remotely, reserve time, and receive Slack notifications without spending an evening travelling to the bay only to discover the machine is occupied.</p>
+        <p>Now that I have more experience with the Klipper/Moonraker API, the next step is to move notification handling onto the local integration as well. That will remove the remaining OctoEverywhere dependency and make the setup more self-contained without changing the Slack experience for the team.</p>
 
         <div class="eyebrow reveal" style="margin-top:40px"><a href="../../projects.html" style="color:var(--ink-faint)">← all projects</a></div>
 
