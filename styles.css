@@ -13,6 +13,31 @@
   --mono:"JetBrains Mono",ui-monospace,monospace;
   --disp:"Space Grotesk",system-ui,sans-serif;
 }
+
+/* Project image lightbox */
+.project-lightbox-trigger{cursor:zoom-in}
+.project-lightbox{
+  position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;
+  padding:clamp(18px,4vw,48px);background:rgba(5,7,8,.92);backdrop-filter:blur(8px);
+  opacity:0;transition:opacity .22s ease;
+}
+.project-lightbox[hidden]{display:none}
+.project-lightbox.is-open{opacity:1}
+.project-lightbox-image{
+  display:block;max-width:100%;max-height:calc(100vh - clamp(36px,8vw,96px));width:auto;height:auto;
+  object-fit:contain;border:1px solid var(--line-bright);border-radius:5px;background:var(--panel);
+  box-shadow:0 24px 80px rgba(0,0,0,.62);transform:scale(.94);transition:transform .22s ease;
+}
+.project-lightbox.is-open .project-lightbox-image{transform:scale(1)}
+.project-lightbox-close{
+  position:fixed;top:clamp(14px,2.5vw,28px);right:clamp(14px,2.5vw,28px);z-index:1;
+  width:42px;height:42px;border:1px solid var(--line-bright);border-radius:50%;
+  background:rgba(12,14,15,.9);color:var(--ink);font:300 30px/1 var(--disp);cursor:pointer;
+  display:grid;place-items:center;transition:border-color .15s,color .15s,background .15s;
+}
+.project-lightbox-close:hover,.project-lightbox-close:focus-visible{border-color:var(--amber);color:var(--amber);background:var(--panel);outline:none}
+body.project-lightbox-open{overflow:hidden}
+@media(prefers-reduced-motion:reduce){.project-lightbox,.project-lightbox-image{transition:none}}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
