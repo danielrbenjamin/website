@@ -8,7 +8,7 @@
       </footer>`;
   });
 
-  if (!/(^|\/)projects\//.test(location.pathname.replace(/\\/g, "/"))) return;
+  if (!document.querySelector(".project-body")) return;
 
   const images = document.querySelectorAll("main img:not([data-no-lightbox])");
   if (!images.length) return;
