@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daniel Benjamin</title>
+<link rel="canonical" href="https://www.danielrbenjamin.com/">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="favicon-180.png">
@@ -12,6 +13,9 @@
 <link rel="stylesheet" href="site-header.css">
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm" crossorigin>
 <script>
+if(window.location.pathname.endsWith('/index.html')) {
+  history.replaceState(null, '', window.location.pathname.slice(0, -'index.html'.length) + window.location.search + window.location.hash);
+}
 if('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 window.addEventListener('load', ()=>window.scrollTo(0, 0), { once:true });
@@ -123,7 +127,7 @@ html.intro-active{overflow:hidden}
       <div class="about reveal">
         <p>Hi, I'm <b>Daniel Benjamin</b>, a Mechanical Engineering student at UBC and Chassis Lead for UBC Formula Electric.</p>
         <p>I enjoy working where mechanical design and software development come together to solve real-world problems. Whether it's prosthetics, Formula SAE, or automation tools that make life more efficient, I'm most motivated by building things that have a tangible impact.</p>
-        <p>learn more <a href="about.html" style="color:var(--amber)">about me →</a></p>
+        <p>learn more <a href="/about/" style="color:var(--amber)">about me →</a></p>
       </div>
       <div class="profile-photo-wrap reveal">
         <img class="profile-photo" src="profile_picture.jpg" alt="Daniel Benjamin">
@@ -134,10 +138,10 @@ html.intro-active{overflow:hidden}
   <section id="experience" style="border-top:none;padding-top:0">
     <div class="eyebrow reveal">02 — Featured Projects</div>
     <h2 class="sec-h reveal">Worth a closer look.</h2>
-    <p class="sec-sub reveal">see all projects on the <a href="projects.html" style="color:var(--amber)">projects page →</a></p>
+    <p class="sec-sub reveal">see all projects on the <a href="/projects/" style="color:var(--amber)">projects page →</a></p>
     <div class="proj-feat-grid">
       <div class="proj-feat reveal">
-        <a class="proj-feat-image" href="projects/fsae-chassis/fsae-chassis.html" aria-label="View FSAE Chassis Design and Manufacture project">
+        <a class="proj-feat-image" href="/projects/fsae-chassis/" aria-label="View FSAE Chassis Design and Manufacture project">
           <img src="projects/fsae-chassis/comp-car.png" alt="UBC Formula Electric competition car" loading="lazy" decoding="async">
         </a>
         <h3>FSAE Chassis Design and Manufacture</h3>
@@ -145,10 +149,10 @@ html.intro-active{overflow:hidden}
         <div class="chips">
           <span class="chip">SolidWorks</span><span class="chip">AutoCAD</span><span class="chip">ANSYS</span><span class="chip">MATLAB</span><span class="chip">MIG Welding</span>
         </div>
-        <a href="projects/fsae-chassis/fsae-chassis.html" class="btn solid">View project →</a>
+        <a href="/projects/fsae-chassis/" class="btn solid">View project →</a>
       </div>
       <div class="proj-feat reveal">
-        <a class="proj-feat-image" href="projects/mems-hand/mems-hand.html" aria-label="View MEMS Soft-Actuated Hand project">
+        <a class="proj-feat-image" href="/projects/mems-hand/" aria-label="View MEMS Soft-Actuated Hand project">
           <img src="projects/mems-hand/mems-2.jpg" alt="Tendon-driven prosthetic hand grasping an object on a Kinova robotic arm" loading="lazy" decoding="async">
         </a>
         <h3>MEMS Soft-Actuated Hand</h3>
@@ -156,7 +160,7 @@ html.intro-active{overflow:hidden}
         <div class="chips">
           <span class="chip">SolidWorks</span><span class="chip">3D Printing</span><span class="chip">Silicone Molding</span>
         </div>
-        <a href="projects/mems-hand/mems-hand.html" class="btn solid">View project →</a>
+        <a href="/projects/mems-hand/" class="btn solid">View project →</a>
       </div>
     </div>
   </section>

@@ -12,26 +12,28 @@
   const currentFile = currentPath.split("/").pop() || "index.html";
 
   function isCurrent(href) {
+    if (href === "/" && (currentPath === "/" || currentPath === "/index.html")) return true;
+    if (href !== "/" && href.startsWith("/") && currentPath.startsWith(href)) return true;
     if (href === currentFile) return true;
-    if (href === "projects.html" && currentPath.includes("/projects/")) return true;
+    if (href === "/projects/" && currentPath.includes("/projects/")) return true;
     return false;
   }
 
   const desktopLinks = [
-    { href: "index.html", label: "home" },
-    { href: "about.html", label: "about" },
-    { href: "projects.html", label: "projects" },
-    { href: "experience.html", label: "experience" },
-    { href: "resume.html", label: "résumé" },
+    { href: "/", label: "home" },
+    { href: "/about/", label: "about" },
+    { href: "/projects/", label: "projects" },
+    { href: "/experience/", label: "experience" },
+    { href: "/resume/", label: "résumé" },
     { href: "https://blog.danielrbenjamin.com/", label: "blog ↗", external: true },
   ];
 
   const mobileLinks = [
-    { href: "index.html", label: "home" },
-    { href: "about.html", label: "about" },
-    { href: "projects.html", label: "projects" },
-    { href: "experience.html", label: "experience" },
-    { href: "resume.html", label: "résumé" },
+    { href: "/", label: "home" },
+    { href: "/about/", label: "about" },
+    { href: "/projects/", label: "projects" },
+    { href: "/experience/", label: "experience" },
+    { href: "/resume/", label: "résumé" },
     { href: "https://blog.danielrbenjamin.com/", label: "blog ↗", external: true },
   ];
 
@@ -75,7 +77,7 @@
         const current = !link.external && isCurrent(link.href);
         const attrs = link.external ? ' target="_blank" rel="noopener"' : "";
         const currentAttrs = current ? ' class="is-current" aria-current="page"' : "";
-        const href = link.external ? link.href : basePath + link.href;
+        const href = link.external || link.href.startsWith("/") ? link.href : basePath + link.href;
         return `<a href="${href}"${attrs}${currentAttrs}>${link.label}</a>`;
       })
       .join("");
@@ -87,7 +89,7 @@
     mount.innerHTML = `
       <div class="bar">
         <div class="id">
-          <a href="${basePath}index.html" aria-label="Home">${logo}</a>
+          <a href="/" aria-label="Home">${logo}</a>
           <span>danielrbenjamin</span>
         </div>
         <nav>${renderLinks(desktopLinks)}</nav>
