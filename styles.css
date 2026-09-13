@@ -364,8 +364,9 @@ html.intro-active{overflow:hidden}
 .project-summary-item:last-child{border-right:0}
 .project-summary-label{display:block;padding:12px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10.5px;color:var(--green);letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,.018)}
 .project-summary p{margin:0;padding:15px 16px 17px;color:var(--ink-dim);font-size:.9rem;line-height:1.58}
-.project-body .project-summary ul{display:flex;flex-direction:column;gap:10px;margin:0;padding:15px 16px 17px;max-width:none;list-style:none}
-.project-body .project-summary li{padding:0 0 0 13px;color:var(--ink-dim);font-size:.88rem;line-height:1.5}
-.project-body .project-summary li::before{content:"";left:0;top:.58em;width:4px;height:4px;border-radius:50%;background:var(--green)}
+.project-summary ul{display:flex;flex-direction:column;gap:10px;margin:0;padding:15px 16px 17px 32px;max-width:none;list-style:disc}
+.project-summary li{padding:0;color:var(--ink-dim);font-size:.88rem;line-height:1.5}
+.project-summary li::before{content:none}
+.project-summary li::marker{color:var(--green);font-size:.8em}
 .project-summary b{color:var(--ink);font-weight:500}
 @media(max-width:620px){.project-summary{grid-template-columns:1fr}.project-summary-item{border-right:0;border-bottom:1px solid var(--line)}.project-summary-item:last-child{border-bottom:0}.project-summary-label{padding:11px 14px}.project-summary p{padding:13px 14px 15px;font-size:.88rem}}
