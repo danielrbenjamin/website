@@ -15,7 +15,7 @@ function consoleWelcome() {
  ██████╔╝███████╗██║ ╚████║╚██████╔╝██║  ██║██║ ╚═╝ ██║██║██║ ╚████║
  ╚═════╝ ╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝
 
-  %c%c`, "color: #2978b5; font: 400 1em monospace;", "", "background-color: #2978b5; color: white; font: 400 1em monospace; padding: 0.5em 0; font-weight: bold;", "")
+`, "color: #2978b5; font: 400 1em monospace;")
 }
 
 consoleWelcome();

@@ -5,12 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daniel Benjamin</title>
 <link rel="canonical" href="https://www.danielrbenjamin.com/">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="apple-touch-icon" href="favicon-180.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="site-header.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm" crossorigin>
 <script>
 if(window.location.pathname.endsWith('/index.html')) {
@@ -270,13 +274,6 @@ html.intro-active{overflow:hidden}
 })();
 </script>
 
-<script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-}}
-</script>
-
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -401,7 +398,7 @@ const vert=`
     vGreen = mix(0.7, step(0.93,fract(aRand*7.0+floor(uTime*0.5))), assemble);
   }`;
 const frag=`
-  precision mediump float;
+  precision highp float;
   uniform sampler2D uTex; uniform float uCols,uRows,uNumGlyph; uniform float uBright;
   uniform vec3 uAmber,uGreen,uFog;
   uniform highp float uDissolve;
