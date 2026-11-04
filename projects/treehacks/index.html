@@ -1,108 +1,926 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0c0e0f"><title>TreeHacks — Daniel Benjamin</title>
-<link rel="icon" href="https://www.danielrbenjamin.com/favicon.svg" type="image/svg+xml">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://www.danielrbenjamin.com/site-header.css">
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
-<style>
-:root{--bg:#0c0e0f;--ink:#e4e8e6;--ink-dim:#9fa8a3;--ink-faint:#7c8983;--amber:#ffb454;--green:#5ee6a0;--mono:'JetBrains Mono',monospace;--display:'Space Grotesk',sans-serif}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{background:var(--bg);color:var(--ink);font-family:var(--display)}a{color:inherit}#stage{position:fixed;inset:0;z-index:0;background:#302f35}#stage canvas{display:block;width:100%;height:100%;touch-action:none}#stage:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,rgba(12,14,15,.12),transparent 28%,transparent 72%,rgba(12,14,15,.08))}
-/* Live shared header markup, only surface treatment differs on this full-bleed page */
-[data-site-header] .bar{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;border:0!important;z-index:100!important}
-.bar{z-index:100!important}#controls{position:fixed;z-index:5;top:96px;left:50%;transform:translateX(-50%);text-align:center;width:min(94vw,700px);pointer-events:none}.context-label{margin:0 0 10px;color:var(--ink-dim);font:500 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;text-shadow:0 2px 18px rgba(0,0,0,.55)}h1{font-size:clamp(30px,4.4vw,60px);letter-spacing:-.055em;font-weight:600;line-height:1.1;margin:0 0 22px;text-wrap:balance;text-shadow:0 2px 26px rgba(0,0,0,.5)}h1 em{font-style:normal;color:var(--amber)}.choices{pointer-events:auto;display:flex;align-items:center;justify-content:center;gap:10px}.choices button{min-width:76px;border:1px solid rgba(225,235,227,.36);border-radius:3px;padding:11px 19px;background:rgba(12,14,15,.58);backdrop-filter:blur(8px);color:var(--ink);font:500 12px var(--mono);cursor:pointer;transition:border-color .2s,background .2s,color .2s}.choices button:hover{border-color:var(--amber);color:var(--amber)}.choices button.selected{border-color:var(--amber);color:#151719;background:var(--amber)}
-#intro{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .6s ease}#intro.done{opacity:0;pointer-events:none}#intro .intro-logo{width:150px;color:var(--amber);visibility:hidden}#intro .intro-logo.ready{visibility:visible}#intro .intro-logo line{stroke:var(--amber);stroke-width:4;stroke-linecap:round;vector-effect:non-scaling-stroke;opacity:.32}#intro .intro-logo line[data-i="20"],#intro .intro-logo line[data-i="21"],#intro .intro-logo line[data-i="22"],#intro .intro-logo line[data-i="23"],#intro .intro-logo line[data-i="24"],#intro .intro-logo line[data-i="25"],#intro .intro-logo line[data-i="27"],#intro .intro-logo line[data-i="28"]{opacity:1}
-#loading{display:none}.decision-note{min-height:1.4em;margin:-10px 0 20px;color:var(--ink-dim);font:500 12px var(--mono);opacity:0;transition:opacity .25s}.decision-note.visible{opacity:1}#credit{position:fixed;z-index:6;left:50%;bottom:22px;transform:translateX(-50%);padding:9px 14px;border:1px solid rgba(225,235,227,.2);border-radius:3px;background:rgba(12,14,15,.52);backdrop-filter:blur(8px);color:var(--ink-dim);font:500 11px var(--mono);letter-spacing:.02em;white-space:nowrap}#credit a{color:var(--amber);text-decoration:none}#credit a:hover{text-decoration:underline}@media(max-width:680px){#controls{top:80px}.choices button{padding:10px 12px;font-size:11px}h1{font-size:clamp(28px,7vw,42px)}#credit{bottom:14px;max-width:92vw;overflow:hidden;text-overflow:ellipsis}}@media(prefers-reduced-motion:reduce){#intro{display:none}}
-</style></head><body>
-<div id="intro"><svg class="intro-logo" viewBox="0 0 937.44 922.46" xmlns="http://www.w3.org/2000/svg" fill="none" aria-label="Daniel Benjamin logo">
-<line data-i="0" x1="468.72" y1="254.47" x2="243.54" y2="254.47"/>
-<line data-i="1" x1="367.95" y1="558.8" x2="367.95" y2="757.53"/>
-<line data-i="2" x1="367.95" y1="558.8" x2="367.95" y2="194.97"/>
-<line data-i="3" x1="367.95" y1="194.97" x2="195.69" y2="50.22"/>
-<line data-i="4" x1="50.22" y1="395.83" x2="367.95" y2="395.83"/>
-<line data-i="5" x1="367.95" y1="395.83" x2="367.95" y2="757.53"/>
-<line data-i="6" x1="367.95" y1="757.53" x2="50.22" y2="395.83"/>
-<line data-i="7" x1="172.05" y1="534.52" x2="172.05" y2="359.83"/>
-<line data-i="8" x1="172.05" y1="359.83" x2="243.54" y2="254.47"/>
-<line data-i="9" x1="172.05" y1="534.52" x2="468.72" y2="872.24"/>
-<line data-i="10" x1="468.72" y1="254.47" x2="693.9" y2="254.47"/>
-<line data-i="11" x1="569.49" y1="558.8" x2="569.49" y2="757.53"/>
-<line data-i="12" x1="569.49" y1="558.8" x2="569.49" y2="194.97"/>
-<line data-i="13" x1="569.49" y1="194.97" x2="741.74" y2="50.22"/>
-<line data-i="14" x1="887.22" y1="395.83" x2="569.49" y2="395.83"/>
-<line data-i="15" x1="569.49" y1="395.83" x2="569.49" y2="757.53"/>
-<line data-i="16" x1="569.49" y1="757.53" x2="887.22" y2="395.83"/>
-<line data-i="17" x1="765.38" y1="534.52" x2="765.38" y2="359.83"/>
-<line data-i="18" x1="765.38" y1="359.83" x2="693.9" y2="254.47"/>
-<line data-i="19" x1="765.38" y1="534.52" x2="468.72" y2="872.24"/>
-<line data-i="26" x1="195.69" y1="50.22" x2="367.95" y2="194.97"/>
-<line data-i="29" x1="569.49" y1="194.97" x2="741.74" y2="50.22"/>
-<line data-i="20" x1="50.22" y1="395.83" x2="367.95" y2="757.53"/>
-<line data-i="21" x1="367.95" y1="757.53" x2="367.95" y2="395.83"/>
-<line data-i="22" x1="367.95" y1="395.83" x2="50.22" y2="395.83"/>
-<line data-i="23" x1="569.49" y1="395.83" x2="569.49" y2="757.53"/>
-<line data-i="24" x1="569.49" y1="757.53" x2="887.22" y2="395.83"/>
-<line data-i="25" x1="887.22" y1="395.83" x2="569.49" y2="395.83"/>
-<line data-i="27" x1="367.95" y1="194.97" x2="367.95" y2="395.83"/>
-<line data-i="28" x1="569.49" y1="395.83" x2="569.49" y2="194.97"/>
-</svg></div>
-<div id="stage"><div id="loading"></div></div>
-<div data-site-header></div>
-<div id="controls"><p id="context-label" class="context-label">What TreeHacks would look like with or without Daniel</p><h1 id="title">Accept Daniel?</h1><p id="decision-note" class="decision-note" aria-live="polite"></p><div class="choices"><button id="accept" aria-pressed="false">Accept</button><button id="reject" aria-pressed="false">Reject</button></div></div>
-<div id="credit">Made with <a href="https://www.npmjs.com/package/verdant-motion" target="_blank" rel="noopener noreferrer">verdant-motion</a>, a library I published.<br>Explore <a href="https://www.danielrbenjamin.com/">my portfolio</a> to see what else I've built!</div>
-<script src="https://www.danielrbenjamin.com/site-header.js" defer></script>
-<script type="module">
-// Same logo geometry, line groups, Anime.js draw sequence, and session flag as homepage.
-(async function(){
- const intro=document.getElementById('intro');
- const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
- if(!intro || reduce || sessionStorage.getItem('introSeen')){ intro?.remove(); return; }
- sessionStorage.setItem('introSeen','1');
- let finished=false;
- function finish(){ if(finished)return;finished=true;intro.classList.add('done');setTimeout(()=>intro.remove(),650); }
- const failSafe=setTimeout(finish,5500);
- try {
-   const {animate,svg}=await import('https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm');
-   const all=[...intro.querySelectorAll('.intro-logo line')];
-   const highlight=[20,21,22,23,24,25,27,28];
-   const isHi=e=>highlight.includes(Number(e.dataset.i));
-   const base=svg.createDrawable(all.filter(e=>!isHi(e)));
-   const hi=svg.createDrawable(all.filter(isHi));
-   base.forEach(l=>l.setAttribute('draw','0 0'));
-   hi.forEach(l=>l.setAttribute('draw','0 0'));
-   intro.querySelector('.intro-logo').classList.add('ready');
-   animate(base,{draw:'0 1',ease:'inOutQuad',duration:800,delay:(el,i)=>i*26,onComplete:()=>{
-     animate(hi,{draw:'0 1',ease:'outQuad',duration:520,delay:(el,i)=>i*70,onComplete:()=>{setTimeout(()=>{clearTimeout(failSafe);finish()},650)}});
-   }});
- } catch(e){clearTimeout(failSafe);finish()}
-})();
-</script>
-<script type="module">
-import * as THREE from 'three';
-import {Nature} from 'https://cdn.jsdelivr.net/npm/verdant-motion@0.1.0/dist/lib/verdant-motion.js';
-const stage=document.querySelector('#stage'),renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.35));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.18;stage.prepend(renderer.domElement);document.querySelector('#loading')?.remove();
-const scene=new THREE.Scene();scene.background=new THREE.Color('#3b3431');scene.fog=new THREE.FogExp2('#3b3431',.004);
-const camera=new THREE.PerspectiveCamera(40,innerWidth/innerHeight,.1,400);let yaw=.7,pitch=.42,dist=52;const target=new THREE.Vector3(0,5,0);function positionCamera(){camera.position.set(target.x+dist*Math.sin(yaw)*Math.cos(pitch),target.y+dist*Math.sin(pitch),target.z+dist*Math.cos(yaw)*Math.cos(pitch));camera.lookAt(target)}positionCamera();
-const hemi=new THREE.HemisphereLight(0xcac2d0,.45,1.8);scene.add(hemi);const sun=new THREE.DirectionalLight(0xe3ad80,2.5);sun.position.set(-20,35,24);scene.add(sun);
-const mat=(color,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});const grass=mat('#29211f'),stone=mat('#5f5048'),stoneDark=mat('#332b2b'),roof=mat('#6a3f35'),dark=mat('#272326'),leaf=mat('#a9512d'),leaf2=mat('#c17a35'),leaf3=mat('#7d3429'),bark=mat('#49322b');
-const base=new THREE.Group();scene.add(base);
-function box(parent,w,h,d,m,x,y,z){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);mesh.position.set(x,y,z);parent.add(mesh);return mesh}
-function cylinder(parent,r1,r2,h,m,x,y,z,segments=9){const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,segments),m);mesh.position.set(x,y,z);parent.add(mesh);return mesh}
-function cone(parent,r,h,m,x,y,z,n=8){const mesh=new THREE.Mesh(new THREE.ConeGeometry(r,h,n),m);mesh.position.set(x,y,z);parent.add(mesh);return mesh}
-box(base,500,1.2,500,grass,0,-.7,0);
-// Recognizable stylized landmark massing, not surveyed architectural geometry.
-function hoover(x,z){const g=new THREE.Group();g.position.set(x,0,z);base.add(g);box(g,5,19,5,stone,0,9.5,0);for(let i=0;i<4;i++){box(g,6.1,.55,6.1,stoneDark,0,2+i*4.1,0)}box(g,7,2,7,stoneDark,0,19.9,0);box(g,8,1,8,stone,0,21.4,0);for(let side of [-1,1])for(let i=-1;i<=1;i++)box(g,.42,1.7,.16,dark,i*1.45,19.6,side*3.54);cone(g,5.4,3.3,roof,0,23.5,0,4).rotation.y=Math.PI/4;box(g,1,1,1,stone,0,25.3,0);return g}
-hoover(17,-10);
-function arcade(x,z,w){const g=new THREE.Group();g.position.set(x,0,z);base.add(g);box(g,w,5,5,stone,0,2.5,0);box(g,w+1,.7,6,roof,0,5.3,0);for(let i=-Math.floor(w/3)/2;i<=Math.floor(w/3)/2;i++){const col=x===0?i*3:i*3;box(g,.45,3,.55,stoneDark,col,1.5,2.65)}return g}
-arcade(-11,-17,23);arcade(0,-24,19);arcade(11,-17,12);
-// Church-like gabled centerpiece, simplified.
-box(base,9,9,8,stone,0,4.5,-20);cone(base,7.2,5.6,roof,0,11.7,-20,4).rotation.y=Math.PI/4;box(base,2,4,.17,dark,0,2,-15.9);
-const trees=[],fireflies=[];const treePositions=[[-21,-2],[-10,-5],[2,-3],[15,-4],[-19,6],[-6,5],[9,6],[19,8],[-15,15],[4,16]];
-const nature=new Nature();base.add(nature);treePositions.forEach((p,i)=>{const tree=nature.addTree({preset:'Oak Large',seed:262+i*17,proceduralGrowth:true,fallingLeaves:18});tree.position.set(p[0],0,p[1]);const size=.12+(i%4)*.012;tree.scale.setScalar(size);tree.growth=0;tree.animate({growth:1},{duration:12000+i*120});trees.push({tree,seed:i,size})});
-const specks=new THREE.Group();scene.add(specks);const glowGeo=new THREE.SphereGeometry(.13,8,6);for(let i=0;i<54;i++){const firefly=new THREE.Group();const core=new THREE.Mesh(glowGeo,new THREE.MeshBasicMaterial({color:0xffd66f,transparent:true,opacity:.9}));const halo=new THREE.Mesh(new THREE.SphereGeometry(.42,8,6),new THREE.MeshBasicMaterial({color:0xffb84d,transparent:true,opacity:.13,blending:THREE.AdditiveBlending,depthWrite:false}));firefly.add(halo,core);const a=i*2.39996,r=4+Math.sqrt(i)*2.2;firefly.position.set(Math.cos(a)*r,1+(i*17%100)/18,Math.sin(a)*r*.85);firefly.userData={x:firefly.position.x,y:firefly.position.y,z:firefly.position.z,phase:i*.7};specks.add(firefly);fireflies.push(firefly)}
-const groundLight=new THREE.PointLight(0xff9f4d,0,55,1.5);groundLight.position.set(1,9,3);scene.add(groundLight);
-let state='neutral',blend=0,desired=0;const backgroundLight=new THREE.Color('#3b3431'),aliveBg=new THREE.Color('#345b3d'),sadBg=new THREE.Color('#302e35');const cAutumn=[new THREE.Color('#a9512d'),new THREE.Color('#c17a35'),new THREE.Color('#7d3429')],cSpring=[new THREE.Color('#4f8d4a'),new THREE.Color('#7aae58'),new THREE.Color('#2e6a43')],cWinter=[new THREE.Color('#606165'),new THREE.Color('#777067'),new THREE.Color('#4b5051')];let isDown=false,oldX=0,oldY=0;
-renderer.domElement.addEventListener('pointerdown',e=>{isDown=true;oldX=e.clientX;oldY=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)});renderer.domElement.addEventListener('pointerup',()=>isDown=false);renderer.domElement.addEventListener('pointermove',e=>{if(!isDown)return;yaw-=(e.clientX-oldX)*.006;pitch=Math.max(.12,Math.min(1.15,pitch+(e.clientY-oldY)*.004));oldX=e.clientX;oldY=e.clientY});renderer.domElement.addEventListener('wheel',e=>{if(e.shiftKey)dist=Math.max(24,Math.min(90,dist+e.deltaY*.035))},{passive:true});
-function decide(s){state=s;desired=s==='accept'?1:s==='reject'?-1:0;for(const id of ['accept','reject']){const el=document.getElementById(id);const on=s===id;el.classList.toggle('selected',on);el.setAttribute('aria-pressed',String(on))}document.querySelector('#context-label').textContent=s==='accept'?'What TreeHacks would look like if Daniel is accepted :)':s==='reject'?'What TreeHacks would look like if Daniel is not accepted :(':'What TreeHacks would look like with or without Daniel';document.querySelector('#title').textContent=s==='accept'?'Daniel is overjoyed!':s==='reject'?'Daniel is devastated.':'Accept Daniel?';const note=document.querySelector('#decision-note');note.textContent=s==='reject'?'Maybe you made the wrong decision. Reconsider?':'';note.classList.toggle('visible',s==='reject');}
-document.querySelector('#accept').onclick=()=>decide('accept');document.querySelector('#reject').onclick=()=>decide('reject');
-decide('neutral');const clock=new THREE.Clock();const ease=t=>t*t*(3-2*t);function animate(){requestAnimationFrame(animate);const delta=Math.min(.04,clock.getDelta()),t=clock.elapsedTime;blend+=(desired-blend)*(1-Math.exp(-delta*1.35));const good=ease(Math.max(0,blend)),bad=ease(Math.max(0,-blend));scene.background.copy(backgroundLight).lerp(aliveBg,good*.95);scene.fog.color.copy(scene.background);hemi.intensity=1.8+good*.28;sun.intensity=2.5+good*.55;groundLight.intensity=good*24;renderer.toneMappingExposure=1.45+good*.18;grass.color.set('#403b39').lerp(new THREE.Color('#4d7549'),good);const leafFall=ease(Math.max(0,Math.min(1,(bad-.55)/.45)));trees.forEach(({tree,size})=>tree.scale.setScalar(size*(1-.28*leafFall)));nature.setState({season:.82-good*.27+bad*.18,growth:1,health:Math.max(.65,1-bad*.25),wind:.12+good*.2});nature.update(delta,t);fireflies.forEach(f=>{const pulse=.45+.55*(.5+.5*Math.sin(t*1.15+f.userData.phase));f.position.x=f.userData.x+Math.sin(t*.22+f.userData.phase)*.6;f.position.y=f.userData.y+Math.sin(t*.45+f.userData.phase)*.5;f.children[0].material.opacity=good*(.08+.16*pulse);f.children[1].material.opacity=good*(.55+.4*pulse);f.scale.setScalar(.8+.25*pulse)});positionCamera();renderer.render(scene,camera)}animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0e0f">
+  <title>TreeHacks — Daniel Benjamin</title>
+
+  <link rel="icon" href="https://www.danielrbenjamin.com/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://www.danielrbenjamin.com/site-header.css">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://danielrbenjamin.github.io" crossorigin>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0c0e0f;
+      --ink: #e4e8e6;
+      --ink-dim: #9fa8a3;
+      --amber: #ffb454;
+      --mono: 'JetBrains Mono', monospace;
+      --display: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--display);
+    }
+
+    a { color: inherit; }
+
+    /* Full-screen WebGL scene */
+    #stage {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: #302f35;
+    }
+
+    #stage canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    #stage::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        rgba(12, 14, 15, 0.12),
+        transparent 28%,
+        transparent 72%,
+        rgba(12, 14, 15, 0.08)
+      );
+    }
+
+    /* Preserve the live homepage header but make it transparent. */
+    [data-site-header] .bar {
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      box-shadow: none !important;
+      border: 0 !important;
+      z-index: 100 !important;
+    }
+
+    .bar { z-index: 100 !important; }
+
+    /* Accept / reject overlay */
+    #controls {
+      position: fixed;
+      z-index: 5;
+      top: 96px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(94vw, 700px);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .context-label {
+      margin: 0 0 10px;
+      color: var(--ink-dim);
+      font: 500 12px var(--mono);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+    }
+
+    h1 {
+      margin: 0 0 22px;
+      font-size: clamp(30px, 4.4vw, 60px);
+      font-weight: 600;
+      letter-spacing: -0.055em;
+      line-height: 1.1;
+      text-wrap: balance;
+      text-shadow: 0 2px 26px rgba(0, 0, 0, 0.5);
+    }
+
+    .decision-note {
+      min-height: 1.4em;
+      margin: -10px 0 20px;
+      color: var(--ink-dim);
+      font: 500 12px var(--mono);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .decision-note.visible { opacity: 1; }
+
+    .choices {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .choices button {
+      min-width: 76px;
+      padding: 11px 19px;
+      border: 1px solid rgba(225, 235, 227, 0.36);
+      border-radius: 3px;
+      background: rgba(12, 14, 15, 0.58);
+      backdrop-filter: blur(8px);
+      color: var(--ink);
+      font: 500 12px var(--mono);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+    }
+
+    .choices button:hover {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .choices button.selected {
+      border-color: var(--amber);
+      background: var(--amber);
+      color: #151719;
+    }
+
+    /* Homepage-style SVG intro */
+    #intro {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      transition: opacity 0.6s ease;
+    }
+
+    #intro.done {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #intro .intro-logo {
+      width: 150px;
+      color: var(--amber);
+      visibility: hidden;
+    }
+
+    #intro .intro-logo.ready { visibility: visible; }
+
+    #intro .intro-logo line {
+      stroke: var(--amber);
+      stroke-width: 4;
+      stroke-linecap: round;
+      vector-effect: non-scaling-stroke;
+      opacity: 0.32;
+    }
+
+    #intro .intro-logo line.highlight { opacity: 1; }
+
+    /* Footer credit */
+    #credit {
+      position: fixed;
+      z-index: 6;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 9px 14px;
+      border: 1px solid rgba(225, 235, 227, 0.2);
+      border-radius: 3px;
+      background: rgba(12, 14, 15, 0.52);
+      backdrop-filter: blur(8px);
+      color: var(--ink-dim);
+      font: 500 11px var(--mono);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    #credit a {
+      color: var(--amber);
+      text-decoration: none;
+    }
+
+    #credit a:hover { text-decoration: underline; }
+
+    @media (max-width: 680px) {
+      #controls { top: 80px; }
+      h1 { font-size: clamp(28px, 7vw, 42px); }
+      .choices button { padding: 10px 12px; font-size: 11px; }
+      #credit { bottom: 14px; max-width: 92vw; }
+    }
+
+
+
+    /* A small loading cover that remains until the WebGL scene is GPU-ready. */
+    #scene-loading {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      display: grid;
+      place-items: center;
+      background: #0c0e0f;
+      color: #9fa8a3;
+      font: 500 12px 'JetBrains Mono', monospace;
+      letter-spacing: 0.1em;
+      transition: opacity 450ms ease;
+      pointer-events: none;
+    }
+    #scene-loading.ready { opacity: 0; }
+    @media (prefers-reduced-motion: reduce) {
+      #intro { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="intro">
+    <svg class="intro-logo" viewBox="0 0 937.44 922.46" xmlns="http://www.w3.org/2000/svg" fill="none" aria-label="Daniel Benjamin logo">
+      <line data-i="0" x1="468.72" y1="254.47" x2="243.54" y2="254.47" />
+      <line data-i="1" x1="367.95" y1="558.8" x2="367.95" y2="757.53" />
+      <line data-i="2" x1="367.95" y1="558.8" x2="367.95" y2="194.97" />
+      <line data-i="3" x1="367.95" y1="194.97" x2="195.69" y2="50.22" />
+      <line data-i="4" x1="50.22" y1="395.83" x2="367.95" y2="395.83" />
+      <line data-i="5" x1="367.95" y1="395.83" x2="367.95" y2="757.53" />
+      <line data-i="6" x1="367.95" y1="757.53" x2="50.22" y2="395.83" />
+      <line data-i="7" x1="172.05" y1="534.52" x2="172.05" y2="359.83" />
+      <line data-i="8" x1="172.05" y1="359.83" x2="243.54" y2="254.47" />
+      <line data-i="9" x1="172.05" y1="534.52" x2="468.72" y2="872.24" />
+      <line data-i="10" x1="468.72" y1="254.47" x2="693.9" y2="254.47" />
+      <line data-i="11" x1="569.49" y1="558.8" x2="569.49" y2="757.53" />
+      <line data-i="12" x1="569.49" y1="558.8" x2="569.49" y2="194.97" />
+      <line data-i="13" x1="569.49" y1="194.97" x2="741.74" y2="50.22" />
+      <line data-i="14" x1="887.22" y1="395.83" x2="569.49" y2="395.83" />
+      <line data-i="15" x1="569.49" y1="395.83" x2="569.49" y2="757.53" />
+      <line data-i="16" x1="569.49" y1="757.53" x2="887.22" y2="395.83" />
+      <line data-i="17" x1="765.38" y1="534.52" x2="765.38" y2="359.83" />
+      <line data-i="18" x1="765.38" y1="359.83" x2="693.9" y2="254.47" />
+      <line data-i="19" x1="765.38" y1="534.52" x2="468.72" y2="872.24" />
+      <line data-i="26" x1="195.69" y1="50.22" x2="367.95" y2="194.97" />
+      <line data-i="29" x1="569.49" y1="194.97" x2="741.74" y2="50.22" />
+      <line class="highlight" data-i="20" x1="50.22" y1="395.83" x2="367.95" y2="757.53" />
+      <line class="highlight" data-i="21" x1="367.95" y1="757.53" x2="367.95" y2="395.83" />
+      <line class="highlight" data-i="22" x1="367.95" y1="395.83" x2="50.22" y2="395.83" />
+      <line class="highlight" data-i="23" x1="569.49" y1="395.83" x2="569.49" y2="757.53" />
+      <line class="highlight" data-i="24" x1="569.49" y1="757.53" x2="887.22" y2="395.83" />
+      <line class="highlight" data-i="25" x1="887.22" y1="395.83" x2="569.49" y2="395.83" />
+      <line class="highlight" data-i="27" x1="367.95" y1="194.97" x2="367.95" y2="395.83" />
+      <line class="highlight" data-i="28" x1="569.49" y1="395.83" x2="569.49" y2="194.97" />
+    </svg>
+  </div>
+
+  <div id="stage"></div>
+  <div id="scene-loading" role="status" aria-live="polite">HACKING TREES…</div>
+  <div data-site-header></div>
+
+  <div id="controls">
+    <p id="context-label" class="context-label">What TreeHacks would look like with or without Daniel</p>
+    <h1 id="title">Accept Daniel?</h1>
+    <p id="decision-note" class="decision-note" aria-live="polite"></p>
+    <div class="choices">
+      <button id="accept" aria-pressed="false">Accept</button>
+      <button id="reject" aria-pressed="false">Reject</button>
+    </div>
+  </div>
+
+
+
+  <div id="credit">
+    Made with <a href="https://www.npmjs.com/package/verdant-motion" target="_blank" rel="noopener noreferrer">verdant-motion</a>, a library I published.<br>
+    Explore <a href="https://www.danielrbenjamin.com/">my portfolio</a> to see what else I've built!
+  </div>
+
+  <script src="https://www.danielrbenjamin.com/site-header.js" defer></script>
+
+  <script type="module">
+    // Animate the shared logo only once per session.
+    async function playIntro() {
+      const intro = document.querySelector('#intro');
+      const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!intro || reduceMotion || sessionStorage.getItem('introSeen')) {
+        intro?.remove();
+        return;
+      }
+
+      sessionStorage.setItem('introSeen', '1');
+
+      let finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        intro.classList.add('done');
+        setTimeout(() => intro.remove(), 650);
+      }
+
+      const failSafe = setTimeout(finish, 5500);
+
+      try {
+        const { animate, svg } = await import('https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm');
+        const lines = [...intro.querySelectorAll('.intro-logo line')];
+        const base = svg.createDrawable(lines.filter(line => !line.classList.contains('highlight')));
+        const highlights = svg.createDrawable(lines.filter(line => line.classList.contains('highlight')));
+
+        [...base, ...highlights].forEach(line => line.setAttribute('draw', '0 0'));
+        intro.querySelector('.intro-logo').classList.add('ready');
+
+        animate(base, {
+          draw: '0 1',
+          ease: 'inOutQuad',
+          duration: 800,
+          delay: (_, index) => index * 26,
+          onComplete: () => {
+            animate(highlights, {
+              draw: '0 1',
+              ease: 'outQuad',
+              duration: 520,
+              delay: (_, index) => index * 70,
+              onComplete: () => {
+                setTimeout(() => {
+                  clearTimeout(failSafe);
+                  finish();
+                }, 650);
+              }
+            });
+          }
+        });
+      } catch (error) {
+        console.warn('Intro animation unavailable:', error);
+        clearTimeout(failSafe);
+        finish();
+      }
+    }
+
+    playIntro();
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { Nature, setAssetBasePath } from 'https://cdn.jsdelivr.net/npm/verdant-motion@0.1.0/dist/lib/verdant-motion.js';
+
+    // Use the same asset base as verdant-motion's published demo.
+    setAssetBasePath('https://danielrbenjamin.github.io/verdant-motion/');
+
+    // -------------------------------------------------------------------------
+    // Configuration: edit these to change the rectangular landscape footprint.
+    // -------------------------------------------------------------------------
+    const LAND = {
+      width: 900,
+      depth: 900,
+      centerZ: -5,
+      grassWidth: 110,
+      grassDepth: 110,
+      grassCount: 6300,
+      fireflyCount: 55
+    };
+
+    const COLORS = {
+      neutral: new THREE.Color('#3b3431'),
+      accepted: new THREE.Color('#345b3d')
+    };
+
+    const stage = document.querySelector('#stage');
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    // Fixed pixel ratio: no adaptive resolution changes.
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.0));
+    renderer.shadowMap.enabled = false; // Prefer stable FPS with multiple detailed trees.
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    stage.prepend(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = COLORS.neutral.clone();
+    // The verdant-motion demo deliberately has no fog or sky geometry.
+
+    // -------------------------------------------------------------------------
+    // Camera, lighting, and materials
+    // -------------------------------------------------------------------------
+    const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 1000);
+    const cameraTarget = new THREE.Vector3(0, 7, -14);
+    let yaw = -0.7652;
+    let pitch = 0.3668;
+    let distance = 60.9;
+
+    function updateCamera() {
+      camera.position.set(
+        cameraTarget.x + distance * Math.sin(yaw) * Math.cos(pitch),
+        cameraTarget.y + distance * Math.sin(pitch),
+        cameraTarget.z + distance * Math.cos(yaw) * Math.cos(pitch)
+      );
+      camera.lookAt(cameraTarget);
+    }
+
+    const hemisphere = new THREE.HemisphereLight(0xeaf1ff, 0x728276, 2);
+    scene.add(hemisphere);
+
+    const sunlight = new THREE.DirectionalLight(0xfff4df, 3);
+    sunlight.position.set(30, 60, 40);
+    scene.add(sunlight);
+    const rimLight = new THREE.DirectionalLight(0xd5e8ff, 2);
+    rimLight.position.set(-40, 30, -25);
+    scene.add(rimLight);
+
+    const groundLight = new THREE.PointLight(0xff9f4d, 0, 55, 1.5);
+    groundLight.position.set(1, 9, 3);
+    scene.add(groundLight);
+
+    const material = (color, roughness = 1) => new THREE.MeshStandardMaterial({ color, roughness });
+    const materials = {
+      stone: material('#5f5048'),
+      stoneDark: material('#332b2b'),
+      roof: material('#6a3f35'),
+      dark: material('#272326')
+    };
+
+    const world = new THREE.Group();
+    scene.add(world);
+
+    function addBox(parent, width, height, depth, mat, x, y, z) {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), mat);
+      mesh.position.set(x, y, z);
+      parent.add(mesh);
+      return mesh;
+    }
+
+    function addCone(parent, radius, height, mat, x, y, z, segments = 8) {
+      const mesh = new THREE.Mesh(new THREE.ConeGeometry(radius, height, segments), mat);
+      mesh.position.set(x, y, z);
+      parent.add(mesh);
+      return mesh;
+    }
+
+    // -------------------------------------------------------------------------
+    // Rectangular terrain + simplified Stanford-inspired architecture
+    // -------------------------------------------------------------------------
+    // Flat studio-style environment: the ground and background share exactly
+    // the same colour, with no textures, lighting variation, or visible edges.
+    // BasicMaterial + toneMapped:false makes the ground match scene.background.
+    const environmentGround = new THREE.MeshBasicMaterial({
+      color: COLORS.neutral.clone(),
+      toneMapped: false
+    });
+    addBox(world, LAND.width, 1.2, LAND.depth, environmentGround, 0, -0.7, LAND.centerZ);
+
+    function addTower(x, z) {
+      const tower = new THREE.Group();
+      tower.position.set(x, 0, z);
+      world.add(tower);
+
+      addBox(tower, 5, 19, 5, materials.stone, 0, 9.5, 0);
+
+      for (let level = 0; level < 4; level++) {
+        addBox(tower, 6.1, 0.55, 6.1, materials.stoneDark, 0, 2 + level * 4.1, 0);
+      }
+
+      addBox(tower, 7, 2, 7, materials.stoneDark, 0, 19.9, 0);
+      addBox(tower, 8, 1, 8, materials.stone, 0, 21.4, 0);
+
+      for (const side of [-1, 1]) {
+        for (let windowIndex = -1; windowIndex <= 1; windowIndex++) {
+          addBox(tower, 0.42, 1.7, 0.16, materials.dark, windowIndex * 1.45, 19.6, side * 3.54);
+        }
+      }
+
+      addCone(tower, 5.4, 3.3, materials.roof, 0, 23.5, 0, 4).rotation.y = Math.PI / 4;
+      addBox(tower, 1, 1, 1, materials.stone, 0, 25.3, 0);
+    }
+
+    function addArcade(x, z, width) {
+      const arcade = new THREE.Group();
+      arcade.position.set(x, 0, z);
+      world.add(arcade);
+
+      addBox(arcade, width, 5, 5, materials.stone, 0, 2.5, 0);
+      addBox(arcade, width + 1, 0.7, 6, materials.roof, 0, 5.3, 0);
+
+      const halfColumns = Math.floor(width / 3) / 2;
+      for (let column = -halfColumns; column <= halfColumns; column++) {
+        addBox(arcade, 0.45, 3, 0.55, materials.stoneDark, column * 3, 1.5, 2.65);
+      }
+    }
+
+    addTower(17, -10);
+    addArcade(-11, -17, 23);
+    addArcade(0, -24, 19);
+    addArcade(11, -17, 12);
+    addBox(world, 9, 9, 8, materials.stone, 0, 4.5, -20);
+    addCone(world, 7.2, 5.6, materials.roof, 0, 11.7, -20, 4).rotation.y = Math.PI / 4;
+    addBox(world, 2, 4, 0.17, materials.dark, 0, 2, -15.9);
+
+    // -------------------------------------------------------------------------
+    // Interspersed grove: spread trees randomly throughout the visible scene,
+    // not just around the perimeter. Seeded placement keeps the layout stable
+    // between reloads while avoiding the main building footprints.
+    // -------------------------------------------------------------------------
+    function isInsideRect(x, z, cx, cz, halfWidth, halfDepth) {
+      return Math.abs(x - cx) < halfWidth && Math.abs(z - cz) < halfDepth;
+    }
+
+    function isTreeBlocked(x, z) {
+      return isInsideRect(x, z, 17, -10, 10, 10) ||
+        isInsideRect(x, z, -11, -17, 17, 8) ||
+        isInsideRect(x, z, 0, -24, 14, 8) ||
+        isInsideRect(x, z, 11, -17, 10, 8) ||
+        isInsideRect(x, z, 0, -20, 12, 10) ||
+        // Keep the immediate camera focus under the main building a bit clearer.
+        isInsideRect(x, z, 0, -14, 8, 6);
+    }
+
+    function generateTreePositions() {
+      const random = createRandom(7123);
+      const positions = [];
+      const desiredCount = 16;
+      const minX = -48;
+      const maxX = 48;
+      const minZ = -56;
+      const maxZ = 34;
+      let attempts = 0;
+
+      while (positions.length < desiredCount && attempts < desiredCount * 80) {
+        attempts++;
+        const x = minX + random() * (maxX - minX);
+        const z = minZ + random() * (maxZ - minZ);
+        if (isTreeBlocked(x, z)) continue;
+
+        let tooClose = false;
+        for (const [px, pz] of positions) {
+          if (Math.hypot(x - px, z - pz) < 14) {
+            tooClose = true;
+            break;
+          }
+        }
+        if (tooClose) continue;
+
+        positions.push([Math.round(x * 10) / 10, Math.round(z * 10) / 10]);
+      }
+
+      // A couple of reliable foreground / midground anchors so the visible
+      // composition always has trees near the building rather than only far out.
+      const anchors = [
+        [-30, -31],
+        [28, -29],
+        [-19, 8],
+        [20, 10]
+      ];
+
+      for (const anchor of anchors) {
+        if (positions.length >= desiredCount) break;
+        const [x, z] = anchor;
+        if (!isTreeBlocked(x, z) && !positions.some(([px, pz]) => Math.hypot(x - px, z - pz) < 12)) {
+          positions.push(anchor);
+        }
+      }
+
+      return positions;
+    }
+
+    const TREE_POSITIONS = generateTreePositions();
+
+    const nature = new Nature();
+    world.add(nature);
+
+    // -------------------------------------------------------------------------
+    // Live-adjustable verdant-motion grass and flowers. Kept in separate Nature
+    // groups so changing vegetation does not regenerate any procedural trees.
+    // -------------------------------------------------------------------------
+    function createRandom(seed) {
+      let state = seed >>> 0;
+      return () => {
+        state = (1664525 * state + 1013904223) >>> 0;
+        return state / 4294967296;
+      };
+    }
+
+    const defaultVegetation = Object.freeze({
+      grassEnabled: true,
+      grassDensity: 3400,
+      grassScale: 70,
+      flowersEnabled: true,
+      flowersDensity: 525,
+      flowersScale: 55
+    });
+    // Center both rectangular vegetation areas on the main gabled Stanford building.
+    const VEGETATION_CENTER = { x: 0, z: -20 };
+    const vegetation = { ...defaultVegetation };
+    let grassNature = null;
+    let flowerNature = null;
+
+    function replaceVegetation(kind) {
+      const isGrass = kind === 'grass';
+      const previous = isGrass ? grassNature : flowerNature;
+      if (previous) {
+        world.remove(previous);
+        // Dispose of GPU resources owned by the old vegetation instance.
+        previous.traverse(child => {
+          if (!child.isMesh && !child.isInstancedMesh) return;
+          child.geometry?.dispose();
+          for (const mat of Array.isArray(child.material) ? child.material : [child.material]) {
+            mat?.dispose();
+          }
+        });
+      }
+
+      const enabled = isGrass ? vegetation.grassEnabled : vegetation.flowersEnabled;
+      const count = isGrass ? vegetation.grassDensity : vegetation.flowersDensity;
+      const next = new Nature();
+      next.position.set(VEGETATION_CENTER.x, 0, VEGETATION_CENTER.z);
+      if (enabled && count > 0) {
+        if (isGrass) {
+          next.addGrass({
+            preset: 'meadow', count,
+            size: vegetation.grassScale / 100,
+            area: [LAND.grassWidth, LAND.grassDepth],
+            seed: 7, color: '#52704b'
+          });
+        } else {
+          next.addFlower({
+            preset: 'daisy', count,
+            size: vegetation.flowersScale / 100,
+            area: [LAND.grassWidth * 0.86, LAND.grassDepth * 0.86],
+            seed: 44
+          });
+        }
+      }
+      world.add(next);
+      if (isGrass) grassNature = next;
+      else flowerNature = next;
+    }
+
+    replaceVegetation('grass');
+    replaceVegetation('flowers');
+
+    // -------------------------------------------------------------------------
+    // Verdant-managed oak forest (same seed for identical tree geometry).
+    // Keep individual Nature tree objects so the native fallingLeaves simulation
+    // can run independently at each location. The separate firefly and
+    // vegetation optimizations below are retained.
+    // -------------------------------------------------------------------------
+    const trees = TREE_POSITIONS.map(([x, z], index) => {
+      const tree = nature.addTree({
+        preset: 'Oak Large',
+        seed: 262,
+        proceduralGrowth: false,
+        fallingLeaves: 8
+      });
+      tree.position.set(x, 0, z);
+      tree.scale.setScalar(0.14 + (index % 4) * 0.008);
+      return tree;
+    });
+    nature.setState({ season: 0.82, growth: 1, health: 1, wind: 0.12 });
+    nature.update(0, 0);
+
+    // -------------------------------------------------------------------------
+    // Fireflies (visible when accepted)
+    // Spread them across the full woodland footprint instead of clustering them
+    // near the centre so the whole forest comes alive when Daniel is accepted.
+    // -------------------------------------------------------------------------
+    const fireflyAnchors = [];
+    const fireflyCoreGeometry = new THREE.SphereGeometry(0.13, 6, 5);
+    const fireflyHaloGeometry = new THREE.SphereGeometry(0.42, 6, 5);
+    const fireflyCoreMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffd66f, transparent: true, opacity: 0, depthWrite: false
+    });
+    const fireflyHaloMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffb84d, transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, depthWrite: false
+    });
+    const fireflyCores = new THREE.InstancedMesh(
+      fireflyCoreGeometry, fireflyCoreMaterial, LAND.fireflyCount
+    );
+    const fireflyHalos = new THREE.InstancedMesh(
+      fireflyHaloGeometry, fireflyHaloMaterial, LAND.fireflyCount
+    );
+    // The camera is fixed. Disable expensive aggregate bounds checks for the
+    // small particle groups and use a single draw call per particle type.
+    fireflyCores.frustumCulled = false;
+    fireflyHalos.frustumCulled = false;
+    scene.add(fireflyCores, fireflyHalos);
+
+    function isNearStructure(x, z) {
+      const inside = (cx, cz, halfWidth, halfDepth) =>
+        Math.abs(x - cx) < halfWidth && Math.abs(z - cz) < halfDepth;
+      return inside(17, -10, 8, 8) ||
+        inside(-11, -17, 16, 8) ||
+        inside(0, -24, 14, 8) ||
+        inside(11, -17, 10, 8) ||
+        inside(0, -20, 10, 10);
+    }
+
+    const fireflyRandom = createRandom(4637);
+    let attempts = 0;
+    while (fireflyAnchors.length < LAND.fireflyCount && attempts < LAND.fireflyCount * 12) {
+      attempts++;
+      const x = (fireflyRandom() - 0.5) * LAND.grassWidth;
+      const z = LAND.centerZ + (fireflyRandom() - 0.5) * LAND.grassDepth;
+      if (isNearStructure(x, z)) continue;
+      fireflyAnchors.push({
+        x, z,
+        y: 1.3 + fireflyRandom() * 4.2,
+        drift: 0.45 + fireflyRandom() * 0.55,
+        phase: fireflyRandom() * Math.PI * 2
+      });
+    }
+    fireflyCores.count = fireflyAnchors.length;
+    fireflyHalos.count = fireflyAnchors.length;
+    const fireflyMatrixDummy = new THREE.Object3D();
+
+    function updateFireflies(time, accepted) {
+      // Opacity is shared: avoid creating a separate material for every insect.
+      fireflyCoreMaterial.opacity = accepted * 0.85;
+      fireflyHaloMaterial.opacity = accepted * 0.16;
+      if (accepted < 0.001) {
+        fireflyCores.visible = false;
+        fireflyHalos.visible = false;
+        return;
+      }
+      fireflyCores.visible = true;
+      fireflyHalos.visible = true;
+      fireflyAnchors.forEach((fly, index) => {
+        const phase = fly.phase + index * 0.13;
+        const pulse = 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(time * 1.15 + phase));
+        fireflyMatrixDummy.position.set(
+          fly.x + Math.sin(time * 0.22 + phase) * (0.8 + fly.drift * 0.45),
+          fly.y + Math.sin(time * 0.45 + phase) * (0.35 + fly.drift * 0.35),
+          fly.z + Math.cos(time * 0.19 + phase) * (0.55 + fly.drift * 0.4)
+        );
+        const scale = 0.8 + 0.25 * pulse;
+        fireflyMatrixDummy.scale.setScalar(scale);
+        fireflyMatrixDummy.updateMatrix();
+        fireflyCores.setMatrixAt(index, fireflyMatrixDummy.matrix);
+        fireflyHalos.setMatrixAt(index, fireflyMatrixDummy.matrix);
+      });
+      fireflyCores.instanceMatrix.needsUpdate = true;
+      fireflyHalos.instanceMatrix.needsUpdate = true;
+    }
+
+    // -------------------------------------------------------------------------
+    // Accept / reject state
+    // -------------------------------------------------------------------------
+    let blend = 0;
+    let desiredBlend = 0;
+
+    function decide(decision) {
+      desiredBlend = decision === 'accept' ? 1 : decision === 'reject' ? -1 : 0;
+
+      for (const id of ['accept', 'reject']) {
+        const button = document.getElementById(id);
+        const selected = id === decision;
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      }
+
+      const content = {
+        accept: {
+          context: 'What TreeHacks would look like if Daniel is accepted :)',
+          title: 'Daniel is overjoyed!',
+          note: ''
+        },
+        reject: {
+          context: 'What TreeHacks would look like if Daniel is not accepted :(',
+          title: 'Daniel is devastated.',
+          note: 'Maybe you made the wrong decision. Reconsider?'
+        },
+        neutral: {
+          context: 'What TreeHacks would look like with or without Daniel',
+          title: 'Accept Daniel?',
+          note: ''
+        }
+      }[decision];
+
+      document.querySelector('#context-label').textContent = content.context;
+      document.querySelector('#title').textContent = content.title;
+      const note = document.querySelector('#decision-note');
+      note.textContent = content.note;
+      note.classList.toggle('visible', Boolean(content.note));
+    }
+
+    document.querySelector('#accept').addEventListener('click', () => decide('accept'));
+    document.querySelector('#reject').addEventListener('click', () => decide('reject'));
+    decide('neutral');
+
+    // Fixed camera: no OrbitControls, pointer listeners, debug panel, or panning.
+    updateCamera();
+
+    // Precompile visible shader variants and upload buffers before revealing
+    // the scene. This reduces first-frame shader compilation stutters; it does
+    // not remove the steady-state rendering cost of 16 detailed oaks.
+    const loadingCover = document.getElementById('scene-loading');
+    let sceneReady = false;
+    async function warmUpScene() {
+      try {
+        scene.updateMatrixWorld(true);
+        camera.updateMatrixWorld(true);
+        if (typeof renderer.compileAsync === 'function') {
+          await renderer.compileAsync(scene, camera);
+        } else {
+          renderer.compile(scene, camera);
+        }
+        renderer.render(scene, camera);
+        await new Promise(resolve => requestAnimationFrame(resolve));
+      } catch (error) {
+        console.warn('WebGL warm-up incomplete:', error);
+      } finally {
+        sceneReady = true;
+        loadingCover?.classList.add('ready');
+        setTimeout(() => loadingCover?.remove(), 500);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Frame update
+    // -------------------------------------------------------------------------
+    const clock = new THREE.Clock();
+    const smoothStep = value => value * value * (3 - 2 * value);
+
+    // Cap rendering for consistent frame pacing; stop entirely in background tabs.
+    const FRAME_INTERVAL = 1000 / 45;
+    const NATURE_INTERVAL = 1 / 20;
+    let previousFrameMs = 0;
+    let natureAccumulator = 0;
+    let animationFrame = 0;
+    function tick(now = 0) {
+      animationFrame = requestAnimationFrame(tick);
+      if (!sceneReady || document.hidden || now - previousFrameMs < FRAME_INTERVAL) return;
+      const delta = Math.min(0.05, (now - (previousFrameMs || now)) / 1000);
+      previousFrameMs = now;
+      const time = clock.getElapsedTime();
+      blend += (desiredBlend - blend) * (1 - Math.exp(-delta * 1.35));
+
+      const accepted = smoothStep(Math.max(0, blend));
+      const rejected = smoothStep(Math.max(0, -blend));
+
+      scene.background.copy(COLORS.neutral).lerp(COLORS.accepted, accepted * 0.95);
+      // No fog: match the verdant-motion demo studio rendering.
+      hemisphere.intensity = 2 + accepted * 0.15;
+      sunlight.intensity = 3 + accepted * 0.3;
+      groundLight.intensity = accepted * 24;
+      renderer.toneMappingExposure = 1.25 + accepted * 0.10;
+      environmentGround.color.copy(scene.background);
+
+      // Material season transitions remain smooth, but expensive Nature updates
+      // run at 20 Hz rather than the display frame rate.
+      natureAccumulator += delta;
+      if (natureAccumulator >= NATURE_INTERVAL) {
+        const natureStep = Math.min(natureAccumulator, 0.1);
+        natureAccumulator = 0;
+        const state = {
+          season: 0.82 - accepted * 0.27 + rejected * 0.18,
+          growth: 1, health: 1, wind: 0.12 + accepted * 0.2
+        };
+        nature.setState(state);
+        nature.update(natureStep, time);
+        for (const vegetationNature of [grassNature, flowerNature]) {
+          vegetationNature?.setState(state);
+          vegetationNature?.update(natureStep, time);
+        }
+      }
+
+      updateFireflies(time, accepted);
+      renderer.render(scene, camera);
+
+
+    }
+
+    warmUpScene().then(() => {
+      previousFrameMs = 0;
+      tick();
+    });
+    document.addEventListener('visibilitychange', () => {
+      previousFrameMs = 0;
+      natureAccumulator = 0;
+      clock.getDelta();
+    });
+
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+  </script>
+</body>
+</html>
