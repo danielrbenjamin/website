@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script defer src="/metrics/script.js" data-host-url="/metrics" data-website-id="0b4fb6a0-00ad-450e-8a2d-cddc75570ca1"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lantern — Daniel Benjamin</title>
+<meta name="description" content="Lantern: a HackCamp 2026 assistive navigation prototype combining iPhone LiDAR, on-device hazard detection, a live telemetry dashboard, and an ESP32 wearable belt.">
+<link rel="canonical" href="https://www.danielrbenjamin.com/projects/lantern/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../site-header.css">
+<script src="../../site-header.js" defer></script>
+<script src="../../site-footer.js" defer></script>
+<script src="../../site-contact.js" defer></script>
+<script src="../../site-console.js" defer></script>
+<style>
+.project-layout{display:grid;grid-template-columns:190px 1fr;gap:52px;align-items:start}
+@media(max-width:860px){.project-layout{grid-template-columns:1fr}}
+
+.project-toc{position:sticky;top:36px}
+@media(max-width:860px){.project-toc{position:static;margin-bottom:36px}}
+.toc-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-list a{display:block;padding:7px 0 7px 14px;border-left:2px solid var(--line);font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);transition:color .15s,border-color .15s}
+.toc-list a:hover{color:var(--ink-dim)}
+.toc-list a.active{color:var(--amber);border-left-color:var(--amber)}
+@media(max-width:860px){
+  .toc-list{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .toc-list a{border-left:none;border:1px solid var(--line);border-radius:2px;padding:6px 11px}
+  .toc-list a.active{border-color:var(--amber);background:rgba(255,180,84,.06)}
+}
+
+.project-body h2{font-size:1.42rem;font-weight:600;letter-spacing:-.01em;margin:56px 0 16px;scroll-margin-top:28px}
+.project-body h2:first-child{margin-top:0}
+.project-body p{color:var(--ink-dim);font-size:1.02rem;line-height:1.72;margin-bottom:16px;max-width:680px}
+.project-body ul{margin:0 0 20px;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;max-width:680px}
+.project-body li{color:var(--ink-dim);font-size:.98rem;line-height:1.6;padding-left:18px;position:relative}
+.project-body li::before{content:"▸";position:absolute;left:0;color:var(--ink-faint);font-size:.85em;top:2px}
+.project-body b{color:var(--ink);font-weight:500}
+
+.figure{margin:8px 0 32px;max-width:680px}
+.figure img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:5px;background:var(--panel)}
+.figure .shot{
+  border:1px dashed var(--line-bright);border-radius:4px;background:var(--panel);
+  aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;
+}
+.figure figcaption{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+
+.note{
+  margin-top:8px;padding:20px 22px;border:1px dashed var(--line-bright);border-radius:5px;background:var(--panel);
+  font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.7;max-width:680px;
+}
+.note b{color:var(--amber)}
+
+.hero-shot{
+  margin-top:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  background:var(--panel);box-shadow:0 12px 40px rgba(0,0,0,.35);
+}
+.hero-shot img{display:block;width:100%;height:auto}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 30px}
+.project-layout>*{min-width:0}
+.demo-video{max-width:680px;aspect-ratio:16/9;margin:8px 0 24px;border:1px solid var(--line);border-radius:5px;overflow:hidden;background:var(--panel)}
+.demo-video iframe{display:block;width:100%;height:100%;border:0}
+@media(max-width:860px){.project-layout{gap:0}}
+</style>
+</head>
+<body>
+
+<div data-site-header></div>
+
+<main class="wrap">
+  <section class="page-head" style="border-top:none">
+    <div class="eyebrow reveal"><a href="/projects/" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; SWE-007</div>
+    <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">HackCamp 2026 · Team Project</div>
+    <h1 class="sec-h reveal">Lantern</h1>
+    <p class="sec-sub reveal" style="margin-bottom:18px">An assistive navigation prototype that connects iPhone LiDAR, on-device hazard detection, and a wearable belt to turn nearby obstacles and walking directions into physical cues.</p>
+    <div class="chips reveal" style="margin-bottom:28px">
+      <span class="chip">React Native</span><span class="chip">TypeScript</span><span class="chip">Swift / ARKit</span><span class="chip">Core ML</span><span class="chip">React / Vite</span><span class="chip">Bluetooth LE</span>
+    </div>
+    <div class="cta-row reveal">
+      <a href="https://www.youtube.com/watch?v=4R2KqE9lBR4" target="_blank" rel="noopener noreferrer" class="btn solid">Watch demo ↗</a>
+      <a href="https://devpost.com/software/project-sp2hx0" target="_blank" rel="noopener noreferrer" class="btn">Devpost ↗</a>
+      <a href="https://github.com/danielrbenjamin/hackcamp-2026" target="_blank" rel="noopener noreferrer" class="btn">GitHub ↗</a>
+    </div>
+    <figure class="hero-shot reveal"><img src="dashboard.png" alt="Lantern telemetry dashboard showing a live iPhone 3D scan, person detection, clearance readings, and belt output" width="1918" height="1198" decoding="async"></figure>
+  </section>
+
+  <section style="border-top:none;padding-top:0">
+    <div class="project-layout">
+      <aside class="project-toc reveal">
+        <div class="toc-label">On this page</div>
+        <ul class="toc-list">
+          <li><a href="#overview">Overview &amp; My Role</a></li>
+          <li><a href="#app">iPhone App</a></li>
+          <li><a href="#dashboard">Dashboard &amp; Endpoint</a></li>
+          <li><a href="#belt">Hardware Belt</a></li>
+          <li><a href="#demo">Demo</a></li>
+        </ul>
+      </aside>
+      <div class="project-body">
+        <h2 class="project-summary-title">Project Summary</h2>
+        <div class="project-summary reveal" aria-label="Project summary">
+          <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>An <b>assistive navigation prototype</b> built at HackCamp 2026.</li><li>Three connected parts: an iPhone app, a dashboard and endpoint server, and a wearable belt.</li></ul></div>
+          <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Combined <b>LiDAR clearance</b>, local hazard models, and Google walking routes.</li><li>Sent directional and warning cues to an ESP32 belt over Bluetooth LE.</li></ul></div>
+          <div class="project-summary-item"><span class="project-summary-label">My Work</span><ul><li>Built the <b>entire iPhone app, telemetry dashboard, and endpoint server</b>.</li><li>Integrated the team's hazard models and belt into the navigation workflow.</li></ul></div>
+        </div>
+
+        <h2 id="overview">Overview &amp; My Role</h2>
+        <p>Lantern explores how a phone and a wearable can communicate walking directions and nearby hazards without requiring someone to keep looking at a screen. The phone measures the space ahead, runs hazard models locally, and combines that information with a walking route to choose a direction or issue a warning.</p>
+        <p>I built the <b>entire iPhone app, browser dashboard, and endpoint server</b>, including the app interface, native sensor integration, navigation logic, model integration, Bluetooth connection, and live telemetry views. My teammates worked on model training, the Databricks pipeline, and the physical belt.</p>
+
+        <h2 id="app">iPhone App</h2>
+        <p>The app combines a <b>React Native and TypeScript interface</b> with a native Swift module for ARKit depth, Core ML inference, speech input, and Bluetooth communication. Google walking routes supply the route heading; local clearance and hazard geometry determine whether a direction is usable.</p>
+        <ul>
+          <li><b>Local obstacle warnings:</b> a center-zone LiDAR reading within 0.85 m can trigger a warning independently of object recognition.</li>
+          <li><b>On-device hazard models:</b> glass and stair segmentation, plus person detection, add context to the measured depth. The person tracker projects motion up to 0.6 seconds ahead.</li>
+          <li><b>Accessible destination input:</b> spoken destinations, Siri integration, VoiceOver support, and spoken route announcements reduce reliance on visual controls.</li>
+          <li><b>Local processing:</b> LiDAR warnings and hazard inference run on the phone. Route search and Google navigation require an internet connection.</li>
+        </ul>
+        <figure class="figure reveal">
+          <img src="stair-detection.png" alt="Stair riser and tread segmentation overlaid on the iPhone camera view of a staircase" width="806" height="502" loading="lazy" decoding="async">
+          <figcaption>Stair segmentation displayed over the camera view, with separate masks for risers and treads.</figcaption>
+        </figure>
+        <figure class="figure reveal">
+          <img src="person-detection.png" alt="A person detection box and motion trail overlaid on the iPhone camera view" width="806" height="499" loading="lazy" decoding="async">
+          <figcaption>Person detection and tracking in the live scan overlay. Solid trails show measured motion; dashed trails show the forecast.</figcaption>
+        </figure>
+
+        <h2 id="dashboard">Telemetry Dashboard &amp; Endpoint Server</h2>
+        <p>I built the <b>React and Vite dashboard</b> to inspect what the phone was seeing and why the guidance system was issuing a particular cue. It brings the 3D scan, model overlays, depth and confidence views, clearance plots, and belt commands into one workspace.</p>
+        <p>The endpoint server receives guidance and visual telemetry from the phone and makes the latest snapshots available to the dashboard. A separate upload endpoint accepts explicitly recorded sessions for the team's Databricks workflow, keeping the data-service credentials on the server.</p>
+        <ul>
+          <li><b>3D scan inspection:</b> camera-aligned and orbit views, with RGB or depth coloring.</li>
+          <li><b>Model debugging:</b> individual glass, stair, and person previews alongside combined overlays.</li>
+          <li><b>Guidance visibility:</b> live zone distances, detected hazards, route state, and the outgoing belt cue.</li>
+          <li><b>Repeatable scenarios:</b> a simulator for obstacles, crossing people, and sensor dropout, plus opt-in session recording for later analysis.</li>
+        </ul>
+        <figure class="figure reveal">
+          <img src="model-previews.png" alt="Lantern dashboard with separate glass, stairs, and people model panels above the live clearance plot" width="1918" height="1198" loading="lazy" decoding="async">
+          <figcaption>Individual model previews beside sensor status and guidance, with left, ahead, and right clearance plotted over time.</figcaption>
+        </figure>
+
+        <h2 id="belt">Hardware Belt</h2>
+        <p>The physical prototype combines a phone mount, an <b>ESP32 controller, and three buzzers</b> positioned around a belt. The app sends Bluetooth LE commands for directional pulses and rapid obstacle warnings. Firmware silences the buzzers when the connection drops or commands stop arriving.</p>
+        <p>My teammates built the belt; I worked on the app-side connection and guidance integration that turns the phone's sensor and route information into belt output.</p>
+        <figure class="figure reveal">
+          <img src="belt.png" alt="Lantern wearable prototype with a black belt, phone mount, wiring, and buzzer modules" width="764" height="573" loading="lazy" decoding="async">
+          <figcaption>The assembled belt prototype, including its phone mount and wearable electronics.</figcaption>
+        </figure>
+
+        <h2 id="demo">Demo</h2>
+        <p>The project demo brings together the phone, live dashboard, and wearable prototype.</p>
+        <div class="demo-video reveal"><iframe src="https://www.youtube-nocookie.com/embed/4R2KqE9lBR4" title="Lantern — HackCamp 2026 project demo" width="680" height="383" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+        <div class="cta-row reveal">
+          <a href="https://www.youtube.com/watch?v=4R2KqE9lBR4" target="_blank" rel="noopener noreferrer" class="btn solid">Watch on YouTube ↗</a>
+          <a href="https://devpost.com/software/project-sp2hx0" target="_blank" rel="noopener noreferrer" class="btn">Read on Devpost ↗</a>
+          <a href="https://github.com/danielrbenjamin/hackcamp-2026" target="_blank" rel="noopener noreferrer" class="btn">Source &amp; documentation ↗</a>
+        </div>
+        <div class="eyebrow reveal" style="margin-top:40px"><a href="/projects/" style="color:var(--ink-faint)">← all projects</a></div>
+      </div>
+    </div>
+  </section>
+
+  <div data-site-contact></div>
+
+</main>
+
+<div data-site-footer></div>
+
+<script>
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const headings = document.querySelectorAll('.project-body h2[id]');
+  if(!links.length || !headings.length) return;
+  const byId = {};
+  links.forEach(a => byId[a.getAttribute('href').slice(1)] = a);
+
+  const tocIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = byId[entry.target.id];
+      if(!link) return;
+      if(entry.isIntersecting) links.forEach(a => a.classList.remove('active')), link.classList.add('active');
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  headings.forEach(h => tocIO.observe(h));
+})();
+</script>
+</body>
+</html>
