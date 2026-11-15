@@ -78,6 +78,7 @@
     <div class="eyebrow reveal"><a href="/projects/" style="color:var(--ink-faint)">← projects</a> &nbsp;/&nbsp; SWE-007</div>
     <div class="reveal" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px">HackCamp 2026 · Team Project</div>
     <h1 class="sec-h reveal">Lantern</h1>
+    <p class="reveal" style="color:var(--amber);font-family:var(--mono);font-size:13px;line-height:1.7;margin-bottom:18px">Overall Winner · Most Accessible Design (Beginner Only)</p>
     <p class="sec-sub reveal" style="margin-bottom:18px">An assistive navigation prototype that connects iPhone LiDAR, on-device hazard detection, and a wearable belt to turn nearby obstacles and walking directions into physical cues.</p>
     <div class="chips reveal" style="margin-bottom:28px">
       <span class="chip">React Native</span><span class="chip">TypeScript</span><span class="chip">Swift / ARKit</span><span class="chip">Core ML</span><span class="chip">React / Vite</span><span class="chip">Bluetooth LE</span>
@@ -107,12 +108,13 @@
         <div class="project-summary reveal" aria-label="Project summary">
           <div class="project-summary-item"><span class="project-summary-label">What</span><ul><li>An <b>assistive navigation prototype</b> built at HackCamp 2026.</li><li>Three connected parts: an iPhone app, a dashboard and endpoint server, and a wearable belt.</li></ul></div>
           <div class="project-summary-item"><span class="project-summary-label">How</span><ul><li>Combined <b>LiDAR clearance</b>, local hazard models, and Google walking routes.</li><li>Sent directional and warning cues to an ESP32 belt over Bluetooth LE.</li></ul></div>
-          <div class="project-summary-item"><span class="project-summary-label">My Work</span><ul><li>Built the <b>entire iPhone app, telemetry dashboard, and endpoint server</b>.</li><li>Integrated the team's hazard models and belt into the navigation workflow.</li></ul></div>
+          <div class="project-summary-item"><span class="project-summary-label">My Work</span><ul><li>Built the <b>entire iPhone app, telemetry dashboard, and endpoint server</b>.</li><li>Integrated the team's hazard models and belt, and helped assemble the physical prototype.</li></ul></div>
         </div>
 
         <h2 id="overview">Overview &amp; My Role</h2>
         <p>Lantern explores how a phone and a wearable can communicate walking directions and nearby hazards without requiring someone to keep looking at a screen. The phone measures the space ahead, runs hazard models locally, and combines that information with a walking route to choose a direction or issue a warning.</p>
-        <p>I built the <b>entire iPhone app, browser dashboard, and endpoint server</b>, including the app interface, native sensor integration, navigation logic, model integration, Bluetooth connection, and live telemetry views. My teammates worked on model training, the Databricks pipeline, and the physical belt.</p>
+        <p>I built the <b>entire iPhone app, browser dashboard, and endpoint server</b>, including the app interface, native sensor integration, navigation logic, model integration, Bluetooth connection, and live telemetry views. I also helped assemble the belt. My teammates worked on model training, the Databricks pipeline, and the belt hardware.</p>
+        <p>Lantern won <b>Overall Winner</b> and the beginner-only <b>Most Accessible Design</b> superlative at HackCamp 2026.</p>
 
         <h2 id="app">iPhone App</h2>
         <p>The app combines a <b>React Native and TypeScript interface</b> with a native Swift module for ARKit depth, Core ML inference, speech input, and Bluetooth communication. Google walking routes supply the route heading; local clearance and hazard geometry determine whether a direction is usable.</p>
@@ -147,7 +149,7 @@
 
         <h2 id="belt">Hardware Belt</h2>
         <p>The physical prototype combines a phone mount, an <b>ESP32 controller, and three buzzers</b> positioned around a belt. The app sends Bluetooth LE commands for directional pulses and rapid obstacle warnings. Firmware silences the buzzers when the connection drops or commands stop arriving.</p>
-        <p>My teammates built the belt; I worked on the app-side connection and guidance integration that turns the phone's sensor and route information into belt output.</p>
+        <p>I helped assemble the belt alongside my teammates and built the app-side connection and guidance integration that turns the phone's sensor and route information into belt output.</p>
         <figure class="figure reveal">
           <img src="belt.png" alt="Lantern wearable prototype with a black belt, phone mount, wiring, and buzzer modules" width="764" height="573" loading="lazy" decoding="async">
           <figcaption>The assembled belt prototype, including its phone mount and wearable electronics.</figcaption>
